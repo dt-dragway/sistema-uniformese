@@ -1,12 +1,38 @@
-import { Box, Button, Container, TextField, Typography, Alert, Card, CardContent, InputAdornment, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Alert,
+  InputAdornment,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Tooltip,
+  CircularProgress,
+  Fade,
+  Slide,
+} from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { login } from '../store/authSlice';
-import Footer from '../components/Footer';
 import WindowControls from '../components/WindowControls';
-import { Visibility, VisibilityOff, Settings, Wifi, CheckCircle, WifiOff } from '@mui/icons-material';
+import {
+  Visibility,
+  VisibilityOff,
+  Settings,
+  Wifi,
+  CheckCircle,
+  WifiOff,
+  PersonOutline,
+  LockOutlined,
+  Checkroom,
+} from '@mui/icons-material';
 import { APP_VERSION } from '../config/appVersion';
 
 const LoginPage = () => {
@@ -17,17 +43,18 @@ const LoginPage = () => {
   const [serverUrl, setServerUrl] = useState('http://localhost:3000');
   const [testingConnection, setTestingConnection] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [mounted, setMounted] = useState(false);
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const { isAuthenticated, loading, error } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
+    setMounted(true);
     if (isAuthenticated) {
       navigate('/sales');
     }
   }, [isAuthenticated, navigate]);
 
-  // Load server configuration on mount
   useEffect(() => {
     loadServerConfig();
   }, []);
@@ -38,10 +65,8 @@ const LoginPage = () => {
         const config = await window.electronAPI.getServerConfig();
         const url = config.serverUrl || 'http://localhost:3000';
         setServerUrl(url);
-        // Sincronizar a localStorage para que axiosInstance lo use
         localStorage.setItem('serverUrl', url);
       } else {
-        // En modo navegador, intentar leer de localStorage
         const savedUrl = localStorage.getItem('serverUrl');
         if (savedUrl) {
           setServerUrl(savedUrl);
@@ -61,7 +86,6 @@ const LoginPage = () => {
         const result = await window.electronAPI.testServerConnection(serverUrl);
         setConnectionStatus(result.success ? 'success' : 'error');
       } else {
-        // Browser mode - test with fetch
         const response = await fetch(`${serverUrl}/api/exchange-rate`).catch(() => null);
         setConnectionStatus(response ? 'success' : 'error');
       }
@@ -79,7 +103,6 @@ const LoginPage = () => {
     }
 
     try {
-      // Guardar en localStorage para que axiosInstance lo use
       localStorage.setItem('serverUrl', serverUrl);
 
       if (window.electronAPI?.saveServerConfig) {
@@ -88,10 +111,8 @@ const LoginPage = () => {
           _comment: 'Configuración de servidor',
         });
         alert('Configuración guardada. La aplicación se recargará.');
-        // Forzar recarga para aplicar la nueva URL
         window.location.reload();
       } else {
-        // Browser mode - just close modal and reload to apply
         setShowServerConfig(false);
         window.location.reload();
       }
@@ -100,7 +121,6 @@ const LoginPage = () => {
     }
   };
 
-
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     dispatch(login({ username, password }));
@@ -108,217 +128,287 @@ const LoginPage = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
-
   return (
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'column',
         minHeight: '100vh',
+        backgroundColor: '#f8fafc',
+        backgroundImage: `radial-gradient(circle at 0% 0%, rgba(2, 85, 165, 0.05) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(2, 85, 165, 0.05) 0%, transparent 50%)`,
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+      <Box sx={{ position: 'absolute', top: 24, right: 24, zIndex: 10 }}>
         <WindowControls />
       </Box>
 
       {/* Settings Button */}
-      <Box sx={{ position: 'absolute', top: 16, left: 16, display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Tooltip title="Configurar Servidor">
+      <Box sx={{ position: 'absolute', top: 24, left: 24, zIndex: 10 }}>
+        <Tooltip title="Configuración Avanzada" placement="right">
           <IconButton
             onClick={() => setShowServerConfig(true)}
             sx={{
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              backgroundColor: 'rgba(0, 0, 0, 0.02)',
+              backdropFilter: 'blur(10px)',
+              color: '#64748b',
+              border: '1px solid rgba(0, 0, 0, 0.05)',
+              borderRadius: '16px',
+              p: 1.5,
+              '&:hover': { 
+                backgroundColor: 'rgba(2, 85, 165, 0.05)',
+                color: '#0255A5',
+                transform: 'rotate(90deg) scale(1.05)',
               },
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           >
-            <Settings />
+            <Settings fontSize="small" />
           </IconButton>
         </Tooltip>
       </Box>
 
-      <Container component="main" maxWidth="xs" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Card
-          sx={{
-            borderRadius: 4,
-            width: '100%',
-            // Advanced Glassmorphism
-            background: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(15px)',
-            WebkitBackdropFilter: 'blur(15px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+      <Container
+        component="main"
+        maxWidth="lg"
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2,
+          py: 4
+        }}
+      >
+        <Box 
+          sx={{ 
+            width: '100%', 
+            maxWidth: '1000px',
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: { xs: 4, md: 8 },
+            alignItems: 'center',
           }}
         >
-          <CardContent sx={{ p: 5 }}>
-            <Box sx={{ mb: 3, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Box
-                sx={{
-                  p: 1.5,
-                  backgroundColor: 'rgba(255,255,255,0.9)',
-                  borderRadius: '16px',
-                  mb: 2,
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+          {/* Left Side - Brand & Branding */}
+          <Fade in={mounted} timeout={1000}>
+            <Box sx={{ flex: 1, color: '#0f172a', textAlign: { xs: 'center', md: 'left' } }}>
+              <Box 
+                sx={{ 
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: 'rgba(2, 85, 165, 0.08)',
+                  border: '1px solid rgba(2, 85, 165, 0.15)',
+                  color: '#0255A5',
+                  px: 2,
+                  py: 1,
+                  borderRadius: '20px',
+                  mb: 4,
                 }}
               >
-                <img src="/images/logo.png" alt="Vertice POS Logo" style={{ width: 'auto', height: '60px', display: 'block' }} />
+                <Checkroom sx={{ fontSize: 20, mr: 1 }} />
+                <Typography variant="overline" sx={{ fontWeight: 800, letterSpacing: '0.1em', lineHeight: 1, color: '#0255A5' }}>
+                  SISTEMA DE GESTIÓN
+                </Typography>
               </Box>
-              <Typography
-                component="h1"
-                variant="h5"
-                sx={{
-                  color: 'rgba(255, 255, 255, 0.9)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '2px',
-                  fontWeight: 600,
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
-                }}
-              >
-                Comercializadora Gonzalez 2018
-              </Typography>
-            </Box>
-            <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="username"
-                label="Usuario"
-                name="username"
-                autoComplete="username"
-                autoFocus
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    color: 'white',
-                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                    borderRadius: 2,
-                    '& fieldset': {
-                      borderColor: 'rgba(255, 255, 255, 0.2)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'rgba(255, 255, 255, 0.5)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#dd720c', // Orange brand color
-                      borderWidth: '2px',
-                    },
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: 'rgba(255, 255, 255, 0.6)',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: '#dd720c',
-                  },
-                }}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Contraseña"
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                        sx={{ color: 'rgba(255, 255, 255, 0.7)' }}
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    color: 'white',
-                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                    borderRadius: 2,
-                    '& fieldset': {
-                      borderColor: 'rgba(255, 255, 255, 0.2)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'rgba(255, 255, 255, 0.5)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#dd720c',
-                      borderWidth: '2px',
-                    },
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: 'rgba(255, 255, 255, 0.6)',
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: '#dd720c',
-                  },
-                }}
-              />
-              {error && (
-                <Alert severity="error" sx={{ mt: 2, backgroundColor: 'rgba(211, 47, 47, 0.2)', color: '#ffcdd2' }}>
-                  {error}
-                </Alert>
-              )}
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{
-                  mt: 4,
+
+              <Typography 
+                variant="h1" 
+                sx={{ 
+                  fontWeight: 900, 
+                  fontFamily: '"Outfit", "Inter", sans-serif',
+                  fontSize: { xs: '3rem', md: '4.5rem' },
+                  lineHeight: 1.1,
                   mb: 2,
-                  py: 1.8,
-                  fontSize: '1rem',
-                  letterSpacing: '1px',
-                  background: 'linear-gradient(45deg, #fc8817, #dd720c)',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  borderRadius: '30px',
-                  boxShadow: '0 4px 15px rgba(221, 114, 12, 0.4)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    background: 'linear-gradient(45deg, #ff9d3f, #e6831d)',
-                    boxShadow: '0 6px 20px rgba(221, 114, 12, 0.6)',
-                    transform: 'translateY(-2px)',
-                  },
-                  '&:disabled': {
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    color: 'rgba(255, 255, 255, 0.3)',
-                  },
-                }}
-                disabled={loading}
-              >
-                {loading ? 'ACCEDIENDO...' : 'INGRESAR'}
-              </Button>
-              {/* Versión de la aplicación */}
-              <Typography
-                variant="caption"
-                sx={{
-                  display: 'block',
-                  textAlign: 'center',
-                  color: 'rgba(255, 255, 255, 0.5)',
-                  mt: 2,
-                  fontSize: '0.75rem',
+                  background: 'linear-gradient(to right, #0255A5, #003780)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
                 }}
               >
-                Versión {APP_VERSION}
+                C. Gonzalez
+              </Typography>
+              
+              <Typography 
+                variant="h2" 
+                sx={{ 
+                  fontWeight: 300, 
+                  fontSize: { xs: '1.5rem', md: '2rem' },
+                  color: '#64748b',
+                  mb: 4,
+                  letterSpacing: '0.02em',
+                }}
+              >
+                Atelier de Uniformes
+              </Typography>
+
+              <Typography variant="body1" sx={{ color: '#475569', maxWidth: '400px', mx: { xs: 'auto', md: 0 }, fontSize: '1.1rem', lineHeight: 1.6 }}>
+                Accede al panel de control para gestionar ventas, inventario y catálogo de prendas.
               </Typography>
             </Box>
-          </CardContent>
-        </Card>
+          </Fade>
+
+          {/* Right Side - Login Form */}
+          <Slide direction="up" in={mounted} timeout={800} mountOnEnter unmountOnExit>
+            <Box sx={{ flex: 1, w: '100%', maxWidth: '480px' }}>
+              <Box 
+                className="gpu-accelerated"
+                sx={{ 
+                  backgroundColor: '#ffffff',
+                  borderRadius: '32px',
+                  p: { xs: 4, sm: 6 },
+                  border: '1px solid rgba(0, 0, 0, 0.05)',
+                  boxShadow: `
+                    0 20px 25px -5px rgba(0, 0, 0, 0.05),
+                    0 10px 10px -5px rgba(0, 0, 0, 0.02)
+                  `,
+                }}
+              >
+                <Typography variant="h5" sx={{ color: '#0f172a', fontWeight: 700, mb: 1 }}>
+                  Bienvenido de nuevo
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#64748b', mb: 4 }}>
+                  Ingresa tus credenciales para continuar
+                </Typography>
+
+                <Box component="form" onSubmit={handleLogin}>
+                  <Box sx={{ mb: 3 }}>
+                    <TextField
+                      fullWidth
+                      id="username"
+                      name="username"
+                      placeholder="Usuario"
+                      autoFocus
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <PersonOutline sx={{ color: '#94a3b8', ml: 1 }} />
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: '#f8fafc',
+                          borderRadius: '16px',
+                          color: '#0f172a',
+                          '& fieldset': { borderColor: '#e2e8f0', borderWidth: '1px' },
+                          '&:hover fieldset': { borderColor: '#cbd5e1' },
+                          '&.Mui-focused fieldset': { borderColor: '#0255A5', borderWidth: '2px' },
+                          transition: 'all 0.3s ease',
+                        },
+                        '& .MuiInputBase-input::placeholder': {
+                          color: '#94a3b8',
+                          opacity: 1,
+                        },
+                      }}
+                    />
+                  </Box>
+
+                  <Box sx={{ mb: 4 }}>
+                    <TextField
+                      fullWidth
+                      name="password"
+                      placeholder="Contraseña"
+                      type={showPassword ? 'text' : 'password'}
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <LockOutlined sx={{ color: '#94a3b8', ml: 1 }} />
+                          </InputAdornment>
+                        ),
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={handleClickShowPassword} sx={{ color: '#94a3b8', mr: 1 }}>
+                              {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: '#f8fafc',
+                          borderRadius: '16px',
+                          color: '#0f172a',
+                          '& fieldset': { borderColor: '#e2e8f0', borderWidth: '1px' },
+                          '&:hover fieldset': { borderColor: '#cbd5e1' },
+                          '&.Mui-focused fieldset': { borderColor: '#0255A5', borderWidth: '2px' },
+                          transition: 'all 0.3s ease',
+                        },
+                        '& .MuiInputBase-input::placeholder': {
+                          color: '#94a3b8',
+                          opacity: 1,
+                        },
+                      }}
+                    />
+                  </Box>
+
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    disableElevation
+                    sx={{
+                      py: 2,
+                      background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
+                      color: '#fff',
+                      borderRadius: '16px',
+                      fontWeight: 600,
+                      fontSize: '1rem',
+                      textTransform: 'none',
+                      boxShadow: '0 10px 20px -5px rgba(2, 85, 165, 0.3)',
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 15px 30px -5px rgba(2, 85, 165, 0.4)',
+                      },
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    }}
+                    disabled={loading}
+                  >
+                    {loading ? <CircularProgress size={26} color="inherit" /> : 'Ingresar'}
+                  </Button>
+
+                  {error && (
+                    <Fade in={!!error}>
+                      <Alert 
+                        severity="error" 
+                        sx={{ 
+                          mt: 3, 
+                          borderRadius: '12px', 
+                          backgroundColor: '#fef2f2', 
+                          color: '#b91c1c',
+                          border: '1px solid #fee2e2',
+                          fontWeight: 500,
+                          '& .MuiAlert-icon': { color: '#ef4444' }
+                        }}
+                      >
+                        {error}
+                      </Alert>
+                    </Fade>
+                  )}
+                </Box>
+              </Box>
+
+              <Box sx={{ mt: 4, textAlign: 'center' }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: '#94a3b8',
+                    fontWeight: 600,
+                    letterSpacing: '0.1em',
+                  }}
+                >
+                  VÉRTICE POS • VERSIÓN {APP_VERSION}
+                </Typography>
+              </Box>
+            </Box>
+          </Slide>
+        </Box>
       </Container>
 
       {/* Server Configuration Dialog */}
@@ -327,30 +417,61 @@ const LoginPage = () => {
         onClose={() => setShowServerConfig(false)}
         maxWidth="sm"
         fullWidth
+        PaperProps={{
+          sx: { 
+            borderRadius: '24px', 
+            p: 1,
+            backgroundColor: '#ffffff',
+            backgroundImage: 'none',
+            border: '1px solid rgba(0,0,0,0.05)',
+            color: '#0f172a'
+          }
+        }}
       >
-        <DialogTitle>Configurar Servidor</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 700, fontSize: '1.25rem', color: '#0f172a' }}>
+          Configuración de Conexión
+        </DialogTitle>
         <DialogContent>
-          <Box sx={{ pt: 2 }}>
-            <Typography variant="body2" color="text.secondary" paragraph>
-              Configura la dirección del servidor para conectarte en red.
+          <Box sx={{ pt: 1 }}>
+            <Typography variant="body2" sx={{ mb: 3, color: '#64748b' }}>
+              Establezca la dirección IP del servidor central para la sincronización de datos.
             </Typography>
             <TextField
               fullWidth
               label="URL del Servidor"
               value={serverUrl}
               onChange={(e) => setServerUrl(e.target.value)}
-              placeholder="http://192.168.1.122:3000"
-              sx={{ mb: 2 }}
+              placeholder="http://192.168.1.100:3000"
+              sx={{
+                mb: 2,
+                '& .MuiInputLabel-root': { color: '#64748b' },
+                '& .MuiOutlinedInput-root': { 
+                  borderRadius: '12px',
+                  color: '#0f172a',
+                  backgroundColor: '#f8fafc',
+                  '& fieldset': { borderColor: '#e2e8f0' },
+                  '&:hover fieldset': { borderColor: '#cbd5e1' },
+                }
+              }}
             />
             {connectionStatus !== 'idle' && (
               <Alert
                 severity={connectionStatus === 'success' ? 'success' : 'error'}
                 icon={connectionStatus === 'success' ? <CheckCircle /> : <WifiOff />}
-                sx={{ mb: 2 }}
+                sx={{ 
+                  mb: 2, 
+                  borderRadius: '12px',
+                  backgroundColor: connectionStatus === 'success' ? '#f0fdf4' : '#fef2f2',
+                  color: connectionStatus === 'success' ? '#15803d' : '#b91c1c',
+                  border: `1px solid ${connectionStatus === 'success' ? '#dcfce7' : '#fee2e2'}`,
+                  '& .MuiAlert-icon': {
+                    color: connectionStatus === 'success' ? '#22c55e' : '#ef4444'
+                  }
+                }}
               >
                 {connectionStatus === 'success'
-                  ? 'Conexión exitosa con el servidor'
-                  : 'No se pudo conectar al servidor. Verifica la IP y que el servidor esté activo.'}
+                  ? 'Conexión establecida correctamente'
+                  : 'Error de conexión. Verifique la dirección IP.'}
               </Alert>
             )}
           </Box>
@@ -358,7 +479,7 @@ const LoginPage = () => {
         <DialogActions sx={{ p: 3, gap: 1 }}>
           <Button
             onClick={() => setShowServerConfig(false)}
-            color="inherit"
+            sx={{ color: '#64748b', fontWeight: 600, borderRadius: '10px' }}
           >
             Cancelar
           </Button>
@@ -367,22 +488,36 @@ const LoginPage = () => {
             disabled={testingConnection}
             startIcon={testingConnection ? <CircularProgress size={16} /> : <Wifi />}
             variant="outlined"
+            sx={{ 
+              borderRadius: '10px', 
+              px: 3, 
+              fontWeight: 600,
+              borderColor: '#e2e8f0',
+              color: '#475569',
+              '&:hover': { borderColor: '#cbd5e1', backgroundColor: '#f8fafc' }
+            }}
           >
-            Probar Conexión
+            Probar
           </Button>
           <Button
             onClick={handleSaveServerConfig}
             disabled={connectionStatus !== 'success'}
             variant="contained"
+            sx={{ 
+              borderRadius: '10px', 
+              px: 3, 
+              fontWeight: 600,
+              background: '#0255A5',
+              '&:hover': { background: '#003780' }
+            }}
           >
             Guardar
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Footer />
     </Box>
   );
 };
 
 export default LoginPage;
+

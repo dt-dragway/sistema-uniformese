@@ -351,25 +351,26 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
     <Modal open={open} onClose={onClose}>
       <>
         <Box
+          className="animate-snappy gpu-accelerated"
           sx={{
             position: 'absolute',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
             width: 800,
-            bgcolor: 'rgba(20, 25, 35, 0.95)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: 4,
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            bgcolor: 'rgba(7, 18, 36, 0.9)', // Glassmorphism
+            backdropFilter: 'blur(25px)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            borderRadius: 10, // Curvatura Extrema (40px)
+            boxShadow: 'var(--institutional-shadow)',
             p: 0,
             overflow: 'hidden'
           }}
         >
           {/* Header */}
-          <Box sx={{ p: 3, borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.03)' }}>
-            <ReceiptLongIcon sx={{ color: '#fc8817', mr: 2, fontSize: 32 }} />
-            <Typography variant="h5" component="h2" fontWeight="bold">
+          <Box sx={{ p: 3, borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
+            <ReceiptLongIcon sx={{ color: '#0255A5', mr: 2, fontSize: 32 }} />
+            <Typography variant="h5" component="h2" fontWeight="bold" sx={{ fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               Finalizar Venta
             </Typography>
           </Box>
@@ -414,7 +415,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
                               px: 1,
                               fontSize: '0.75rem',
                               border: '1px solid rgba(255,255,255,0.1)',
-                              '&.Mui-selected': { bgcolor: 'rgba(252, 136, 23, 0.2) !important', color: '#fc8817' }
+                              '&.Mui-selected': { bgcolor: 'rgba(2, 85, 165, 0.18) !important', color: '#0255A5' }
                             }}
                           >
                             {m}
@@ -466,11 +467,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
                 <Typography variant="body2" color="rgba(255,255,255,0.6)" gutterBottom>
                   TOTAL A PAGAR
                 </Typography>
-                <Typography variant="h3" fontWeight="bold" color="white">
+                <Typography variant="h3" fontWeight="bold" color="white" sx={{ fontFamily: '"Kanit", sans-serif' }}>
                   <span style={{ fontSize: '1.5rem', verticalAlign: 'top', marginRight: '4px' }}>Bs.</span>
                   {totalWithDiscount.toFixed(2)}
                 </Typography>
-                <Typography variant="h5" color="#fc8817" sx={{ mt: 1, opacity: 0.9 }}>
+                <Typography variant="h5" color="#0255A5" sx={{ mt: 1, opacity: 0.9, fontFamily: '"Kanit", sans-serif' }}>
                   $ {(totals.usd - (discount / exchangeRate)).toFixed(2)}
                 </Typography>
               </Box>
@@ -499,11 +500,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
                 )}
 
                 {changeData && (
-                  <Box sx={{ mt: 2, p: 2, bgcolor: 'rgba(255,255,255,0.05)', borderRadius: 2, borderLeft: '4px solid #4caf50' }}>
+                  <Box sx={{ mt: 2, p: 2, bgcolor: 'rgba(255,255,255,0.04)', borderRadius: 2, borderLeft: '4px solid #4caf50' }}>
                     <Typography variant="caption" color="rgba(255,255,255,0.6)">CAMBIO / VUELTO</Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                       <Typography variant="h6" fontWeight="bold">Bs. {changeData.bs.toFixed(2)}</Typography>
-                      <Typography variant="body2" color="#fc8817">$ {changeData.usd.toFixed(2)}</Typography>
+                      <Typography variant="body2" color="#0255A5">$ {changeData.usd.toFixed(2)}</Typography>
                     </Box>
                   </Box>
                 )}
@@ -512,8 +513,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
           </Grid>
 
           {/* Footer Actions */}
-          <Box sx={{ p: 2, borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'flex-end', gap: 2, background: 'rgba(255,255,255,0.03)' }}>
-            <Button variant="text" onClick={onClose} disabled={submitting} sx={{ color: 'rgba(255,255,255,0.6)' }}>
+          <Box sx={{ p: 2, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'flex-end', gap: 2, background: 'rgba(255,255,255,0.02)' }}>
+            <Button variant="text" onClick={onClose} disabled={submitting} sx={{ borderRadius: '9999px', px: 3, color: 'rgba(255,255,255,0.6)' }}>
               CANCELAR
             </Button>
             <Button
@@ -522,12 +523,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
               disabled={submitting || (remainingBalance > 0 && !(isCreditSale && customerId))}
               startIcon={!submitting && <PaymentIcon />}
               sx={{
-                px: 4, py: 1, fontSize: '1rem',
-                background: 'linear-gradient(45deg, #4caf50, #2e7d32)',
+                px: 4, py: 1.2, fontSize: '0.95rem',
+                letterSpacing: '0.15em',
+                fontWeight: 900,
+                borderRadius: '9999px', // Pill rounded
+                background: 'linear-gradient(135deg, #4caf50, #2e7d32)',
                 boxShadow: '0 4px 15px rgba(76, 175, 80, 0.4)',
                 '&:hover': {
-                  background: 'linear-gradient(45deg, #66bb6a, #388e3c)',
+                  background: 'linear-gradient(135deg, #66bb6a, #388e3c)',
                   boxShadow: '0 6px 20px rgba(76, 175, 80, 0.6)',
+                  transform: 'translateY(-2px)',
+                },
+                '&:active': {
+                  transform: 'translateY(1px)',
                 },
                 '&:disabled': { background: 'rgba(255, 255, 255, 0.1)', color: 'rgba(255, 255, 255, 0.3)' }
               }}

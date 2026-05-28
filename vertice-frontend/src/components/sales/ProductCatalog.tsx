@@ -206,13 +206,13 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
             borderRadius: 2,
           }}
         >
-          <CurrencyExchangeIcon sx={{ color: '#fc8817', mr: 1.5, fontSize: 24 }} />
+          <CurrencyExchangeIcon sx={{ color: '#0255A5', mr: 1.5, fontSize: 24 }} />
           <Box>
             <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', display: 'block', lineHeight: 1 }}>
               TASA DE CAMBIO
             </Typography>
             <Typography variant="body1" fontWeight="bold" sx={{ color: 'white' }}>
-              1 USD = <span style={{ color: '#fc8817' }}>{exchangeRate.toFixed(2)}</span> Bs.
+              1 USD = <span style={{ color: '#0255A5' }}>{exchangeRate.toFixed(2)}</span> Bs.
             </Typography>
           </Box>
         </Paper>
@@ -249,8 +249,8 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
           <IconButton
             color="primary"
             sx={{
-              backgroundColor: 'rgba(252, 136, 23, 0.15)',
-              '&:hover': { backgroundColor: 'rgba(252, 136, 23, 0.25)' },
+              backgroundColor: 'rgba(2, 85, 165, 0.15)',
+              '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.25)' },
               width: 56,
               height: 56,
               borderRadius: 2
@@ -304,7 +304,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
           <IconButton
             onClick={() => dispatch(setQuickFilter('lowStock'))}
             color={quickFilter === 'lowStock' ? 'primary' : 'default'}
-            sx={{ backgroundColor: quickFilter === 'lowStock' ? 'rgba(252, 136, 23, 0.1)' : 'rgba(255,255,255,0.05)', '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' } }}
+            sx={{ backgroundColor: quickFilter === 'lowStock' ? 'rgba(2, 85, 165, 0.15)' : 'rgba(255,255,255,0.05)', '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' } }}
           >
             <InventoryIcon />
           </IconButton>
@@ -462,7 +462,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
 
               {/* Results Display */}
               {isInputValid() && (
-                <Paper elevation={0} sx={{ p: 2, backgroundColor: 'rgba(252, 136, 23, 0.1)', borderRadius: 2 }}>
+                <Paper elevation={0} sx={{ p: 2, backgroundColor: 'rgba(2, 85, 165, 0.12)', borderRadius: 2 }}>
                   <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'white', mb: 0.5 }}>
                     {getDisplayValues().quantity.toFixed(2)} {selectedProductForWeight.unitType === 'KG' ? 'kg' : 'Lts'}
                   </Typography>

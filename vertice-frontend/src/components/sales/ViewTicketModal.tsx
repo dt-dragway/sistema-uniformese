@@ -54,11 +54,11 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 400, // Narrower for ticket look
-  bgcolor: 'rgba(20, 25, 35, 0.95)',
-  backdropFilter: 'blur(20px)',
-  border: '1px solid rgba(255, 255, 255, 0.1)',
-  borderRadius: 4,
-  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
+  bgcolor: 'rgba(7, 18, 36, 0.9)',
+  backdropFilter: 'blur(25px)',
+  border: '1px solid rgba(255, 255, 255, 0.12)',
+  borderRadius: 10, // Curvatura Extrema (40px)
+  boxShadow: 'var(--institutional-shadow)',
   p: 0,
   display: 'flex',
   flexDirection: 'column',
@@ -324,9 +324,23 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({ open, onClose,
                 disabled={isLoading}
                 startIcon={!isLoading && <PrintIcon />}
                 sx={{
-                  background: 'linear-gradient(45deg, #fc8817, #dd720c)',
-                  fontWeight: 'bold',
-                  boxShadow: '0 4px 15px rgba(221, 114, 12, 0.4)'
+                  py: 1.2,
+                  px: 3,
+                  fontSize: '0.9rem',
+                  letterSpacing: '0.15em',
+                  fontWeight: 900,
+                  borderRadius: '9999px',
+                  background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
+                  boxShadow: '0 4px 15px rgba(0, 55, 128, 0.3)',
+                  transition: 'all 0.25s ease',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
+                    boxShadow: '0 8px 25px rgba(2, 85, 165, 0.55)',
+                    transform: 'translateY(-2px)',
+                  },
+                  '&:active': {
+                    transform: 'translateY(1px)',
+                  }
                 }}
               >
                 {isLoading ? <CircularProgress size={24} color="inherit" /> : 'IMPRIMIR TICKET (F1)'}

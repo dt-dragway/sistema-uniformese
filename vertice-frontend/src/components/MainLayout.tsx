@@ -64,8 +64,12 @@ const openedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: 'hidden',
-  borderRight: 'none',
-  boxShadow: '4px 0px 10px rgba(0,0,0,0.05)',
+  borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+  boxShadow: 'var(--institutional-shadow)',
+  backgroundColor: 'rgba(7, 18, 36, 0.75)',
+  backdropFilter: 'blur(20px)',
+  borderTopRightRadius: 40,
+  borderBottomRightRadius: 40,
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
@@ -78,8 +82,12 @@ const closedMixin = (theme: Theme): CSSObject => ({
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(9)} + 1px)`,
   },
-  borderRight: 'none',
-  boxShadow: '4px 0px 10px rgba(0,0,0,0.05)',
+  borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+  boxShadow: 'var(--institutional-shadow)',
+  backgroundColor: 'rgba(7, 18, 36, 0.75)',
+  backdropFilter: 'blur(20px)',
+  borderTopRightRadius: 40,
+  borderBottomRightRadius: 40,
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -98,9 +106,9 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  background: 'linear-gradient(to right, #fc8817, #dd720c)',
+  background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
   boxShadow: 'none',
-  borderBottom: '1px solid rgba(255,255,255,0.1)',
+  borderBottom: '1px solid rgba(255,255,255,0.08)',
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -261,7 +269,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                 <img src="/images/logo.png" alt="Logo" style={{ height: '30px' }} />
               </Box>
             )}
-            <Typography variant="h6" noWrap component="div" sx={{ color: 'white', fontWeight: 500 }}>
+            <Typography variant="h6" noWrap component="div" sx={{ color: 'white', fontFamily: '"Kanit", sans-serif', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
               Comercializadora Gonzalez 2018
             </Typography>
           </Box>
@@ -291,13 +299,13 @@ function MainLayout({ children }: { children: React.ReactNode }) {
       </AppBar>
 
       <Drawer variant="permanent" open={open}>
-        <DrawerHeader sx={{ borderBottom: '1px solid rgba(0,0,0,0.08)' }}>
+        <DrawerHeader sx={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
           {open ? (
             <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, backgroundColor: '#f8f9fa', borderRadius: '8px', mr: 1.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, backgroundColor: 'white', borderRadius: '8px', mr: 1.5 }}>
                 <img src="/images/logo.png" alt="Logo" style={{ height: '32px' }} />
               </Box>
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#444' }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 900, fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'white' }}>
                 CG2018
               </Typography>
             </Box>
@@ -332,7 +340,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                       justifyContent: open ? 'initial' : 'center',
                       px: 2.5,
                       borderRadius: '10px',
-                      '&.Mui-selected': { backgroundColor: 'rgba(252, 136, 23, 0.08)', '&:hover': { backgroundColor: 'rgba(252, 136, 23, 0.12)' } }
+                      '&.Mui-selected': { backgroundColor: 'rgba(2, 85, 165, 0.15)', '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.25)' } }
                     }}
                   >
                     <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center' }}>
@@ -357,7 +365,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                           justifyContent: open ? 'initial' : 'center',
                           px: 2.5,
                           borderRadius: '10px',
-                          '&.Mui-selected': { backgroundColor: 'rgba(252, 136, 23, 0.08)', '&:hover': { backgroundColor: 'rgba(252, 136, 23, 0.12)' } }
+                          '&.Mui-selected': { backgroundColor: 'rgba(2, 85, 165, 0.15)', '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.25)' } }
                         }}
                       >
                         <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center' }}>
@@ -384,7 +392,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                               justifyContent: open ? 'initial' : 'center',
                               px: 2.5,
                               borderRadius: '10px',
-                              '&.Mui-selected': { backgroundColor: 'rgba(252, 136, 23, 0.08)', '&:hover': { backgroundColor: 'rgba(252, 136, 23, 0.12)' } }
+                              '&.Mui-selected': { backgroundColor: 'rgba(2, 85, 165, 0.15)', '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.25)' } }
                             }}
                           >
                             <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center' }}>

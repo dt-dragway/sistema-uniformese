@@ -213,36 +213,35 @@ const CashAdvancePage = () => {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3 }} className="animate-snappy gpu-accelerated">
       <Card
         sx={{
           maxWidth: 700,
           width: '100%',
           mb: 3,
           mx: 'auto',
-          background: 'rgba(30, 45, 55, 0.7)', // Dark Glass
-          backdropFilter: 'blur(16px)',
-          borderRadius: 4,
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.3)',
+          background: 'rgba(10, 25, 47, 0.65)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: 10,
+          border: '1px solid rgba(255, 255, 255, 0.12)',
+          boxShadow: 'var(--institutional-shadow)',
         }}
       >
         <CardContent sx={{ p: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, borderBottom: '1px solid rgba(255,255,255,0.1)', pb: 2 }}>
-            <PriceChangeIcon sx={{ fontSize: 40, color: '#fc8817', mr: 2 }} />
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, borderBottom: '1px solid rgba(255,255,255,0.08)', pb: 2 }}>
+            <PriceChangeIcon sx={{ fontSize: 40, color: '#0255A5', mr: 2 }} />
             <Box>
-              <Typography variant="h5" fontWeight="bold" sx={{ color: 'white' }}>
+              <Typography variant="h5" fontWeight="bold" sx={{ color: 'white', fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 Avance de Efectivo
               </Typography>
-              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.65)' }}>
                 Gestión de entrega de efectivo y cobro de comisión
               </Typography>
             </Box>
           </Box>
-
+ 
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              {/* Inputs Section */}
               <Grid item xs={12} md={7}>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
@@ -257,14 +256,25 @@ const CashAdvancePage = () => {
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <AttachMoneyIcon sx={{ color: '#fc8817' }} />
+                            <AttachMoneyIcon sx={{ color: '#0255A5' }} />
                           </InputAdornment>
                         ),
                       }}
                       helperText="Dinero físico que sale de la caja"
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 5,
+                          '&.Mui-focused fieldset': {
+                            borderColor: '#0255A5',
+                          }
+                        },
+                        '& .MuiInputLabel-root.Mui-focused': {
+                          color: '#0255A5',
+                        }
+                      }}
                     />
                   </Grid>
-
+ 
                   <Grid item xs={12}>
                     <TextField
                       label="Porcentaje de Comisión"
@@ -277,63 +287,73 @@ const CashAdvancePage = () => {
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">
-                            <PercentIcon sx={{ color: '#fc8817' }} />
+                            <PercentIcon sx={{ color: '#0255A5' }} />
                           </InputAdornment>
                         ),
+                      }}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 5,
+                          '&.Mui-focused fieldset': {
+                            borderColor: '#0255A5',
+                          }
+                        },
+                        '& .MuiInputLabel-root.Mui-focused': {
+                          color: '#0255A5',
+                        }
                       }}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-
-              {/* Summary Section */}
+ 
               <Grid item xs={12} md={5}>
                 <Box
                   sx={{
                     height: '100%',
                     p: 3,
-                    borderRadius: 3,
-                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: 5,
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center'
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, color: 'rgba(255,255,255,0.7)' }}>
-                    <ReceiptLongIcon sx={{ mr: 1 }} />
-                    <Typography variant="subtitle2" fontWeight="bold" letterSpacing={1}>
+                    <ReceiptLongIcon sx={{ mr: 1, color: '#0255A5' }} />
+                    <Typography variant="subtitle2" fontWeight="bold" letterSpacing={1} sx={{ fontFamily: '"Kanit", sans-serif' }}>
                       RESUMEN
                     </Typography>
                   </Box>
-
+ 
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
-                    <Typography variant="body2" color="rgba(255,255,255,0.6)">Entregar:</Typography>
+                    <Typography variant="body2" color="rgba(255,255,255,0.65)">Entregar:</Typography>
                     <Typography variant="body1" color="#f44336" fontWeight="bold">
                       - Bs {amountVal.toFixed(2)}
                     </Typography>
                   </Box>
-
+ 
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                    <Typography variant="body2" color="rgba(255,255,255,0.6)">Comisión ({percentageVal}%):</Typography>
+                    <Typography variant="body2" color="rgba(255,255,255,0.65)">Comisión ({percentageVal}%):</Typography>
                     <Typography variant="body1" color="#4caf50" fontWeight="bold">
                       + Bs {profit.toFixed(2)}
                     </Typography>
                   </Box>
-
-                  <Divider sx={{ my: 1, borderColor: 'rgba(255,255,255,0.1)' }} />
-
+ 
+                  <Divider sx={{ my: 1, borderColor: 'rgba(255,255,255,0.08)' }} />
+ 
                   <Box sx={{ mt: 1 }}>
                     <Typography variant="caption" display="block" color="rgba(255,255,255,0.5)" mb={0.5}>
                       TOTAL A COBRAR
                     </Typography>
-                    <Typography variant="h4" color="#fc8817" fontWeight="bold">
+                    <Typography variant="h4" color="#0255A5" fontWeight="bold" sx={{ fontFamily: '"Kanit", sans-serif' }}>
                       Bs {totalToCharge.toFixed(2)}
                     </Typography>
                   </Box>
                 </Box>
               </Grid>
-
+ 
               <Grid item xs={12} sm={6}>
                 <Button
                   type="submit"
@@ -343,13 +363,20 @@ const CashAdvancePage = () => {
                   disabled={loading || amountVal <= 0}
                   sx={{
                     py: 1.5,
-                    fontSize: '1rem',
-                    fontWeight: 'bold',
-                    background: 'linear-gradient(45deg, #fc8817, #dd720c)',
-                    boxShadow: '0 4px 15px rgba(221, 114, 12, 0.3)',
+                    fontSize: '0.95rem',
+                    letterSpacing: '0.2em',
+                    fontWeight: 900,
+                    borderRadius: '9999px',
+                    background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
+                    boxShadow: '0 4px 15px rgba(0, 55, 128, 0.3)',
+                    transition: 'all 0.25s ease',
                     '&:hover': {
-                      background: 'linear-gradient(45deg, #ff9d3f, #e6831d)',
-                      boxShadow: '0 6px 20px rgba(221, 114, 12, 0.5)',
+                      background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
+                      boxShadow: '0 8px 25px rgba(2, 85, 165, 0.55)',
+                      transform: 'translateY(-2px)',
+                    },
+                    '&:active': {
+                      transform: 'translateY(1px)',
                     },
                     '&:disabled': {
                       background: 'rgba(255, 255, 255, 0.1)',
@@ -372,13 +399,20 @@ const CashAdvancePage = () => {
                     onClick={handleAddToCart}
                     sx={{
                       py: 1.5,
-                      fontSize: '1rem',
-                      fontWeight: 'bold',
-                      borderColor: '#fc8817',
-                      color: '#fc8817',
+                      fontSize: '0.95rem',
+                      letterSpacing: '0.2em',
+                      fontWeight: 900,
+                      borderRadius: '9999px',
+                      borderColor: '#0255A5',
+                      color: '#0255A5',
+                      transition: 'all 0.25s ease',
                       '&:hover': {
-                        borderColor: '#ff9d3f',
-                        backgroundColor: 'rgba(252, 136, 23, 0.08)',
+                        borderColor: '#036cd2',
+                        backgroundColor: 'rgba(2, 85, 165, 0.15)',
+                        transform: 'translateY(-2px)',
+                      },
+                      '&:active': {
+                        transform: 'translateY(1px)',
                       },
                       '&:disabled': {
                         borderColor: 'rgba(255, 255, 255, 0.1)',
@@ -396,7 +430,6 @@ const CashAdvancePage = () => {
         </CardContent>
       </Card>
 
-      {/* Historial de Avances */}
       <Paper sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

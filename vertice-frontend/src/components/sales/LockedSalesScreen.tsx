@@ -46,11 +46,11 @@ export const LockedSalesScreen: React.FC = () => {
           maxWidth: 500, 
           width: '100%', 
           textAlign: 'center',
-          background: 'rgba(30, 45, 55, 0.9)', // More opaque dark glass
-          backdropFilter: 'blur(16px)',
-          borderRadius: 4,
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.3)',
+          background: 'rgba(10, 25, 47, 0.65)', // Glassmorphism dark blue
+          backdropFilter: 'blur(20px)',
+          borderRadius: 10, // Curvatura Extrema (40px)
+          border: '1px solid rgba(255, 255, 255, 0.12)',
+          boxShadow: 'var(--institutional-shadow)',
         }}
       >
         <CardContent sx={{ p: 5 }}>
@@ -59,24 +59,24 @@ export const LockedSalesScreen: React.FC = () => {
               sx={{ 
                 position: 'absolute', 
                 top: 0, left: 0, right: 0, bottom: 0, 
-                backgroundColor: '#fc8817', 
+                backgroundColor: '#0255A5', 
                 filter: 'blur(20px)', 
                 opacity: 0.3,
                 borderRadius: '50%'
               }} 
             />
-            <LockIcon sx={{ fontSize: 80, color: '#fc8817', position: 'relative', zIndex: 1 }} />
+            <LockIcon sx={{ fontSize: 80, color: '#0255A5', position: 'relative', zIndex: 1 }} />
           </Box>
           
-          <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: 'white', letterSpacing: 1 }}>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 900, color: 'white', letterSpacing: '0.1em', fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase' }}>
             CAJA CERRADA
           </Typography>
           
-          <Typography variant="body1" sx={{ mb: 4, color: 'rgba(255, 255, 255, 0.7)', lineHeight: 1.6 }}>
+          <Typography variant="body1" sx={{ mb: 4, color: 'rgba(255, 255, 255, 0.75)', lineHeight: 1.6 }}>
             El sistema de ventas no está activo. <br/>
             Para comenzar a operar, es necesario realizar la <strong>Apertura de Caja</strong>.
           </Typography>
-
+ 
           <Button
             variant="contained"
             size="large"
@@ -86,17 +86,22 @@ export const LockedSalesScreen: React.FC = () => {
             sx={{
               py: 1.5,
               px: 4,
-              fontSize: '1.1rem',
-              fontWeight: 600,
-              background: 'linear-gradient(45deg, #fc8817, #dd720c)',
+              fontSize: '1rem',
+              letterSpacing: '0.2em', // Municipal Style
+              fontWeight: 900,
+              borderRadius: '9999px', // Pill shape
+              background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
               color: 'white',
-              boxShadow: '0 4px 15px rgba(221, 114, 12, 0.4)',
-              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 15px rgba(0, 55, 128, 0.3)',
+              transition: 'all 0.25s ease',
               '&:hover': {
-                background: 'linear-gradient(45deg, #ff9d3f, #e6831d)',
-                boxShadow: '0 6px 20px rgba(221, 114, 12, 0.6)',
+                background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
+                boxShadow: '0 8px 25px rgba(2, 85, 165, 0.55)',
                 transform: 'translateY(-2px)',
               },
+              '&:active': {
+                transform: 'translateY(1px)',
+              }
             }}
           >
             {loading ? 'Iniciando...' : 'ABRIR CAJA'}

@@ -169,20 +169,20 @@ const InternalWithdrawalPage = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ mb: 4 }}>
+    <Box sx={{ p: 3 }} className="animate-snappy gpu-accelerated">
+      <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ mb: 4, fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
         Despacho Interno
       </Typography>
 
       <Grid container spacing={4}>
         {/* Left Side: Product Selection */}
         <Grid item xs={12} md={6}>
-          <Card sx={{ background: 'rgba(30, 45, 55, 0.7)', backdropFilter: 'blur(16px)', borderRadius: 3 }}>
+          <Card sx={{ background: 'rgba(10, 25, 47, 0.65)', backdropFilter: 'blur(20px)', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'var(--institutional-shadow)' }}>
             <CardContent sx={{ p: 4 }}>
-              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <InventoryIcon color="primary" /> Seleccionar Productos
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, fontFamily: '"Kanit", sans-serif' }}>
+                <InventoryIcon color="primary" sx={{ color: '#0255A5' }} /> Seleccionar Productos
               </Typography>
-              <Typography variant="body2" sx={{ mb: 3, color: 'rgba(255,255,255,0.6)' }}>
+              <Typography variant="body2" sx={{ mb: 3, color: 'rgba(255,255,255,0.65)' }}>
                 Use el <strong>escáner</strong> o busque manualmente los productos a retirar.
               </Typography>
 
@@ -196,6 +196,17 @@ const InternalWithdrawalPage = () => {
                     label="Buscar Producto" 
                     variant="outlined"
                     fullWidth
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 5,
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#0255A5',
+                        }
+                      },
+                      '& .MuiInputLabel-root.Mui-focused': {
+                        color: '#0255A5',
+                      }
+                    }}
                   />
                 )}
                 sx={{ mb: 4 }}
@@ -209,6 +220,17 @@ const InternalWithdrawalPage = () => {
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 placeholder="Ej: Consumo personal, Limpieza, Muestra..."
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 5,
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#0255A5',
+                    }
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: '#0255A5',
+                  }
+                }}
               />
             </CardContent>
           </Card>
@@ -216,10 +238,10 @@ const InternalWithdrawalPage = () => {
 
         {/* Right Side: Dispatch List */}
         <Grid item xs={12} md={6}>
-          <Card sx={{ height: '100%', background: 'rgba(30, 45, 55, 0.7)', backdropFilter: 'blur(16px)', borderRadius: 3, display: 'flex', flexDirection: 'column' }}>
+          <Card sx={{ height: '100%', background: 'rgba(10, 25, 47, 0.65)', backdropFilter: 'blur(20px)', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'var(--institutional-shadow)', display: 'flex', flexDirection: 'column' }}>
             <CardContent sx={{ p: 4, flexGrow: 1 }}>
-              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <ShoppingBagIcon color="primary" /> Lista de Despacho
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, fontFamily: '"Kanit", sans-serif' }}>
+                <ShoppingBagIcon color="primary" sx={{ color: '#0255A5' }} /> Lista de Despacho
               </Typography>
 
               <Box sx={{ mt: 2, maxHeight: '300px', overflowY: 'auto' }}>
@@ -244,7 +266,19 @@ const InternalWithdrawalPage = () => {
                             size="small"
                             value={item.quantity}
                             onChange={(e) => handleQuantityChange(item.product.id, parseInt(e.target.value))}
-                            sx={{ width: '80px', mr: 2 }}
+                            sx={{
+                              width: '80px',
+                              mr: 2,
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: 3,
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#0255A5',
+                                }
+                              },
+                              '& .MuiInputLabel-root.Mui-focused': {
+                                color: '#0255A5',
+                              }
+                            }}
                             inputProps={{ min: 1 }}
                           />
                         </ListItem>
@@ -255,7 +289,7 @@ const InternalWithdrawalPage = () => {
                 )}
               </Box>
             </CardContent>
-            <Box sx={{ p: 4, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+            <Box sx={{ p: 4, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
               <Button
                 variant="contained"
                 fullWidth
@@ -264,8 +298,25 @@ const InternalWithdrawalPage = () => {
                 onClick={handleSubmit}
                 sx={{
                   py: 1.5,
-                  fontWeight: 'bold',
-                  background: 'linear-gradient(45deg, #fc8817, #dd720c)',
+                  fontSize: '0.95rem',
+                  letterSpacing: '0.2em', // Municipal Style
+                  fontWeight: 900,
+                  borderRadius: '9999px', // Pill rounded
+                  background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
+                  boxShadow: '0 4px 15px rgba(0, 55, 128, 0.3)',
+                  transition: 'all 0.25s ease',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
+                    boxShadow: '0 8px 25px rgba(2, 85, 165, 0.55)',
+                    transform: 'translateY(-2px)',
+                  },
+                  '&:active': {
+                    transform: 'translateY(1px)',
+                  },
+                  '&:disabled': {
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: 'rgba(255, 255, 255, 0.3)',
+                  }
                 }}
               >
                 {loading ? <CircularProgress size={24} color="inherit" /> : 'REGISTRAR DESPACHO'}

@@ -30,9 +30,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, exchangeRa
           display: 'flex',
           alignItems: 'center',
           width: '100%',
-          backgroundColor: isInCart ? 'rgba(252, 136, 23, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+          backgroundColor: isInCart ? 'rgba(2, 85, 165, 0.15)' : 'rgba(255, 255, 255, 0.03)',
           border: isInCart ? `1px solid ${theme.palette.primary.main}` : '1px solid rgba(255, 255, 255, 0.05)',
-          borderRadius: 1, // More rectangular
+          borderRadius: 2.5, // Organic pill list item
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           '&:hover': {
@@ -77,21 +77,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, exchangeRa
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        borderRadius: 1.5, // Less rounded, more rectangular
+        borderRadius: 6, // Curvatura Extrema (24px)
         background: isInCart
-          ? 'linear-gradient(145deg, rgba(252, 136, 23, 0.15) 0%, rgba(30, 45, 55, 0.8) 100%)'
-          : 'rgba(30, 45, 55, 0.6)',
-        backdropFilter: 'blur(12px)',
+          ? 'linear-gradient(145deg, rgba(2, 85, 165, 0.15) 0%, rgba(10, 25, 47, 0.8) 100%)'
+          : 'rgba(10, 25, 47, 0.65)',
+        backdropFilter: 'blur(20px)',
         border: isInCart ? `1px solid ${theme.palette.primary.main}` : '1px solid rgba(255, 255, 255, 0.08)',
-        boxShadow: isInCart ? '0 8px 24px rgba(252, 136, 23, 0.15)' : '0 4px 10px rgba(0,0,0,0.2)',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        overflow: 'visible',
+        boxShadow: isInCart ? '0 8px 24px rgba(2, 85, 165, 0.25)' : 'var(--institutional-shadow)',
+        transition: 'all 0.3s cubic-bezier(0.19, 1, 0.22, 1)',
+        overflow: 'hidden', // Contain highlights
         '&:hover': {
           transform: 'translateY(-5px)',
-          boxShadow: '0 12px 30px rgba(0, 0, 0, 0.4)',
+          boxShadow: 'var(--institutional-shadow)',
           background: isInCart
-            ? 'linear-gradient(145deg, rgba(252, 136, 23, 0.2) 0%, rgba(30, 45, 55, 0.9) 100%)'
-            : 'rgba(30, 45, 55, 0.8)',
+            ? 'linear-gradient(145deg, rgba(2, 85, 165, 0.25) 0%, rgba(10, 25, 47, 0.9) 100%)'
+            : 'rgba(10, 25, 47, 0.8)',
         },
       }}
     >
@@ -166,7 +166,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, exchangeRa
             <Typography variant="caption" display="block" sx={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1 }}>
               Ref ($)
             </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#fc8817', lineHeight: 1 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main', lineHeight: 1, fontFamily: '"Kanit", sans-serif' }}>
               {product.price.toFixed(2)}
             </Typography>
           </Box>
@@ -195,7 +195,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, exchangeRa
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(252, 136, 23, 0.5)'
+            boxShadow: '0 2px 8px rgba(2, 85, 165, 0.5)'
           }}
         >
           <ShoppingCartIcon sx={{ fontSize: 14, color: 'white' }} />
