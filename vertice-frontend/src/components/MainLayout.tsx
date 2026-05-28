@@ -64,12 +64,12 @@ const openedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: 'hidden',
-  borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+  borderRight: '1px solid rgba(0, 0, 0, 0.05)',
   boxShadow: 'var(--institutional-shadow)',
-  backgroundColor: 'rgba(7, 18, 36, 0.75)',
+  backgroundColor: 'rgba(255, 255, 255, 0.85)',
   backdropFilter: 'blur(20px)',
-  borderTopRightRadius: 40,
-  borderBottomRightRadius: 40,
+  borderTopRightRadius: 32,
+  borderBottomRightRadius: 32,
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
@@ -82,12 +82,12 @@ const closedMixin = (theme: Theme): CSSObject => ({
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(9)} + 1px)`,
   },
-  borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+  borderRight: '1px solid rgba(0, 0, 0, 0.05)',
   boxShadow: 'var(--institutional-shadow)',
-  backgroundColor: 'rgba(7, 18, 36, 0.75)',
+  backgroundColor: 'rgba(255, 255, 255, 0.85)',
   backdropFilter: 'blur(20px)',
-  borderTopRightRadius: 40,
-  borderBottomRightRadius: 40,
+  borderTopRightRadius: 32,
+  borderBottomRightRadius: 32,
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -106,9 +106,11 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
-  boxShadow: 'none',
-  borderBottom: '1px solid rgba(255,255,255,0.08)',
+  background: 'rgba(255, 255, 255, 0.85)',
+  backdropFilter: 'blur(20px)',
+  boxShadow: '0 4px 20px -5px rgba(0,0,0,0.05)',
+  borderBottom: '1px solid rgba(0,0,0,0.05)',
+  color: '#0f172a',
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -244,7 +246,15 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
+      {/* Decorative Geometric Background Shapes (Fresh Light Material Design) */}
+      <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, pointerEvents: 'none', overflow: 'hidden', backgroundColor: '#f8fafc' }}>
+        <Box sx={{ position: 'absolute', top: '-20%', left: '-10%', width: '200%', height: '400px', background: 'linear-gradient(90deg, #e9d5ff, #d8b4fe)', transform: 'rotate(-40deg)', transformOrigin: 'top left', opacity: 0.6, boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }} />
+        <Box sx={{ position: 'absolute', top: '10%', left: '-20%', width: '200%', height: '500px', background: 'linear-gradient(90deg, #fef08a, #fde047)', transform: 'rotate(-40deg)', transformOrigin: 'top left', opacity: 0.6, boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }} />
+        <Box sx={{ position: 'absolute', top: '40%', left: '-30%', width: '200%', height: '600px', background: 'linear-gradient(90deg, #a5f3fc, #67e8f9)', transform: 'rotate(-40deg)', transformOrigin: 'top left', opacity: 0.6, boxShadow: '0 15px 40px rgba(0,0,0,0.08)' }} />
+        <Box sx={{ position: 'absolute', top: '30%', left: '20%', width: '200%', height: '120px', background: 'linear-gradient(90deg, #fecdd3, #fda4af)', transform: 'rotate(50deg)', transformOrigin: 'top left', opacity: 0.6, boxShadow: '0 15px 40px rgba(0,0,0,0.08)' }} />
+      </Box>
+
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -269,13 +279,13 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                 <img src="/images/logo.png" alt="Logo" style={{ height: '30px' }} />
               </Box>
             )}
-            <Typography variant="h6" noWrap component="div" sx={{ color: 'white', fontFamily: '"Kanit", sans-serif', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-              Comercializadora Gonzalez 2018
+            <Typography variant="h6" noWrap component="div" sx={{ color: '#0255A5', fontFamily: '"Kanit", sans-serif', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+              Uniformese
             </Typography>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
           {user && (
-            <Typography variant="body1" sx={{ color: 'white', mr: 3, fontWeight: 300 }}>
+            <Typography variant="body1" sx={{ color: '#0f172a', mr: 3, fontWeight: 500 }}>
               Bienvenid@ <strong>{user.username}</strong>
             </Typography>
           )}
@@ -305,8 +315,8 @@ function MainLayout({ children }: { children: React.ReactNode }) {
               <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, backgroundColor: 'white', borderRadius: '8px', mr: 1.5 }}>
                 <img src="/images/logo.png" alt="Logo" style={{ height: '32px' }} />
               </Box>
-              <Typography variant="subtitle1" sx={{ fontWeight: 900, fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'white' }}>
-                CG2018
+              <Typography variant="subtitle1" sx={{ fontWeight: 900, fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#0255A5' }}>
+                UNIFORMESE
               </Typography>
             </Box>
           ) : null}
@@ -353,7 +363,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
             ) : (
               <>
                 <List sx={{ px: 1 }}>
-                  {open && <Typography variant="caption" sx={{ pl: 2, mb: 1, display: 'block', color: 'text.disabled', fontWeight: 'bold', letterSpacing: '1px' }}>NAVEGACIÓN</Typography>}
+                  {open && <Typography variant="caption" sx={{ pl: 2, mb: 1, display: 'block', color: '#64748b', fontWeight: 'bold', letterSpacing: '1px' }}>NAVEGACIÓN</Typography>}
                   {navigationItems.map((item) => (
                     <ListItem key={item.text} disablePadding sx={{ display: 'block', mb: 0.5 }}>
                       <ListItemButton
@@ -380,7 +390,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                   <>
                     <Divider sx={{ my: 1, mx: 2, opacity: 0.6 }} />
                     <List sx={{ px: 1 }}>
-                      {open && <Typography variant="caption" sx={{ pl: 2, mb: 1, display: 'block', color: 'text.disabled', fontWeight: 'bold', letterSpacing: '1px' }}>GESTIÓN</Typography>}
+                      {open && <Typography variant="caption" sx={{ pl: 2, mb: 1, display: 'block', color: '#64748b', fontWeight: 'bold', letterSpacing: '1px' }}>GESTIÓN</Typography>}
                       {managementItems.map((item) => (
                         <ListItem key={item.text} disablePadding sx={{ display: 'block', mb: 0.5 }}>
                           <ListItemButton

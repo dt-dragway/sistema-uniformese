@@ -134,11 +134,17 @@ const LoginPage = () => {
         display: 'flex',
         minHeight: '100vh',
         backgroundColor: '#f8fafc',
-        backgroundImage: `radial-gradient(circle at 0% 0%, rgba(2, 85, 165, 0.05) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(2, 85, 165, 0.05) 0%, transparent 50%)`,
         position: 'relative',
         overflow: 'hidden',
       }}
     >
+      {/* Decorative Geometric Background Shapes (Fresh Light Material Design) */}
+      <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+        <Box sx={{ position: 'absolute', top: '-20%', left: '-10%', width: '200%', height: '400px', background: 'linear-gradient(90deg, #e9d5ff, #d8b4fe)', transform: 'rotate(-40deg)', transformOrigin: 'top left', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }} />
+        <Box sx={{ position: 'absolute', top: '10%', left: '-20%', width: '200%', height: '500px', background: 'linear-gradient(90deg, #fef08a, #fde047)', transform: 'rotate(-40deg)', transformOrigin: 'top left', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }} />
+        <Box sx={{ position: 'absolute', top: '40%', left: '-30%', width: '200%', height: '600px', background: 'linear-gradient(90deg, #a5f3fc, #67e8f9)', transform: 'rotate(-40deg)', transformOrigin: 'top left', boxShadow: '0 15px 40px rgba(0,0,0,0.08)' }} />
+        <Box sx={{ position: 'absolute', top: '30%', left: '20%', width: '200%', height: '120px', background: 'linear-gradient(90deg, #fecdd3, #fda4af)', transform: 'rotate(50deg)', transformOrigin: 'top left', boxShadow: '0 15px 40px rgba(0,0,0,0.08)' }} />
+      </Box>
       <Box sx={{ position: 'absolute', top: 24, right: 24, zIndex: 10 }}>
         <WindowControls />
       </Box>
@@ -218,28 +224,31 @@ const LoginPage = () => {
                 sx={{ 
                   fontWeight: 900, 
                   fontFamily: '"Outfit", "Inter", sans-serif',
-                  fontSize: { xs: '3rem', md: '4.5rem' },
+                  fontSize: { xs: '3rem', md: '5rem' },
+                  letterSpacing: '-0.02em',
                   lineHeight: 1.1,
-                  mb: 2,
-                  background: 'linear-gradient(to right, #0255A5, #003780)',
+                  mb: 1,
+                  background: 'linear-gradient(135deg, #0255A5 0%, #00224f 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
               >
-                C. Gonzalez
+                Uniformese
               </Typography>
               
               <Typography 
                 variant="h2" 
                 sx={{ 
-                  fontWeight: 300, 
-                  fontSize: { xs: '1.5rem', md: '2rem' },
+                  fontWeight: 400, 
+                  fontFamily: '"Inter", sans-serif',
+                  fontSize: { xs: '1.25rem', md: '1.75rem' },
                   color: '#64748b',
                   mb: 4,
-                  letterSpacing: '0.02em',
+                  letterSpacing: '0.05em',
+                  textTransform: 'uppercase'
                 }}
               >
-                Atelier de Uniformes
+                Tienda y Atelier
               </Typography>
 
               <Typography variant="body1" sx={{ color: '#475569', maxWidth: '400px', mx: { xs: 'auto', md: 0 }, fontSize: '1.1rem', lineHeight: 1.6 }}>
