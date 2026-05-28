@@ -1,0 +1,58 @@
+============================================================
+   VERTICE POS v1.10.2 - PAQUETE DE INSTALACION
+============================================================
+
+Este es el paquete de instalacion profesional de Vertice POS.
+
+REQUISITOS PREVIOS:
+  - Windows 10/11 (64-bit)
+  - Node.js 18 o superior
+  - PostgreSQL 14 o superior
+  - 20GB de espacio libre
+
+INSTALACION RAPIDA:
+  1. Descomprime este archivo en una ubicacion permanente
+     Ejemplo: C:\vertice_pos
+
+  2. Ejecuta: INSTALAR.bat
+     - Esto instalara todas las dependencias
+     - Configurara la base de datos
+     - Compilara los componentes necesarios
+     - Instalara PM2 para gestion de procesos
+
+  3. Ejecuta: INICIAR.bat
+     - Inicia todos los servicios con PM2
+
+  4. Accede a: http://localhost:3000
+     - Usuario: admin
+     - Password: admin123
+
+SCRIPTS DISPONIBLES:
+  INSTALAR.bat   - Instalacion completa del sistema
+  INICIAR.bat    - Iniciar servicios con PM2
+  DETENER.bat    - Detener servicios
+  REINICIAR.bat  - Reiniciar servicios
+  ESTADO.bat     - Ver estado de servicios
+  LOGS.bat       - Ver logs en tiempo real
+
+DOCUMENTACION:
+  README.md              - Documentacion completa del proyecto
+  docs\INSTALACION.md    - Guia detallada de instalacion
+  docs\PM2-GUIA.md       - Guia de administracion con PM2
+
+CONFIGURACION DE RED:
+  - Para acceder desde otros PCs en la red:
+    1. Obtener IP del servidor: ipconfig
+    2. Configurar firewall para puerto 3000
+    3. Acceder desde cliente: http://[IP-SERVIDOR]:3000
+
+SOPORTE:
+  - Revisa docs\INSTALACION.md para troubleshooting
+  - Revisa logs\ para archivos de log
+
+VERSION: 1.10.2
+FECHA: s b. 10/01/2026 14:44:45,01
+
+============================================================
+   DT Dragway - Vertice POS
+============================================================

@@ -1,0 +1,274 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CASHIER
+}
+
+enum UnitType {
+  UNIT   // Unidades (por defecto)
+  KG     // Kilogramos (precio por kg, entrada en gramos)
+  LITER  // Litros (precio por litro, entrada en mililitros)
+}
+
+model User {
+  id                   Int                   @id @default(autoincrement())
+  username             String                @unique
+  password             String
+  role                 Role                  @default(CASHIER)
+  cashRegisterSessions CashRegisterSession[]
+}
+
+model Product {
+  id           Int                @id @default(autoincrement())
+  name         String
+  description  String?
+  price        Float // Always in USD (per unit, per kg, or per liter)
+  cost         Float              @default(0)
+  stock        Float              @default(0) // Stock in base unit (units, kg, or liters)
+  minStock     Float              @default(0)
+  desiredStock Float              @default(0)
+  offerPrice   Float              @default(0)
+  barCode      String?            @unique
+  categoryId   Int?
+  unitType     UnitType           @default(UNIT) // Type of unit for sale
+  isActive     Boolean            @default(true) // Soft delete flag
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  entries      MerchandiseEntry[]
+  saleItems    SaleItem[]
+  inventoryMovements InventoryMovement[]
+
+  // Índices para búsqueda rápida de productos
+  @@index([name])
+  @@index([stock])
+  @@index([isActive])
+}
+
+model InventoryMovement {
+  id               Int      @id @default(autoincrement())
+  productId        Int
+  product          Product  @relation(fields: [productId], references: [id])
+  type             String   // 'SALE', 'RETURN', 'ADJUSTMENT', 'ENTRY', 'INITIAL_STOCK'
+  quantityChange   Float    // Positive for additions, negative for subtractions (in base unit)
+  reason           String?  // Optional: e.g., "manual correction", "initial stock entry"
+  timestamp        DateTime @default(now())
+
+  @@index([productId])
+  @@index([timestamp])
+}
+
+
+
+model MerchandiseEntry {
+  id        Int      @id @default(autoincrement())
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Float    // Quantity in base unit (units, kg, or liters)
+  cost      Float
+  entryDate DateTime @default(now())
+  supplier  String?
+}
+
+model Sale {
+  id                    Int                     @id @default(autoincrement())
+  ticketNumber          String                  @unique
+  items                 SaleItem[]
+  payments              Payment[]
+  totalUsd              Float
+  totalBs               Float
+  discount              Float                   @default(0) // Monto del descuento en USD
+  discountType          String?                 // 'percentage' o 'fixed'
+  discountValue         Float                   @default(0) // Valor ingresado (% o monto fijo)
+  isCancelled           Boolean                 @default(false)
+  createdAt             DateTime                @default(now())
+  adjustments           TransactionAdjustment[]
+  cashRegisterSession   CashRegisterSession?    @relation(fields: [cashRegisterSessionId], references: [id])
+  cashRegisterSessionId Int?
+  cashMovements         CashMovement[]
+  customer              Customer?               @relation(fields: [customerId], references: [id])
+  customerId            Int?
+
+  // Índices para búsquedas y filtros frecuentes
+  @@index([createdAt])
+  @@index([cashRegisterSessionId])
+  @@index([customerId])
+  @@index([isCancelled])
+}
+
+model Payment {
+  id        Int     @id @default(autoincrement())
+  sale      Sale    @relation(fields: [saleId], references: [id])
+  saleId    Int
+  method    String
+  amount    Float
+  reference String?
+
+  @@index([saleId])
+  @@index([reference])
+}
+
+model SaleItem {
+  id        Int     @id @default(autoincrement())
+  sale      Sale    @relation(fields: [saleId], references: [id])
+  saleId    Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Float   // Quantity in base unit (units, kg, or liters)
+  price     Float   // Price at the time of sale in USD (per unit/kg/liter)
+}
+
+model TransactionAdjustment {
+  id             Int      @id @default(autoincrement())
+  sale           Sale     @relation(fields: [saleId], references: [id])
+  saleId         Int
+  type           String // "return" or "cancellation"
+  reason         String
+  amountRefunded Float?
+  timestamp      DateTime @default(now())
+}
+
+model PaymentMethod {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  type      String // 'cash', 'card', 'mobile_payment', 'other'
+  isEnabled Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Customer {
+  id             Int             @id @default(autoincrement())
+  cedula         String          @unique
+  name           String
+  email          String?         @unique
+  phone          String?
+  address        String?
+  creditLimit    Float           @default(0)
+  currentCredit  Float           @default(0)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  creditPayments CreditPayment[]
+  sales          Sale[]
+}
+
+model CreditPayment {
+  id          Int      @id @default(autoincrement())
+  customer    Customer @relation(fields: [customerId], references: [id])
+  customerId  Int
+  amount      Float // Amount in USD
+  amountBs    Float
+  exchangeRate Float
+  paymentDate DateTime @default(now())
+  description String?
+  paymentMethod String
+  reference   String?
+}
+
+model CashRegisterSession {
+  id                    Int            @id @default(autoincrement())
+  userId                Int
+  user                  User           @relation(fields: [userId], references: [id])
+  openingAmountUsd      Float
+  openingAmountBs       Float
+  closingAmountUsd      Float?
+  closingAmountBs       Float?
+  calculatedCashSalesUsd      Float          @default(0)
+  calculatedCashSalesBs       Float          @default(0)
+  calculatedElectronicSalesUsd Float         @default(0)
+  calculatedElectronicSalesBs  Float         @default(0)
+  calculatedCreditSalesUsd   Float         @default(0)
+  calculatedDebtPaymentsUsd  Float         @default(0)
+  calculatedDebtPaymentsBs   Float         @default(0)
+  calculatedOtherIncomeUsd Float       @default(0)
+  calculatedOtherIncomeBs Float        @default(0)
+  calculatedExpensesUsd       Float @default(0)
+  calculatedExpensesBs        Float @default(0)
+  totalAvanceSalidaBs         Float          @default(0) // New field
+  totalAvanceEntradaBs        Float          @default(0) // New field
+  discrepancyUsd        Float          @default(0)
+  discrepancyBs         Float          @default(0)
+  status                String         @default("OPEN") // "OPEN" or "CLOSED"
+  openedAt              DateTime       @default(now())
+  closedAt              DateTime?
+  movements             CashMovement[]
+  sales                 Sale[]
+  recharges             Recharge[]
+}
+
+model CashMovement {
+  id                    Int                 @id @default(autoincrement())
+  cashRegisterSession   CashRegisterSession @relation(fields: [cashRegisterSessionId], references: [id])
+  cashRegisterSessionId Int
+  type                  String // 'deposit', 'withdrawal', 'sale', 'refund'
+  paymentMethod         String?
+  amountUsd             Float              @default(0)
+  amountBs              Float              @default(0)
+  description           String?
+  timestamp             DateTime            @default(now())
+  sale                  Sale?               @relation(fields: [saleId], references: [id])
+  saleId                Int?
+
+  @@index([cashRegisterSessionId])
+  @@index([timestamp])
+}
+
+model ExchangeRate {
+  id        Int      @id @default(autoincrement())
+  rate      Float
+  updatedAt DateTime @updatedAt
+}
+
+model Supplier {
+  id            Int      @id @default(autoincrement())
+  name          String   @unique
+  contactPerson String?
+  phone         String?
+  email         String?
+  creditLimit   Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Setting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
+}
+
+model RechargeService {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  icon      String?
+  isEnabled Boolean    @default(true)
+  recharges Recharge[]
+}
+
+model Recharge {
+  id                    Int                 @id @default(autoincrement())
+  ticketNumber          String              @unique
+  serviceId             Int
+  service               RechargeService     @relation(fields: [serviceId], references: [id])
+  phoneNumber           String
+  amountBs              Float
+  commissionPercent     Float
+  commissionBs          Float
+  totalChargeBs         Float
+  amountUsd             Float
+  exchangeRate          Float
+  cashRegisterSessionId Int
+  cashRegisterSession   CashRegisterSession @relation(fields: [cashRegisterSessionId], references: [id])
+  status                String              @default("PENDING")
+  createdAt             DateTime            @default(now())
+
+  @@index([createdAt])
+  @@index([cashRegisterSessionId])
+}

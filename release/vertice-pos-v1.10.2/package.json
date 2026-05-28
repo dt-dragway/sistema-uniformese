@@ -1,0 +1,75 @@
+{
+  "name": "vertice-pos",
+  "productName": "Vertice POS",
+  "version": "1.10.2",
+  "description": "Sistema de Punto de Venta con soporte para red",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js",
+    "start:electron": "electron main.js",
+    "build:frontend": "cd vertice-frontend && npm run build",
+    "build:api": "cd vertice-nodejs-api && npm run build",
+    "build:all": "npm run build:frontend && npm run build:api",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+    "appId": "com.vertice.pos",
+    "productName": "Vertice POS",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json",
+      "vertice-frontend/dist/**/*",
+      "assets/**/*"
+    ],
+    "extraResources": [],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "forceCodeSigning": false,
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Vertice POS",
+      "deleteAppDataOnUninstall": true
+    }
+  },
+  "keywords": [
+    "pos",
+    "punto-de-venta",
+    "electron"
+  ],
+  "author": "Jesus Diaz",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "debug": "^4.4.3",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "electron": "^39.2.4",
+    "electron-builder": "^25.1.8"
+  }
+}

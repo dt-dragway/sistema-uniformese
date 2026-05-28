@@ -1,0 +1,26 @@
+
+@media print {
+  /* Ocultar todo por defecto cuando se imprime */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Hacer visible solo el ticket y su contenido */
+  .printable-ticket, .printable-ticket * {
+    visibility: visible;
+  }
+
+  /* Asegurarse de que el ticket se posicione correctamente en la página de impresión */
+  .printable-ticket {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Ocultar los botones de 'Cerrar' e 'Imprimir' en el PDF final */
+  .no-print, .no-print * {
+    display: none !important;
+  }
+}

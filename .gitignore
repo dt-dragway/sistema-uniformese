@@ -1,0 +1,70 @@
+# Dependencies
+/node_modules
+/dist
+
+# Environment variables
+.env
+*.env
+.env.*
+!.env.example
+!*.env.example
+
+# Database backups (contains sensitive data)
+/backups
+*.sql
+!**/schema.prisma
+
+# Compiled backend code
+backend/dist/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Build output
+/build
+/out
+/target
+
+# Log files
+*.log
+
+# IDE files
+.idea
+*.iml
+*.project
+.classpath
+.settings 
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Large 3rd party files
+*.exe
+*.msi
+*.dll.vscode/
+*.dll
+.vscode/tasks.json
+
+# Release files (large installers - exceed GitHub 100MB limit)
+release/*.exe
+release/*.rar
+release/*.7z
+release/*.zip
+release/win-unpacked/
+release/*.nsis.*
+release/*.blockmap
+release/*.yml
+release/*.yaml
+
+# Temporary and build directories
+/Vertice-POS-*/
+.gemini-clipboard/
+.gemini-temp/
+
+# Logs
+/logs/
+*.log

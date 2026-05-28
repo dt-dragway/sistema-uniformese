@@ -1,0 +1,156 @@
+@media print {
+  @page {
+    margin: 0;
+    size: 80mm auto;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: white;
+  }
+
+  /* Reset box-sizing for all elements in print mode */
+  * {
+    box-sizing: border-box !important;
+  }
+
+  /* Hide everything by default */
+  body * {
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+  }
+
+  /* Show only the ticket container and its children */
+  .printable-ticket,
+  .printable-ticket * {
+    visibility: visible;
+    height: auto;
+    overflow: visible;
+  }
+
+  .printable-ticket {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 72mm !important;
+    /* Safe width for 80mm paper (leaving ~4mm margins) */
+    max-width: 72mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: white !important;
+    color: black !important;
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif !important;
+    font-size: 12px !important;
+    line-height: 1.2;
+  }
+
+  /* Hide non-print elements explicitly */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Image handling (Logo) */
+  .printable-ticket img {
+    max-width: 100% !important;
+    width: 60% !important;
+    /* Reduce logo size slightly */
+    height: auto !important;
+    display: block;
+    margin: 0 auto 10px auto;
+  }
+
+  /* Typography overrides */
+  .printable-ticket .MuiTypography-root {
+    font-family: inherit !important;
+    color: black !important;
+    margin: 0 !important;
+  }
+
+  .printable-ticket .MuiTypography-h5 {
+    font-size: 14px !important;
+    font-weight: bold !important;
+    text-align: center;
+    margin-bottom: 8px !important;
+  }
+
+  .printable-ticket .MuiTypography-h6 {
+    font-size: 13px !important;
+    font-weight: bold !important;
+    margin-top: 8px !important;
+    margin-bottom: 4px !important;
+    border-bottom: 1px dashed black;
+    display: block;
+    width: 100%;
+  }
+
+  .printable-ticket .MuiTypography-body1,
+  .printable-ticket .MuiTypography-body2 {
+    font-size: 11px !important;
+  }
+
+  /* Table adjustments */
+  .printable-ticket .MuiTableContainer-root {
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .printable-ticket .MuiTable-root {
+    width: 100% !important;
+  }
+
+  .printable-ticket .MuiTableHead-root .MuiTableCell-root {
+    border-bottom: 1px dashed black !important;
+    font-weight: bold !important;
+  }
+
+  .printable-ticket .MuiTableCell-root {
+    padding: 2px 0 !important;
+    border-bottom: none !important;
+    font-family: inherit !important;
+    font-size: 10px !important;
+    /* Smaller font for table to fit columns */
+    color: black !important;
+    line-height: 1.1;
+  }
+
+  /* Column widths - Adjusted for 72mm */
+  /* Product Name */
+  .printable-ticket .MuiTableCell-root:nth-of-type(1) {
+    width: 40%;
+    text-align: left;
+    white-space: normal;
+    /* Allow wrapping */
+  }
+
+  /* Quantity */
+  .printable-ticket .MuiTableCell-root:nth-of-type(2) {
+    width: 15%;
+    text-align: center;
+  }
+
+  /* Unit Price */
+  .printable-ticket .MuiTableCell-root:nth-of-type(3) {
+    width: 20%;
+    text-align: right;
+  }
+
+  /* Total */
+  .printable-ticket .MuiTableCell-root:nth-of-type(4) {
+    width: 25%;
+    text-align: right;
+  }
+
+  /* Total Section */
+  .printable-ticket .MuiTypography-h5[align="right"] {
+    margin-top: 10px !important;
+    border-top: 1px dashed black;
+    padding-top: 5px !important;
+    text-align: right;
+    font-size: 16px !important;
+    /* Make total larger */
+  }
+}
