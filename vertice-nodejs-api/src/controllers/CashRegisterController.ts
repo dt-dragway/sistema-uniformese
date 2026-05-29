@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { CashRegisterService } from '../services/CashRegisterService';
 import { getUserIdFromRequest, isAdmin, AuthRequest } from '../utils/utils';
+import { logger } from '../utils/logger';
 
 const cashRegisterService = new CashRegisterService();
 
@@ -128,7 +129,7 @@ export const getClosingPreviewByAdmin = async (req: Request, res: Response) => {
 };
 
 export const getActiveSession = async (req: Request, res: Response) => {
-  console.log('Attempting to get active cash register session...');
+  logger.debug('Attempting to get active cash register session...');
   try {
     const userId = getUserIdFromRequest(req);
     if (!userId) {

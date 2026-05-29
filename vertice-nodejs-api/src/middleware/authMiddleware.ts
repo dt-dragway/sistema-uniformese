@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import { AuthRequest } from '../utils/utils'; // Importa la interfaz extendida
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey';
-console.log('AuthMiddleware JWT_SECRET:', JWT_SECRET);
 
 export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;

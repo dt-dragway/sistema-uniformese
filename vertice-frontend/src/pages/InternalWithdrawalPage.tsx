@@ -137,7 +137,7 @@ const InternalWithdrawalPage: React.FC = () => {
             <CardContent sx={{ p: 4 }}>
               <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif', mb: 3 }}>
                 <Box sx={{ p: 1, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '12px', display: 'flex' }}>
-                  <InventoryIcon sx={{ color: '#0255A5' }} /> 
+                  <InventoryIcon sx={{ color: '#2a6c8d' }} /> 
                 </Box>
                 Seleccionar Productos
               </Typography>
@@ -179,7 +179,7 @@ const InternalWithdrawalPage: React.FC = () => {
             <CardContent sx={{ p: 4, flexGrow: 1 }}>
               <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif', mb: 3 }}>
                 <Box sx={{ p: 1, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '12px', display: 'flex' }}>
-                  <ShoppingBagIcon sx={{ color: '#0255A5' }} />
+                  <ShoppingBagIcon sx={{ color: '#2a6c8d' }} />
                 </Box>
                 Lista de Despacho
               </Typography>

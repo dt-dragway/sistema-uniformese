@@ -24,11 +24,6 @@ export const login = createAsyncThunk(
     try {
       const apiUrl = getApiUrl();
       const loginUrl = `${apiUrl}/auth/login`;
-      console.log('[Auth] Login attempt:', {
-        apiUrl,
-        loginUrl,
-        serverUrlInStorage: localStorage.getItem('serverUrl')
-      });
       const response = await axios.post(loginUrl, { username, password });
       localStorage.setItem('token', response.data.token);
       return response.data;

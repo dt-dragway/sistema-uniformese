@@ -274,7 +274,7 @@ const SalesHistoryPage = () => {
             <TableBody>
               {paginatedSales.map((sale) => (
                 <TableRow key={sale.id} hover sx={{ backgroundColor: sale.isCancelled ? 'rgba(244, 67, 54, 0.05)' : 'inherit' }}>
-                  <TableCell sx={{ fontWeight: 700, color: '#0255A5' }}>{sale.ticketNumber}</TableCell>
+                  <TableCell sx={{ fontWeight: 700, color: '#2a6c8d' }}>{sale.ticketNumber}</TableCell>
                   <TableCell sx={{ color: '#64748b', fontSize: '0.85rem' }}>{new Date(sale.createdAt).toLocaleString()}</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>{sale.customer?.name || 'CONSUMIDOR FINAL'}</TableCell>
                   <TableCell sx={{ fontWeight: 800 }}>${sale.totalUsd.toFixed(2)}</TableCell>

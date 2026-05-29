@@ -229,7 +229,7 @@ const CashAdvancePage = () => {
         <CardContent sx={{ p: { xs: 3, sm: 5 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, borderBottom: '1px solid rgba(0,0,0,0.06)', pb: 2.5 }}>
             <Box sx={{ p: 1.5, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '16px', mr: 2.5 }}>
-              <PriceChangeIcon sx={{ fontSize: 40, color: '#0255A5' }} />
+              <PriceChangeIcon sx={{ fontSize: 40, color: '#2a6c8d' }} />
             </Box>
             <Box>
               <Typography variant="h5" sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -257,7 +257,7 @@ const CashAdvancePage = () => {
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <AttachMoneyIcon sx={{ color: '#0255A5' }} />
+                            <AttachMoneyIcon sx={{ color: '#2a6c8d' }} />
                           </InputAdornment>
                         ),
                       }}
@@ -268,7 +268,7 @@ const CashAdvancePage = () => {
                           backgroundColor: '#f8fafc',
                           '& fieldset': { borderColor: '#e2e8f0' },
                           '&:hover fieldset': { borderColor: '#cbd5e1' },
-                          '&.Mui-focused fieldset': { borderColor: '#0255A5' },
+                          '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
                         }
                       }}
                     />
@@ -286,7 +286,7 @@ const CashAdvancePage = () => {
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">
-                            <PercentIcon sx={{ color: '#0255A5' }} />
+                            <PercentIcon sx={{ color: '#2a6c8d' }} />
                           </InputAdornment>
                         ),
                       }}
@@ -296,7 +296,7 @@ const CashAdvancePage = () => {
                           backgroundColor: '#f8fafc',
                           '& fieldset': { borderColor: '#e2e8f0' },
                           '&:hover fieldset': { borderColor: '#cbd5e1' },
-                          '&.Mui-focused fieldset': { borderColor: '#0255A5' },
+                          '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
                         }
                       }}
                     />
@@ -318,7 +318,7 @@ const CashAdvancePage = () => {
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2.5 }}>
-                    <ReceiptLongIcon sx={{ mr: 1, color: '#0255A5', fontSize: 20 }} />
+                    <ReceiptLongIcon sx={{ mr: 1, color: '#2a6c8d', fontSize: 20 }} />
                     <Typography variant="overline" sx={{ fontWeight: 800, letterSpacing: '0.1em', color: '#64748b' }}>
                       Resumen del Movimiento
                     </Typography>
@@ -344,7 +344,7 @@ const CashAdvancePage = () => {
                     <Typography variant="caption" sx={{ color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', mb: 0.5 }}>
                       TOTAL A COBRAR
                     </Typography>
-                    <Typography variant="h4" sx={{ color: '#0255A5', fontWeight: 900, fontFamily: '"Outfit", sans-serif' }}>
+                    <Typography variant="h4" sx={{ color: '#2a6c8d', fontWeight: 900, fontFamily: '"Outfit", sans-serif' }}>
                       Bs {totalToCharge.toFixed(2)}
                     </Typography>
                   </Box>
@@ -363,7 +363,7 @@ const CashAdvancePage = () => {
                     fontSize: '1rem',
                     fontWeight: 700,
                     borderRadius: '16px',
-                    background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
+                    background: 'linear-gradient(135deg, #2a6c8d 0%, #003780 100%)',
                     boxShadow: '0 10px 20px -5px rgba(2, 85, 165, 0.3)',
                     textTransform: 'none',
                     transition: 'all 0.3s ease',
@@ -397,9 +397,9 @@ const CashAdvancePage = () => {
                       textTransform: 'none',
                       transition: 'all 0.3s ease',
                       '&:hover': {
-                        borderColor: '#0255A5',
+                        borderColor: '#2a6c8d',
                         backgroundColor: 'rgba(2, 85, 165, 0.05)',
-                        color: '#0255A5',
+                        color: '#2a6c8d',
                         transform: 'translateY(-2px)',
                       },
                     }}

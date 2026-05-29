@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { registerUser, loginUser, verifyAdminPassword } from '../services/AuthService';
 import { getUserById } from '../services/UserService';
 import { AuthRequest } from '../utils/utils';
+import { logger } from '../utils/logger';
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -19,25 +20,24 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  console.log('[AuthController] Attempting to log in...');
+  logger.debug('Login request received');
   try {
     const { username, password } = req.body;
-    console.log(`[AuthController] Login request for username: ${username}`);
     if (!username || !password) {
-      console.error('[AuthController] Username or password not provided.');
+      logger.warn('Username or password missing in login request');
       return res.status(400).json({ message: 'Username and password are required' });
     }
     const { user, token } = await loginUser(username, password);
-    console.log(`[AuthController] Login successful for user: ${user.username}`);
+    logger.info('Login successful', { username: user.username });
     res
       .status(200)
       .json({ message: 'Login successful', user: { id: user.id, username: user.username, role: user.role, fullname: user.fullname }, token });
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error(`[AuthController] Error during login: ${error.message}`);
+      logger.warn('Login failed', { error: error.message });
       res.status(400).json({ message: error.message });
     } else {
-      console.error(`[AuthController] An unknown error occurred:`, error);
+      logger.error('Unknown error during login', { error });
       res.status(500).json({ message: 'An unknown error occurred' });
     }
   }

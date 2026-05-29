@@ -73,7 +73,7 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
     return (
       <>
         <Box mb={2} textAlign="left">
-          <Typography variant="subtitle2" sx={{ color: '#0255A5', fontWeight: 'bold', mb: 1, fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>RESUMEN DE EFECTIVO (EN GAVETA)</Typography>
+          <Typography variant="subtitle2" sx={{ color: '#2a6c8d', fontWeight: 'bold', mb: 1, fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>RESUMEN DE EFECTIVO (EN GAVETA)</Typography>
           <Typography variant="body2" sx={{ color: '#475569' }}>Apertura: ${openingAmountUsd.toFixed(2)} / Bs. {openingAmountBs.toFixed(2)}</Typography>
           <Typography variant="body2" sx={{ color: '#475569' }}>Ventas Efectivo: ${calculatedCashSalesUsd.toFixed(2)} / Bs. {calculatedCashSalesBs.toFixed(2)}</Typography>
           <Typography variant="body2" sx={{ color: '#475569' }}>Cobranza Efectivo: ${calculatedDebtPaymentsUsd.toFixed(2)} / Bs. {calculatedDebtPaymentsBs.toFixed(2)}</Typography>
@@ -108,7 +108,7 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
               backgroundColor: '#f8fafc',
               '& fieldset': { borderColor: '#e2e8f0' },
               '&:hover fieldset': { borderColor: '#cbd5e1' },
-              '&.Mui-focused fieldset': { borderColor: '#0255A5' },
+              '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
             }
           }}
         />
@@ -127,7 +127,7 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
               backgroundColor: '#f8fafc',
               '& fieldset': { borderColor: '#e2e8f0' },
               '&:hover fieldset': { borderColor: '#cbd5e1' },
-              '&.Mui-focused fieldset': { borderColor: '#0255A5' },
+              '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
             }
           }}
         />
@@ -199,7 +199,7 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
               py: 1.5,
               textTransform: 'none',
               fontWeight: 600,
-              background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
+              background: 'linear-gradient(135deg, #2a6c8d 0%, #003780 100%)',
               '&:hover': {
                 background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
                 transform: 'translateY(-2px)',

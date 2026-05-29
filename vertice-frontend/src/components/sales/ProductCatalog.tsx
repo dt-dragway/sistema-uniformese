@@ -198,18 +198,17 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
             alignItems: 'center',
             p: 1.5,
             px: 2,
-            background: 'rgba(30, 45, 55, 0.6)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: 2,
+            background: '#f8fafc',
+            border: '1px solid #e2e8f0',
+            borderRadius: '16px',
           }}
         >
           <CurrencyExchangeIcon sx={{ color: '#0255A5', mr: 1.5, fontSize: 24 }} />
           <Box>
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', display: 'block', lineHeight: 1 }}>
+            <Typography variant="caption" sx={{ color: '#64748b', display: 'block', lineHeight: 1, fontWeight: 700 }}>
               TASA DE CAMBIO
             </Typography>
-            <Typography variant="body1" fontWeight="bold" sx={{ color: 'white' }}>
+            <Typography variant="body1" fontWeight="900" sx={{ color: '#000000' }}>
               1 USD = <span style={{ color: '#0255A5' }}>{exchangeRate.toFixed(2)}</span> Bs.
             </Typography>
           </Box>
@@ -223,18 +222,17 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
             alignItems: 'center',
             p: 1.5,
             px: 2,
-            background: 'rgba(30, 45, 55, 0.6)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: 2,
+            background: '#f8fafc',
+            border: '1px solid #e2e8f0',
+            borderRadius: '16px',
           }}
         >
-          <ScheduleIcon sx={{ color: 'primary.main', mr: 1.5, fontSize: 24 }} />
+          <ScheduleIcon sx={{ color: '#0255A5', mr: 1.5, fontSize: 24 }} />
           <Box>
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', display: 'block', lineHeight: 1 }}>
+            <Typography variant="caption" sx={{ color: '#64748b', display: 'block', lineHeight: 1, fontWeight: 700 }}>
               FECHA Y HORA
             </Typography>
-            <Typography variant="body1" fontWeight="bold" sx={{ color: 'white' }}>
+            <Typography variant="body1" fontWeight="900" sx={{ color: '#000000' }}>
               {formatDate(currentDateTime)} | {formatTime(currentDateTime)}
             </Typography>
           </Box>

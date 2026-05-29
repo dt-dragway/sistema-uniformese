@@ -120,7 +120,7 @@ const MaintenancePage = () => {
             <CardContent sx={{ p: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <Box sx={{ p: 1.5, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '12px', mr: 2 }}>
-                  <CloudDownloadIcon sx={{ fontSize: 32, color: '#0255A5' }} />
+                  <CloudDownloadIcon sx={{ fontSize: 32, color: '#2a6c8d' }} />
                 </Box>
                 <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif' }}>Copia de Seguridad</Typography>
               </Box>
@@ -146,7 +146,7 @@ const MaintenancePage = () => {
                   fontSize: '1rem',
                   fontWeight: 700,
                   borderRadius: '16px',
-                  background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
+                  background: 'linear-gradient(135deg, #2a6c8d 0%, #003780 100%)',
                   boxShadow: '0 10px 15px -3px rgba(2, 85, 165, 0.3)',
                   textTransform: 'none',
                   transition: 'all 0.3s ease',

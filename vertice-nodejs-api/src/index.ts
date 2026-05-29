@@ -110,12 +110,11 @@ app.use(cors({
   optionsSuccessStatus: 204
 })); // Use cors middleware with options
 
-// Logging middleware for debugging
+// Request logging middleware
 app.use((req, res, next) => {
-  const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] ${req.method} ${req.path} - Origin: ${req.headers.origin || 'N/A'}`);
+  logger.debug(`${req.method} ${req.path}`, { origin: req.headers.origin || 'N/A' });
   if (req.method === 'OPTIONS') {
-    console.log(`  -> Preflight request for: ${req.headers['access-control-request-method']}`);
+    logger.debug(`Preflight request for: ${req.headers['access-control-request-method']}`);
   }
   next();
 });
@@ -189,10 +188,10 @@ for (const p of possiblePaths) {
 }
 
 if (frontendPath) {
-  console.log('✓ Serving frontend from:', frontendPath);
+  logger.info('Serving frontend', { path: frontendPath });
   app.use(express.static(frontendPath));
 } else {
-  console.log('⚠ Frontend not found');
+  logger.warn('Frontend not found');
 }
 
 app.get('/', (req, res) => {
@@ -352,9 +351,9 @@ let server: any;
   }
 
   server = app.listen(Number(port), host, () => {
-    console.log(`Server running on http://${host}:${port}`);
+    logger.info(`Server running on http://${host}:${port}`);
     if (host === '0.0.0.0') {
-      console.log('  -> Accepting connections from network clients');
+      logger.info('  -> Accepting connections from network clients');
     }
     logger.info('Server started successfully', { host, port });
   });

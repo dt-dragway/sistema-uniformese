@@ -367,7 +367,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
         >
           {/* Header */}
           <Box sx={{ p: 3, borderBottom: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', background: '#f8fafc' }}>
-            <ReceiptLongIcon sx={{ color: '#0255A5', mr: 2, fontSize: 32 }} />
+            <ReceiptLongIcon sx={{ color: '#2a6c8d', mr: 2, fontSize: 32 }} />
             <Typography variant="h5" component="h2" fontWeight={800} sx={{ fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#0f172a' }}>
               Finalizar Venta
             </Typography>
@@ -415,8 +415,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
                             color: '#64748b',
                             '&.Mui-selected': {
                               backgroundColor: 'rgba(2, 85, 165, 0.08) !important',
-                              color: '#0255A5',
-                              borderColor: '#0255A5 !important',
+                              color: '#2a6c8d',
+                              borderColor: '#2a6c8d !important',
                             }
                           }
                         }}
@@ -495,7 +495,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
                   {totalWithDiscount.toFixed(2)}
                 </Typography>
                 <Box sx={{ display: 'inline-flex', alignItems: 'center', px: 2, py: 0.5, bgcolor: 'rgba(2, 85, 165, 0.08)', borderRadius: '12px' }}>
-                  <Typography variant="h6" sx={{ color: '#0255A5', fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}>
+                  <Typography variant="h6" sx={{ color: '#2a6c8d', fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}>
                     REF {(totals.usd - (discount / exchangeRate)).toFixed(2)}
                   </Typography>
                 </Box>
@@ -529,7 +529,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
                     <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>CAMBIO / VUELTO</Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', mt: 1 }}>
                       <Typography variant="h5" sx={{ fontWeight: 900, color: '#0f172a' }}>Bs. {changeData.bs.toFixed(2)}</Typography>
-                      <Typography variant="h6" sx={{ color: '#0255A5', fontWeight: 700 }}>REF {changeData.usd.toFixed(2)}</Typography>
+                      <Typography variant="h6" sx={{ color: '#2a6c8d', fontWeight: 700 }}>REF {changeData.usd.toFixed(2)}</Typography>
                     </Box>
                   </Box>
                 )}

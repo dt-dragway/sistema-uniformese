@@ -64,8 +64,8 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totals }) => {
               }} 
             />
           ) : (
-            <Typography variant="body2" color="text.secondary" fontWeight={500} sx={{ fontStyle: 'italic' }}>
-              Consumidor Final
+            <Typography variant="body2" fontWeight={700} sx={{ fontStyle: 'italic', color: '#dc2626' }}>
+              Seleccione cliente (Requerido)
             </Typography>
           )}
         </Box>
@@ -89,7 +89,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totals }) => {
       <Button
         variant="contained"
         fullWidth
-        disabled={cartItems.length === 0}
+        disabled={cartItems.length === 0 || !selectedCustomer}
         onClick={() => setCheckoutModalOpen(true)}
         sx={{
           backgroundColor: '#0255A5',

@@ -65,7 +65,7 @@ export const LockedSalesScreen: React.FC = () => {
       >
         <CardContent sx={{ p: { xs: 4, sm: 6 } }}>
           <Box sx={{ display: 'inline-flex', mb: 4, p: 2, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '20px' }}>
-            <LockIcon sx={{ fontSize: 60, color: '#0255A5' }} />
+            <LockIcon sx={{ fontSize: 60, color: '#2a6c8d' }} />
           </Box>
 
           <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 900, color: '#0f172a', letterSpacing: '0.05em', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', mb: 1 }}>
@@ -89,7 +89,7 @@ export const LockedSalesScreen: React.FC = () => {
               fontSize: '1rem',
               fontWeight: 700,
               borderRadius: '16px',
-              background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
+              background: 'linear-gradient(135deg, #2a6c8d 0%, #003780 100%)',
               color: 'white',
               boxShadow: '0 10px 20px -5px rgba(2, 85, 165, 0.3)',
               textTransform: 'none',

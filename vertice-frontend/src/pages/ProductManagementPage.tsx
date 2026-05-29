@@ -435,7 +435,7 @@ const ProductManagementPage = () => {
                 <TableCell component="th" scope="row" sx={{ fontWeight: 600 }}>
                   {product.name}
                 </TableCell>
-                <TableCell sx={{ fontSize: '0.85rem', color: '#0255A5', fontWeight: 700 }}>
+                <TableCell sx={{ fontSize: '0.85rem', color: '#2a6c8d', fontWeight: 700 }}>
                   {product.tipo || '-'}
                 </TableCell>
                 <TableCell sx={{ fontSize: '0.85rem', color: '#64748b' }}>
@@ -450,7 +450,7 @@ const ProductManagementPage = () => {
                 <TableCell sx={{ fontSize: '0.85rem', color: '#64748b' }}>
                   {product.detalle || '-'}
                 </TableCell>
-                <TableCell sx={{ fontSize: '0.85rem', color: '#0255A5', fontWeight: 700 }}>
+                <TableCell sx={{ fontSize: '0.85rem', color: '#2a6c8d', fontWeight: 700 }}>
                   {product.talla || '-'}
                 </TableCell>
                 <TableCell sx={{ fontFamily: 'monospace', color: '#475569' }}>{product.barCode || 'N/A'}</TableCell>
@@ -500,7 +500,7 @@ const ProductManagementPage = () => {
       </TableContainer>
 
       <Dialog open={openModal} onClose={handleCloseModal} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ backgroundColor: '#0255A5', color: 'white', fontWeight: 700 }}>
+        <DialogTitle sx={{ backgroundColor: '#2a6c8d', color: 'white', fontWeight: 700 }}>
           {isEditing ? 'Editar Prenda / Producto' : 'Añadir Nueva Prenda / Producto'}
         </DialogTitle>
         <DialogContent dividers>

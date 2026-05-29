@@ -135,11 +135,11 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
               minHeight: '48px',
               color: '#64748b',
               '&.Mui-selected': {
-                color: '#0255A5',
+                color: '#2a6c8d',
               }
             },
             '& .MuiTabs-indicator': {
-              backgroundColor: '#0255A5',
+              backgroundColor: '#2a6c8d',
               height: 3,
             }
           }}
@@ -178,7 +178,7 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
         <Chip 
           label={`${cartItems.length} items`} 
           size="small" 
-          sx={{ fontWeight: 700, bgcolor: 'rgba(2, 85, 165, 0.08)', color: '#0255A5' }} 
+          sx={{ fontWeight: 700, bgcolor: 'rgba(2, 85, 165, 0.08)', color: '#2a6c8d' }} 
         />
       </Box>
 
@@ -370,7 +370,7 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                           <IconButton
                             size="small"
                             onClick={() => dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity - 1 }))}
-                            sx={{ color: '#0255A5' }}
+                            sx={{ color: '#2a6c8d' }}
                           >
                             <RemoveCircleOutlineIcon fontSize="small" />
                           </IconButton>
@@ -378,13 +378,13 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                           <IconButton
                             size="small"
                             onClick={() => dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity + 1 }))}
-                            sx={{ color: '#0255A5' }}
+                            sx={{ color: '#2a6c8d' }}
                           >
                             <AddCircleOutlineIcon fontSize="small" />
                           </IconButton>
                         </>
                       ) : (
-                        <Typography sx={{ px: 1.5, fontWeight: 700, color: '#0255A5', fontSize: '0.9rem' }}>
+                        <Typography sx={{ px: 1.5, fontWeight: 700, color: '#2a6c8d', fontSize: '0.9rem' }}>
                           {formatQuantity(item.quantity, item.unitType)}
                         </Typography>
                       )}
@@ -402,7 +402,7 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                           <IconButton
                             size="small"
                             onClick={() => handleOpenEditPrice(item.id, item.price)}
-                            sx={{ p: 0.2, color: '#0255A5' }}
+                            sx={{ p: 0.2, color: '#2a6c8d' }}
                           >
                             <EditIcon sx={{ fontSize: 14 }} />
                           </IconButton>

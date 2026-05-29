@@ -63,19 +63,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, exchangeRa
       </Box>
 
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography variant="body1" fontWeight="bold" sx={{ color: isInCart ? 'primary.main' : '#1a1a1a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <Typography variant="body1" fontWeight="bold" sx={{ color: '#000000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {truncatedName.toUpperCase()}
         </Typography>
-        <Typography variant="caption" sx={{ color: '#555555', display: 'block', mt: 0.5, fontWeight: 500 }}>
+        <Typography variant="caption" sx={{ color: '#475569', display: 'block', mt: 0.5, fontWeight: 700 }}>
           {product.barCode || 'S/C'}
         </Typography>
-        <Typography variant="caption" sx={{ color: '#777777', display: 'block', fontSize: '0.75rem' }}>
+        <Typography variant="caption" sx={{ color: '#64748b', display: 'block', fontSize: '0.75rem', fontWeight: 600 }}>
           {[product.tipo, product.color, product.tela, product.detalle].filter(Boolean).join(' - ')}
         </Typography>
       </Box>
 
       <Box sx={{ textAlign: 'right', minWidth: 120, pl: 2 }}>
-        <Typography variant="body2" sx={{ color: '#333333', fontWeight: 'bold' }}>
+        <Typography variant="body2" sx={{ color: '#000000', fontWeight: 'bold' }}>
           Bs. {priceInBs.toFixed(2)}
         </Typography>
         <Typography variant="body1" color="primary.main" fontWeight="bold">

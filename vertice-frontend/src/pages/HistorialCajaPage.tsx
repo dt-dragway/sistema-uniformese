@@ -111,7 +111,7 @@ const HistorialCajaPage = () => {
                   const isOpen = session.status === 'OPEN';
                   return (
                     <TableRow key={session.id} hover>
-                      <TableCell sx={{ color: '#0255A5', fontWeight: 600 }}>
+                      <TableCell sx={{ color: '#2a6c8d', fontWeight: 600 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <EventNoteIcon fontSize="small" />
                           {new Date(session.openedAt).toLocaleString()}

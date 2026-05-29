@@ -59,11 +59,17 @@ export const useServerConnection = (): UseServerConnectionResult => {
             setError(errorMessage);
             setStatus('error');
 
-            // Auto-retry every 5 seconds (max 3 times per manual retry)
-            if (retryCount < 3) {
+            // Implement Exponential Backoff with Jitter
+            if (retryCount < 5) {
+                // Base delay: 1s, 2s, 4s, 8s, 15s (max)
+                const baseDelay = Math.min(1000 * Math.pow(2, retryCount), 15000); 
+                // Jitter: Randomize up to 20% of base delay to prevent thundering herd
+                const jitter = (Math.random() * 0.2) * baseDelay; 
+                const delay = baseDelay + jitter;
+                
                 setTimeout(() => {
                     setRetryCount(prev => prev + 1);
-                }, 5000);
+                }, delay);
             }
         }
     };

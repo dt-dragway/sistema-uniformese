@@ -159,7 +159,9 @@ export const SalesPage = () => {
       gap: 2, 
       minHeight: 0, 
       height: 'calc(100vh - 100px)', // Occupy full height minus header/footer
-      overflow: 'hidden'
+      overflow: 'hidden',
+      bgcolor: '#ffffff', // Explicit solid white
+      p: 2
     }}>
       {/* Columna Izquierda: Catálogo de Productos */}
       <Box sx={{ 

@@ -1,5 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Box, Typography, TextField, Button, CircularProgress, Alert } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  CircularProgress,
+  Alert,
+  InputAdornment,
+  Grid,
+} from '@mui/material';
+import {
+  Person as PersonIcon,
+  Badge as BadgeIcon,
+  Phone as PhoneIcon,
+  Home as HomeIcon,
+  Save as SaveIcon,
+} from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 import { createCustomer, updateCustomer } from '../../store/customersSlice';
@@ -11,19 +31,6 @@ interface CustomerFormModalProps {
   customer?: Customer; // Optional, for editing existing customers
 }
 
-const style = {
-  position: 'absolute' as const,
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: '#1a1a2e',
-  boxShadow: 24,
-  p: 4,
-  borderRadius: 4,
-  border: '1px solid rgba(255, 255, 255, 0.1)',
-};
-
 const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, customer }) => {
   const dispatch: AppDispatch = useDispatch();
   const { loading, error } = useSelector((state: RootState) => state.customers);
@@ -34,18 +41,20 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
   const [address, setAddress] = useState(customer?.address || '');
 
   useEffect(() => {
-    if (customer) {
-      setName(customer.name);
-      setCedula(customer.cedula || '');
-      setPhone(customer.phone || '');
-      setAddress(customer.address || '');
-    } else {
-      setName('');
-      setCedula('');
-      setPhone('');
-      setAddress('');
+    if (open) {
+      if (customer) {
+        setName(customer.name);
+        setCedula(customer.cedula || '');
+        setPhone(customer.phone || '');
+        setAddress(customer.address || '');
+      } else {
+        setName('');
+        setCedula('');
+        setPhone('');
+        setAddress('');
+      }
     }
-  }, [customer]);
+  }, [open, customer]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -69,53 +78,156 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Box sx={style}>
-        <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-          {customer ? 'Editar Cliente' : 'Crear Cliente'}
+    <Dialog 
+      open={open} 
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: '24px',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        }
+      }}
+    >
+      <DialogTitle sx={{ 
+        backgroundColor: '#2a6c8d', 
+        color: 'white', 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: 1.5,
+        p: 3
+      }}>
+        <PersonIcon />
+        <Typography variant="h6" fontWeight={800} sx={{ fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          {customer ? 'Editar Cliente' : 'Nuevo Cliente'}
         </Typography>
-        <Box component="form" onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Nombre"
-            value={name}
-            onChange={(e) => setName(e.target.value.toUpperCase())}
-            required
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Cédula"
-            value={cedula}
-            onChange={(e) => setCedula(e.target.value.toUpperCase())}
-            required
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Teléfono"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value.toUpperCase())}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Dirección"
-            value={address}
-            onChange={(e) => setAddress(e.target.value.toUpperCase())}
-          />
+      </DialogTitle>
+
+      <Box component="form" onSubmit={handleSubmit}>
+        <DialogContent sx={{ p: 4 }}>
           {error && (
-            <Alert severity="error" sx={{ mt: 2 }}>
+            <Alert severity="error" sx={{ mb: 3, borderRadius: '12px' }}>
               {error}
             </Alert>
           )}
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, py: 1.5 }} disabled={loading}>
-            {loading ? <CircularProgress size={24} color="inherit" /> : customer ? 'Guardar Cambios' : 'Crear Cliente'}
+
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Nombre Completo / Razón Social"
+                variant="outlined"
+                value={name}
+                onChange={(e) => setName(e.target.value.toUpperCase())}
+                required
+                autoFocus
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonIcon color="action" />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: '12px' }
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Cédula / RIF"
+                variant="outlined"
+                value={cedula}
+                onChange={(e) => setCedula(e.target.value.toUpperCase())}
+                required
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BadgeIcon color="action" />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: '12px' }
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Teléfono"
+                variant="outlined"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.toUpperCase())}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PhoneIcon color="action" />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: '12px' }
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Dirección"
+                variant="outlined"
+                multiline
+                rows={2}
+                value={address}
+                onChange={(e) => setAddress(e.target.value.toUpperCase())}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start" sx={{ mt: 1, alignSelf: 'flex-start' }}>
+                      <HomeIcon color="action" />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: '12px' }
+                }}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+
+        <DialogActions sx={{ p: 3, bgcolor: '#f8fafc', borderTop: '1px solid #edf2f7', gap: 1.5 }}>
+          <Button 
+            onClick={onClose} 
+            sx={{ 
+              borderRadius: '12px', 
+              px: 3, 
+              color: '#64748b', 
+              fontWeight: 700,
+              textTransform: 'none'
+            }}
+          >
+            Cancelar
           </Button>
-        </Box>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
+            sx={{
+              backgroundColor: '#2a6c8d',
+              borderRadius: '12px',
+              px: 4,
+              py: 1,
+              fontWeight: 700,
+              textTransform: 'none',
+              boxShadow: '0 4px 6px -1px rgba(2, 85, 165, 0.3)',
+              '&:hover': {
+                backgroundColor: '#014484',
+              }
+            }}
+          >
+            {customer ? 'Guardar Cambios' : 'Registrar Cliente'}
+          </Button>
+        </DialogActions>
       </Box>
-    </Modal>
+    </Dialog>
   );
 };
 

@@ -65,7 +65,7 @@ const ExchangeRateSettingsPage: React.FC = () => {
         <CardContent sx={{ p: { xs: 4, sm: 6 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, borderBottom: '1px solid rgba(0,0,0,0.06)', pb: 2.5 }}>
             <Box sx={{ p: 1.5, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '16px', mr: 2.5 }}>
-              <CurrencyExchangeIcon sx={{ fontSize: 40, color: '#0255A5' }} />
+              <CurrencyExchangeIcon sx={{ fontSize: 40, color: '#2a6c8d' }} />
             </Box>
             <Box>
               <Typography variant="h5" sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -119,7 +119,7 @@ const ExchangeRateSettingsPage: React.FC = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <AttachMoneyIcon sx={{ color: '#0255A5' }} />
+                      <AttachMoneyIcon sx={{ color: '#2a6c8d' }} />
                     </InputAdornment>
                   ),
                   sx: { fontSize: '1.25rem', fontWeight: 700 }
@@ -130,7 +130,7 @@ const ExchangeRateSettingsPage: React.FC = () => {
                     borderRadius: '16px',
                     '& fieldset': { borderColor: '#e2e8f0' },
                     '&:hover fieldset': { borderColor: '#cbd5e1' },
-                    '&.Mui-focused fieldset': { borderColor: '#0255A5' },
+                    '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
                   }
                 }}
               />
@@ -154,7 +154,7 @@ const ExchangeRateSettingsPage: React.FC = () => {
                   fontSize: '1rem',
                   fontWeight: 700,
                   borderRadius: '16px',
-                  background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
+                  background: 'linear-gradient(135deg, #2a6c8d 0%, #003780 100%)',
                   boxShadow: '0 10px 20px -5px rgba(2, 85, 165, 0.3)',
                   textTransform: 'none',
                   transition: 'all 0.3s ease',

@@ -94,7 +94,7 @@ class SaleService {
     const otherPayments = payments.filter((p) => p.method !== 'Crédito a Cliente');
 
     // Generate a unique ticket number (e.g., based on timestamp)
-    const ticketNumber = `TKT-${Date.now()}`;
+    const ticketNumber = `${Date.now()}`;
 
     return prisma.$transaction(async (tx) => {
       // 1. Decrement stock for each product

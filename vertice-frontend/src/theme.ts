@@ -4,7 +4,7 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#0255A5', // Vibrant institutional blue
+      main: '#2a6c8d', // Vibrant institutional blue
       contrastText: '#ffffff',
     },
     secondary: {
@@ -12,117 +12,57 @@ const theme = createTheme({
       contrastText: '#ffffff',
     },
     error: {
-      main: '#f44336', // Red
-      light: '#e57373',
-      dark: '#d32f2f',
+      main: '#dc2626', // Professional Red
     },
     background: {
-      default: '#f8fafc', // Light slate
-      paper: '#ffffff', // Crisp white
+      default: '#ffffff', // Pure white for maximum clarity
+      paper: '#ffffff', // Pure white
     },
     text: {
-      primary: '#0f172a',
-      secondary: '#64748b',
+      primary: '#000000', // Pure black for best contrast
+      secondary: '#475569', // Dark slate
     },
   },
   typography: {
     fontFamily: '"Source Sans 3", "Roboto", "Helvetica", "Arial", sans-serif',
     allVariants: {
-      color: '#0f172a',
+      color: '#000000',
     },
-    h1: {
-      fontFamily: '"Kanit", "Montserrat", sans-serif',
-      fontWeight: 900,
-      textTransform: 'uppercase',
-      letterSpacing: '0.12em',
-    },
-    h2: {
-      fontFamily: '"Kanit", "Montserrat", sans-serif',
-      fontWeight: 900,
-      textTransform: 'uppercase',
-      letterSpacing: '0.1em',
-    },
-    h3: {
-      fontFamily: '"Kanit", "Montserrat", sans-serif',
-      fontWeight: 900,
-      textTransform: 'uppercase',
-      letterSpacing: '0.08em',
-    },
-    h4: {
-      fontFamily: '"Kanit", "Montserrat", sans-serif',
-      fontWeight: 900,
-      textTransform: 'uppercase',
-      letterSpacing: '0.06em',
-    },
-    h5: {
-      fontFamily: '"Kanit", "Montserrat", sans-serif',
-      fontWeight: 900,
-      textTransform: 'uppercase',
-      letterSpacing: '0.05em',
-    },
-    h6: {
-      fontFamily: '"Montserrat", "Roboto", sans-serif',
-      fontWeight: 700,
-      letterSpacing: '0.05em',
-    },
-    subtitle1: {
-      fontFamily: '"Source Sans 3", sans-serif',
-      fontWeight: 600,
-    },
-    subtitle2: {
-      fontFamily: '"Source Sans 3", sans-serif',
-      fontWeight: 600,
-    },
-    body1: {
-      fontFamily: '"Source Sans 3", sans-serif',
-    },
-    body2: {
-      fontFamily: '"Source Sans 3", sans-serif',
-    },
-    button: {
-      fontFamily: '"Montserrat", sans-serif',
-      fontWeight: 900,
-      letterSpacing: '0.25em',
-    },
+    h1: { fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' },
+    h2: { fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.08em' },
+    h3: { fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em' },
+    h4: { fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' },
+    h5: { fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' },
+    h6: { fontWeight: 700, letterSpacing: '0.02em' },
+    button: { fontWeight: 700, textTransform: 'none', letterSpacing: '0.02em' },
   },
   shape: {
-    borderRadius: 32, // Sleek modern roundness (32px)
+    borderRadius: 16,
   },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundAttachment: 'fixed',
-          backgroundSize: 'cover',
+          backgroundColor: '#ffffff',
+          color: '#000000',
           minHeight: '100vh',
-          backgroundColor: '#f8fafc',
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 9999, // Pill shape
-          fontWeight: 900,
-          textTransform: 'uppercase',
-          letterSpacing: '0.25em',
+          borderRadius: 12,
           padding: '10px 24px',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
-            transform: 'translateY(-2px)',
-            boxShadow: '0 10px 20px -5px rgba(2, 85, 165, 0.3)',
-          },
-          '&:active': {
-            transform: 'translateY(1px)',
+            transform: 'translateY(-1px)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
           },
         },
         containedPrimary: {
-          background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
-          boxShadow: '0 10px 20px -5px rgba(2, 85, 165, 0.3)',
-          border: 'none',
+          backgroundColor: '#2a6c8d',
           '&:hover': {
-            background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
-            boxShadow: '0 15px 30px -5px rgba(2, 85, 165, 0.4)',
+            backgroundColor: '#014484',
           },
         },
       },
@@ -131,127 +71,47 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
-            borderRadius: 16,
-            backgroundColor: '#ffffff',
-            transition: 'all 0.3s ease',
-            color: '#0f172a',
-            '& fieldset': {
-              borderColor: '#e2e8f0',
-              borderWidth: '1px',
-            },
-            '&:hover fieldset': {
-              borderColor: '#cbd5e1',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#0255A5',
-              borderWidth: '2px',
-            },
+            borderRadius: 12,
+            backgroundColor: '#f8fafc',
+            '& fieldset': { borderColor: '#cbd5e1' },
+            '&:hover fieldset': { borderColor: '#94a3b8' },
+            '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
           },
-          '& .MuiInputLabel-root': {
-            color: '#64748b',
+          '& .MuiInputBase-input': {
+            color: '#000000',
           },
-          '& .MuiInputLabel-root.Mui-focused': {
-            color: '#0255A5',
-          },
-        },
-      },
-    },
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          borderRadius: 16,
-          backgroundColor: '#ffffff',
-          color: '#0f172a',
-          '& fieldset': {
-            borderColor: '#e2e8f0',
-            borderWidth: '1px',
-          },
-          '&:hover fieldset': {
-            borderColor: '#cbd5e1',
-          },
-          '&.Mui-focused fieldset': {
-            borderColor: '#0255A5',
-            borderWidth: '2px',
-          },
-        },
-        icon: {
-          color: '#64748b',
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          background: 'rgba(255, 255, 255, 0.8)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderRadius: 32,
-          border: '1px solid rgba(0, 0, 0, 0.05)',
-          boxShadow: 'var(--institutional-shadow)',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        },
-      },
-    },
-    MuiDialog: {
-      styleOverrides: {
-        paper: {
-          backgroundColor: 'rgba(255, 255, 255, 0.95) !important',
-          backdropFilter: 'blur(25px)',
-          borderRadius: 32,
-          border: '1px solid rgba(0, 0, 0, 0.05)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
         },
       },
     },
     MuiPaper: {
       styleOverrides: {
         root: {
+          backgroundColor: '#ffffff',
           backgroundImage: 'none',
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: 32,
-          color: '#0f172a',
-          boxShadow: 'var(--institutional-shadow)',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          borderRadius: 20,
+        },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#ffffff !important',
+          borderRadius: 24,
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
         },
       },
     },
     MuiTableCell: {
       styleOverrides: {
         root: {
+          color: '#000000',
           borderBottom: '1px solid #e2e8f0',
-          color: '#0f172a',
-          fontFamily: '"Source Sans 3", sans-serif',
         },
         head: {
-          color: '#0255A5',
-          backgroundColor: '#f8fafc',
-          fontWeight: 900,
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-        },
-      },
-    },
-    MuiTableRow: {
-      styleOverrides: {
-        root: {
-          transition: 'background-color 0.2s ease',
-          '&:hover': {
-            backgroundColor: '#f1f5f9 !important',
-          },
-        },
-      },
-    },
-    MuiTypography: {
-      styleOverrides: {
-        root: {
-          color: '#0f172a',
-        },
-      },
-    },
-    MuiListItemIcon: {
-      styleOverrides: {
-        root: {
-          color: '#64748b',
+          backgroundColor: '#f1f5f9',
+          fontWeight: 800,
+          color: '#2a6c8d',
         },
       },
     },

@@ -137,22 +137,22 @@ interface NavItem {
   path: string;
 }
 const navigationItems: NavItem[] = [
-  { text: 'Ventas', icon: <PointOfSaleIcon sx={{ color: '#0255A5' }} />, path: '/sales' },
-  { text: 'Tasa REF/Bs.', icon: <AttachMoneyIcon sx={{ color: '#0255A5' }} />, path: '/settings/exchange-rate' },
-  { text: 'Historial', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/history' },
-  { text: 'Historial de Cajas', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/historial-caja' },
-  { text: 'Clientes', icon: <PeopleIcon sx={{ color: '#0255A5' }} />, path: '/customers' },
+  { text: 'Ventas', icon: <PointOfSaleIcon sx={{ color: '#2a6c8d' }} />, path: '/sales' },
+  { text: 'Tasa REF/Bs.', icon: <AttachMoneyIcon sx={{ color: '#2a6c8d' }} />, path: '/settings/exchange-rate' },
+  { text: 'Historial', icon: <HistoryIcon sx={{ color: '#2a6c8d' }} />, path: '/history' },
+  { text: 'Historial de Cajas', icon: <HistoryIcon sx={{ color: '#2a6c8d' }} />, path: '/historial-caja' },
+  { text: 'Clientes', icon: <PeopleIcon sx={{ color: '#2a6c8d' }} />, path: '/customers' },
 ];
 
 const managementItems: NavItem[] = [
-  { text: 'Inventario', icon: <CategoryIcon sx={{ color: '#0255A5' }} />, path: '/products' },
-  { text: 'Usuarios', icon: <PeopleIcon sx={{ color: '#0255A5' }} />, path: '/users' },
-  { text: 'Admin Caja', icon: <AccountBalanceIcon sx={{ color: '#0255A5' }} />, path: '/admin-caja' },
-  { text: 'Informes', icon: <AssessmentIcon sx={{ color: '#0255A5' }} />, path: '/reports' },
-  { text: 'Movimientos de Inventario', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/inventory/movements' },
-  { text: 'Mantenimiento', icon: <BackupIcon sx={{ color: '#0255A5' }} />, path: '/maintenance' },
-  { text: 'Impresora', icon: <PrintIcon sx={{ color: '#0255A5' }} />, path: '/settings/printer' },
-  { text: 'Acerca de', icon: <InfoIcon sx={{ color: '#0255A5' }} />, path: '/about' },
+  { text: 'Inventario', icon: <CategoryIcon sx={{ color: '#2a6c8d' }} />, path: '/products' },
+  { text: 'Usuarios', icon: <PeopleIcon sx={{ color: '#2a6c8d' }} />, path: '/users' },
+  { text: 'Admin Caja', icon: <AccountBalanceIcon sx={{ color: '#2a6c8d' }} />, path: '/admin-caja' },
+  { text: 'Informes', icon: <AssessmentIcon sx={{ color: '#2a6c8d' }} />, path: '/reports' },
+  { text: 'Movimientos de Inventario', icon: <HistoryIcon sx={{ color: '#2a6c8d' }} />, path: '/inventory/movements' },
+  { text: 'Mantenimiento', icon: <BackupIcon sx={{ color: '#2a6c8d' }} />, path: '/maintenance' },
+  { text: 'Impresora', icon: <PrintIcon sx={{ color: '#2a6c8d' }} />, path: '/settings/printer' },
+  { text: 'Acerca de', icon: <InfoIcon sx={{ color: '#2a6c8d' }} />, path: '/about' },
 ];
 
 function MainLayout({ children }: { children: React.ReactNode }) {
@@ -204,16 +204,9 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
-      <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, pointerEvents: 'none', overflow: 'hidden', backgroundColor: '#f8fafc' }}>
-        <Box sx={{ position: 'absolute', top: '-20%', left: '-10%', width: '200%', height: '400px', background: 'linear-gradient(90deg, #e9d5ff, #d8b4fe)', transform: 'rotate(-40deg)', transformOrigin: 'top left', opacity: 0.6, boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }} />
-        <Box sx={{ position: 'absolute', top: '10%', left: '-20%', width: '200%', height: '500px', background: 'linear-gradient(90deg, #fef08a, #fde047)', transform: 'rotate(-40deg)', transformOrigin: 'top left', opacity: 0.6, boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }} />
-        <Box sx={{ position: 'absolute', top: '40%', left: '-30%', width: '200%', height: '600px', background: 'linear-gradient(90deg, #a5f3fc, #67e8f9)', transform: 'rotate(-40deg)', transformOrigin: 'top left', opacity: 0.6, boxShadow: '0 15px 40px rgba(0,0,0,0.08)' }} />
-        <Box sx={{ position: 'absolute', top: '30%', left: '20%', width: '200%', height: '120px', background: 'linear-gradient(90deg, #fecdd3, #fda4af)', transform: 'rotate(50deg)', transformOrigin: 'top left', opacity: 0.6, boxShadow: '0 15px 40px rgba(0,0,0,0.08)' }} />
-      </Box>
-
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#ffffff' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={open} sx={{ bgcolor: '#ffffff', borderBottom: '1px solid #e2e8f0', boxShadow: 'none' }}>
         <Toolbar>
           {!open && (
             <Tooltip title="Expandir menú">
@@ -222,7 +215,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                 aria-label="open drawer"
                 onClick={handleToggleDrawer}
                 edge="start"
-                sx={{ marginRight: 2 }}
+                sx={{ marginRight: 2, color: '#2a6c8d' }}
               >
                 <MenuIcon />
               </IconButton>
@@ -230,13 +223,13 @@ function MainLayout({ children }: { children: React.ReactNode }) {
           )}
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography variant="h6" noWrap component="div" sx={{ color: '#0255A5', fontFamily: '"Kanit", sans-serif', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+            <Typography variant="h6" noWrap component="div" sx={{ color: '#2a6c8d', fontFamily: '"Kanit", sans-serif', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
               Uniformese
             </Typography>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
           {user && (
-            <Typography variant="body1" sx={{ color: '#0f172a', mr: 3, fontWeight: 500 }}>
+            <Typography variant="body1" sx={{ color: '#000000', mr: 3, fontWeight: 700 }}>
               Bienvenido <strong>{user.fullname}</strong>
             </Typography>
           )}
@@ -244,11 +237,11 @@ function MainLayout({ children }: { children: React.ReactNode }) {
         </Toolbar>
       </AppBar>
 
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader sx={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+      <Drawer variant="permanent" open={open} PaperProps={{ sx: { bgcolor: '#ffffff', borderRight: '1px solid #e2e8f0' } }}>
+        <DrawerHeader sx={{ borderBottom: '1px solid #f1f5f9' }}>
           {open ? (
             <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 900, fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#0255A5' }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 900, fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#2a6c8d' }}>
                 UNIFORMESE
               </Typography>
             </Box>
@@ -257,18 +250,17 @@ function MainLayout({ children }: { children: React.ReactNode }) {
             <IconButton
               onClick={handleToggleDrawer}
               sx={{
-                backgroundColor: open ? 'rgba(0,0,0,0.03)' : 'transparent',
-                '&:hover': { backgroundColor: 'rgba(0,0,0,0.08)' },
                 transition: 'all 0.3s ease',
-                margin: open ? '0' : 'auto'
+                margin: open ? '0' : 'auto',
+                color: '#2a6c8d'
               }}
             >
-              {open ? <MenuOpenIcon color="primary" /> : <MenuIcon color="primary" />}
+              {open ? <MenuOpenIcon /> : <MenuIcon />}
             </IconButton>
           </Tooltip>
         </DrawerHeader>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', bgcolor: '#ffffff' }}>
           <Box sx={{ flexGrow: 1, overflowY: 'auto', py: 1, '&::-webkit-scrollbar': { width: '4px' }, '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.05)', borderRadius: '10px' } }}>
             {isSuperAdmin ? (
               <List sx={{ px: 1 }}>

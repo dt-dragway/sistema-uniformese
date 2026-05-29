@@ -99,7 +99,7 @@ export const OpenCashRegisterModal: React.FC<OpenCashRegisterModalProps> = ({
                 backgroundColor: '#f8fafc',
                 '& fieldset': { borderColor: '#e2e8f0' },
                 '&:hover fieldset': { borderColor: '#cbd5e1' },
-                '&.Mui-focused fieldset': { borderColor: '#0255A5' },
+                '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
               }
             }}
           />
@@ -119,7 +119,7 @@ export const OpenCashRegisterModal: React.FC<OpenCashRegisterModalProps> = ({
                 backgroundColor: '#f8fafc',
                 '& fieldset': { borderColor: '#e2e8f0' },
                 '&:hover fieldset': { borderColor: '#cbd5e1' },
-                '&.Mui-focused fieldset': { borderColor: '#0255A5' },
+                '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
               }
             }}
           />
@@ -168,7 +168,7 @@ export const OpenCashRegisterModal: React.FC<OpenCashRegisterModalProps> = ({
               py: 1.5,
               textTransform: 'none',
               fontWeight: 600,
-              background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
+              background: 'linear-gradient(135deg, #2a6c8d 0%, #003780 100%)',
               '&:hover': {
                 background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
               },

@@ -80,7 +80,7 @@ export const ProfessionalPagination: React.FC<ProfessionalPaginationProps> = ({
             borderRadius: '8px',
             backgroundColor: '#f8fafc',
             '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' },
-            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#0255A5' },
+            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#2a6c8d' },
           }}
         >
           {rowsPerPageOptions.map((option) => (
@@ -93,7 +93,7 @@ export const ProfessionalPagination: React.FC<ProfessionalPaginationProps> = ({
 
       {/* Page information */}
       <Typography variant="body2" sx={{ color: '#0f172a', fontWeight: 600 }}>
-        Mostrando <span style={{ color: '#0255A5' }}>{from}-{to}</span> de <span style={{ color: '#0255A5' }}>{count}</span>
+        Mostrando <span style={{ color: '#2a6c8d' }}>{from}-{to}</span> de <span style={{ color: '#2a6c8d' }}>{count}</span>
       </Typography>
 
       {/* Pagination controls */}
@@ -115,12 +115,12 @@ export const ProfessionalPagination: React.FC<ProfessionalPaginationProps> = ({
               backgroundColor: '#ffffff',
               '&:hover': {
                 backgroundColor: 'rgba(2, 85, 165, 0.05)',
-                borderColor: '#0255A5',
+                borderColor: '#2a6c8d',
               },
               '&.Mui-selected': {
-                backgroundColor: '#0255A5',
+                backgroundColor: '#2a6c8d',
                 color: '#ffffff',
-                borderColor: '#0255A5',
+                borderColor: '#2a6c8d',
                 '&:hover': {
                   backgroundColor: '#003780',
                 },

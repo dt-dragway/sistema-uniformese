@@ -117,7 +117,7 @@ const ProductFormModal = () => {
 
   return (
     <Dialog open={isProductModalOpen} onClose={handleCloseModal} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ backgroundColor: '#0255A5', color: 'white' }}>
+      <DialogTitle sx={{ backgroundColor: '#2a6c8d', color: 'white' }}>
         {isEditing ? 'Editar Producto' : 'Añadir Nuevo Producto'}
       </DialogTitle>
       <DialogContent dividers>
