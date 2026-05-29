@@ -1,16 +1,18 @@
 import { Request, Response } from 'express';
 import * as creditService from '../services/CreditService';
+import { AuthRequest } from '../utils/utils';
 
 export const addCredit = async (req: Request, res: Response) => {
   const customerId = parseInt(req.params.id, 10);
   const { amount, description, paymentMethod, reference } = req.body;
+  const userId = (req as AuthRequest).user?.id;
 
   if (isNaN(customerId) || !amount || !paymentMethod) {
     return res.status(400).json({ message: 'Invalid input: customerId, amount, and paymentMethod are required.' });
   }
 
   try {
-    const result = await creditService.addCreditPayment(customerId, amount, description, paymentMethod, reference);
+    const result = await creditService.addCreditPayment(customerId, amount, description, paymentMethod, reference, userId);
     res.status(201).json(result);
   } catch (error: unknown) {
     res.status(500).json({ message: (error as Error).message });

@@ -331,7 +331,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
 
   // --- 4. RENDER LOGIC ---
 
-  const basePaymentMethods = ['Efectivo Bs.', 'Efectivo REF', 'Tarjeta', 'Pago Móvil', 'Biopago', 'Transferencia'];
+  const basePaymentMethods = ['Efectivo Bs.', 'Efectivo REF', 'Tarjeta', 'Pago Móvil', 'Transferencia'];
   const paymentMethodsList = customerId ? [...basePaymentMethods, 'Crédito a Cliente'] : basePaymentMethods;
   const changeData = getChange();
 
@@ -486,12 +486,31 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
 
             {/* Right Side: Totals Summary */}
             <Grid item xs={12} md={5} sx={{ bgcolor: '#f1f5f9', p: 4, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <Box sx={{ mb: 4, textAlign: 'center' }}>
+              <Box sx={{ mb: 4, textAlign: 'center', width: '100%' }}>
                 <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800, letterSpacing: '0.1em' }}>
                   TOTAL A PAGAR
                 </Typography>
-                <Typography variant="h2" sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', my: 1 }}>
-                  <span style={{ fontSize: '1.5rem', verticalAlign: 'top', marginRight: '4px', fontWeight: 600 }}>Bs.</span>
+                
+                <Typography 
+                  variant="h2" 
+                  sx={{ 
+                    fontWeight: 900, 
+                    color: '#0f172a', 
+                    fontFamily: '"Outfit", sans-serif', 
+                    my: 1,
+                    // Dynamic font sizing: Start large, shrink as number gets longer
+                    fontSize: { 
+                      xs: totalWithDiscount.toFixed(2).length > 8 ? '2rem' : '2.5rem', 
+                      sm: totalWithDiscount.toFixed(2).length > 10 ? '2.2rem' : (totalWithDiscount.toFixed(2).length > 7 ? '2.5rem' : '3rem'), 
+                      md: totalWithDiscount.toFixed(2).length > 10 ? '2.2rem' : (totalWithDiscount.toFixed(2).length > 7 ? '2.8rem' : '3.5rem') 
+                    },
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    lineHeight: 1.1
+                  }}
+                >
+                  <span style={{ fontSize: '1.2rem', verticalAlign: 'middle', marginRight: '4px', fontWeight: 700, color: '#64748b' }}>Bs.</span>
                   {totalWithDiscount.toFixed(2)}
                 </Typography>
                 <Box sx={{ display: 'inline-flex', alignItems: 'center', px: 2, py: 0.5, bgcolor: 'rgba(2, 85, 165, 0.08)', borderRadius: '12px' }}>

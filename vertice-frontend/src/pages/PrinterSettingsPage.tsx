@@ -133,20 +133,20 @@ const PrinterSettingsPage: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 3 }}>
         Configuración de Impresora
       </Typography>
 
       {/* Print Server URL Configuration */}
-      <Paper sx={{ p: 3, mb: 3, backgroundColor: 'rgba(30, 45, 55, 0.6)' }}>
-        <Typography variant="h6" gutterBottom>
+      <Paper sx={{ p: 4, mb: 4, backgroundColor: '#ffffff', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+        <Typography variant="h6" sx={{ fontWeight: 800, color: '#0255A5', mb: 1 }}>
           Servidor de Impresión (Para clientes en red)
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography variant="body2" sx={{ color: '#475569', mb: 3, fontWeight: 500 }}>
           Si estás accediendo desde un cliente en red, configura la dirección IP del servidor donde está instalado el print-server.
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
           <TextField
             label="URL del Servidor de Impresión"
             value={printServerUrl}
@@ -154,118 +154,152 @@ const PrinterSettingsPage: React.FC = () => {
             placeholder="http://192.168.1.100:3001"
             fullWidth
             helperText="Ejemplo: http://192.168.1.100:3001"
+            sx={{
+              flexGrow: 1,
+              '& .MuiOutlinedInput-root': { borderRadius: '12px', backgroundColor: '#f8fafc' }
+            }}
           />
           <Button
-            variant="contained"
+            variant="outlined"
             onClick={handleTestConnection}
             disabled={testingConnection}
-            sx={{ minWidth: 150 }}
+            sx={{ 
+              minWidth: 150, 
+              height: '56px', 
+              borderRadius: '12px',
+              fontWeight: 700,
+              textTransform: 'none',
+              borderColor: '#e2e8f0',
+              color: '#0255A5',
+              mb: 2.5
+            }}
           >
-            {testingConnection ? <CircularProgress size={24} /> : 'Probar Conexión'}
+            {testingConnection ? <CircularProgress size={24} color="inherit" /> : 'Probar Conexión'}
           </Button>
         </Box>
       </Paper>
 
-      <Divider sx={{ my: 3 }} />
-
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h6">Seleccione la impresora de tickets:</Typography>
-          <Select
-            value={selectedPrinter}
-            onChange={(e) => setSelectedPrinter(e.target.value as string)}
-            fullWidth
-            displayEmpty
-          >
-            <MenuItem value="" disabled>
-              <em>Seleccione una impresora</em>
-            </MenuItem>
-            {printers.map((printer) => (
-              <MenuItem key={printer.name} value={printer.name}>
-                {printer.name} {printer.isDefault && '(Predeterminada)'}
-              </MenuItem>
-            ))}
-          </Select>
-          {printers.length === 0 && !loading && (
-            <Alert
-              severity="warning"
-              sx={{
-                mt: 2,
-                bgcolor: 'rgba(255, 152, 0, 0.1)',
-                border: '1px solid rgba(255, 152, 0, 0.3)',
-                color: 'white',
-                '& .MuiAlert-icon': {
-                  color: '#ff9800',
-                },
-              }}
+      {/* Printer Selection */}
+      <Paper sx={{ p: 4, backgroundColor: '#ffffff', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+            <CircularProgress sx={{ color: '#0255A5' }} />
+          </Box>
+        ) : (
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', mb: 2 }}>
+              Seleccione la impresora de tickets:
+            </Typography>
+            <Select
+              value={selectedPrinter}
+              onChange={(e) => setSelectedPrinter(e.target.value as string)}
+              fullWidth
+              displayEmpty
+              sx={{ borderRadius: '12px', backgroundColor: '#f8fafc', mb: 3 }}
             >
-              {window.electronAPI ? (
-                <>
-                  No se encontraron impresoras instaladas en este equipo.
-                  Por favor, instale una impresora e intente nuevamente.
-                </>
-              ) : (
-                <>
-                  No se encontraron impresoras. Si está accediendo desde un navegador web,
-                  asegúrese de que el servidor de impresión ('vertice-print-server') esté
-                  ejecutándose <strong>localmente en este equipo</strong> en el puerto 3001.
-                  <br /><br />
-                  Para iniciar el servidor de impresión localmente, ejecute:
-                  <Box
-                    component="code"
-                    sx={{
-                      display: 'block',
-                      marginTop: '12px',
-                      padding: '12px',
-                      background: 'rgba(0, 0, 0, 0.4)',
-                      borderRadius: '4px',
-                      border: '1px solid rgba(255, 152, 0, 0.3)',
-                      color: '#4fc3f7',
-                      fontFamily: 'monospace',
-                      fontSize: '0.875rem',
-                    }}
-                  >
-                    cd vertice-print-server && npm start
-                  </Box>
-                </>
-              )}
-            </Alert>
-          )}
-          {selectedPrinter &&
-            (selectedPrinter.toLowerCase().includes('pdf') ||
-              selectedPrinter.toLowerCase().includes('xps') ||
-              selectedPrinter.toLowerCase().includes('fax')) && (
+              <MenuItem value="" disabled>
+                <em style={{ color: '#94a3b8' }}>Seleccione una impresora</em>
+              </MenuItem>
+              {printers.map((printer) => (
+                <MenuItem key={printer.name} value={printer.name} sx={{ fontWeight: 500 }}>
+                  {printer.name} {printer.isDefault && <Typography component="span" variant="caption" sx={{ color: '#0255A5', ml: 1, fontWeight: 700 }}>(Predeterminada)</Typography>}
+                </MenuItem>
+              ))}
+            </Select>
+
+            {printers.length === 0 && !loading && (
               <Alert
                 severity="warning"
                 sx={{
-                  mt: 2,
-                  bgcolor: 'rgba(255, 152, 0, 0.1)',
-                  border: '1px solid rgba(255, 152, 0, 0.3)',
-                  color: 'white',
-                  '& .MuiAlert-icon': {
-                    color: '#ff9800',
-                  },
+                  mb: 3,
+                  borderRadius: '12px',
+                  backgroundColor: '#fff7ed',
+                  color: '#9a3412',
+                  border: '1px solid #ffedd5'
                 }}
               >
-                <strong>Advertencia:</strong> Has seleccionado una impresora virtual (PDF/XPS/Fax).
-                Para imprimir tickets en una impresora térmica de 80mm, selecciona tu impresora física real de la lista.
+                {window.electronAPI ? (
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    No se encontraron impresoras instaladas en este equipo.
+                    Por favor, instale una impresora e intente nuevamente.
+                  </Typography>
+                ) : (
+                  <Box>
+                    <Typography variant="body2" sx={{ fontWeight: 500, mb: 1 }}>
+                      No se encontraron impresoras. Si está accediendo desde un navegador web,
+                      asegúrese de que el servidor de impresión ('vertice-print-server') esté
+                      ejecutándose <strong>localmente en este equipo</strong> en el puerto 3001.
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      Para iniciar el servidor de impresión localmente, ejecute:
+                    </Typography>
+                    <Box
+                      component="code"
+                      sx={{
+                        display: 'block',
+                        marginTop: '12px',
+                        padding: '12px',
+                        background: '#f1f5f9',
+                        borderRadius: '8px',
+                        border: '1px solid #e2e8f0',
+                        color: '#0f172a',
+                        fontFamily: 'monospace',
+                        fontWeight: 700
+                      }}
+                    >
+                      cd vertice-print-server && npm start
+                    </Box>
+                  </Box>
+                )}
               </Alert>
             )}
-          <Button variant="contained" color="primary" onClick={handleSave} sx={{ mt: 2 }} disabled={!selectedPrinter}>
-            Guardar
-          </Button>
-        </Box>
-      )}
+
+            {selectedPrinter &&
+              (selectedPrinter.toLowerCase().includes('pdf') ||
+                selectedPrinter.toLowerCase().includes('xps') ||
+                selectedPrinter.toLowerCase().includes('fax')) && (
+                <Alert
+                  severity="warning"
+                  sx={{
+                    mb: 3,
+                    borderRadius: '12px',
+                    backgroundColor: '#fff7ed',
+                    color: '#9a3412',
+                    border: '1px solid #ffedd5'
+                  }}
+                >
+                  <strong>Advertencia:</strong> Has seleccionado una impresora virtual (PDF/XPS/Fax).
+                  Para imprimir tickets en una impresora térmica, selecciona tu impresora física real.
+                </Alert>
+              )}
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button 
+                variant="contained" 
+                onClick={handleSave} 
+                disabled={!selectedPrinter}
+                sx={{ 
+                  backgroundColor: '#0255A5',
+                  borderRadius: '12px',
+                  px: 4,
+                  py: 1.5,
+                  fontWeight: 800,
+                  textTransform: 'none',
+                  '&:hover': { backgroundColor: '#014484' }
+                }}
+              >
+                Guardar Configuración
+              </Button>
+            </Box>
+          </Box>
+        )}
+      </Paper>
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%', borderRadius: '12px' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </Container>
+    </Box>
   );
 };
 

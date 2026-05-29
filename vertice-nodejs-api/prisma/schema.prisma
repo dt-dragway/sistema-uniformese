@@ -26,6 +26,7 @@ model User {
   role                 Role                  @default(CASHIER)
   fullname             String?
   cashRegisterSessions CashRegisterSession[]
+  creditPayments       CreditPayment[]
 }
 
 model Product {
@@ -174,6 +175,8 @@ model CreditPayment {
   id          Int      @id @default(autoincrement())
   customer    Customer @relation(fields: [customerId], references: [id])
   customerId  Int
+  user        User?    @relation(fields: [userId], references: [id])
+  userId      Int?
   amount      Float // Amount in USD
   amountBs    Float
   exchangeRate Float

@@ -8,4 +8,9 @@ export interface CreditPayment {
   description: string | null;
   status?: 'Pagado' | 'Parcialmente Pagado' | 'Pendiente';
   remaining?: number;
+  user?: {
+    id: number;
+    username: string;
+    fullname: string | null;
+  } | null;
 }

@@ -3,7 +3,7 @@ import { exchangeRateService } from './ExchangeRateService';
 
 const prisma = new PrismaClient();
 
-export const addCreditPayment = async (customerId: number, amount: number, description: string, paymentMethod: string, reference?: string) => {
+export const addCreditPayment = async (customerId: number, amount: number, description: string, paymentMethod: string, reference?: string, userId?: number) => {
   const customer = await prisma.customer.findUnique({ where: { id: customerId } });
   if (!customer) {
     throw new Error('Customer not found');
@@ -19,6 +19,7 @@ export const addCreditPayment = async (customerId: number, amount: number, descr
   const newCreditPayment = await prisma.creditPayment.create({
     data: {
       customerId,
+      userId,
       amount,
       amountBs,
       exchangeRate: exchangeRate.rate,
@@ -48,6 +49,15 @@ export const getAllCreditPayments = async (customerId?: number) => {
     orderBy: {
       paymentDate: 'asc', // Important: process in chronological order
     },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          fullname: true
+        }
+      }
+    }
   });
 
   const charges = allMovements.filter((m) => m.amount > 0).map(m => ({ ...m, remaining: m.amount, status: 'Pendiente' }));

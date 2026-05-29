@@ -218,7 +218,7 @@ const MaintenancePage = () => {
         </Grid>
  
         {/* Cleanup Section */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} sx={{ display: 'none' }}>
           <Card sx={{ height: '100%', backgroundColor: '#ffffff', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.05)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05)' }}>
             <CardContent sx={{ p: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>

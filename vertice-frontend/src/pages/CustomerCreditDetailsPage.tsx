@@ -96,7 +96,7 @@ const CustomerCreditDetailsPage = () => {
               <TableCell>Descripción</TableCell>
               <TableCell align="right">Monto (REF)</TableCell>
               <TableCell align="right">Monto (Bs.)</TableCell>
-              <TableCell align="right">Tasa de Cambio</TableCell>
+              <TableCell align="center">Autorizado por</TableCell>
               <TableCell align="center">Factura</TableCell>
               <TableCell align="center">Estado</TableCell>
             </TableRow>
@@ -105,6 +105,7 @@ const CustomerCreditDetailsPage = () => {
             {customerCreditMovements.map((movement) => {
               const isSale = movement.description?.startsWith('Venta #');
               const ticketNumber = isSale ? movement.description?.split('#')[1] : null;
+              const authorizer = movement.user ? (movement.user.fullname || movement.user.username) : '-';
 
               return (
                 <TableRow key={movement.id} hover sx={{ backgroundColor: movement.amount > 0 && movement.status === 'Pagado' ? 'rgba(76, 175, 80, 0.25)' : 'inherit' }}>
@@ -113,7 +114,7 @@ const CustomerCreditDetailsPage = () => {
                   <TableCell>{movement.description}</TableCell>
                   <TableCell align="right">${movement.amount.toFixed(2)}</TableCell>
                   <TableCell align="right">Bs. {movement.amountBs.toFixed(2)}</TableCell>
-                  <TableCell align="right">{movement.exchangeRate.toFixed(2)}</TableCell>
+                  <TableCell align="center">{authorizer}</TableCell>
                   <TableCell align="center">
                     {isSale && ticketNumber && (
                       <IconButton onClick={() => handleViewTicket(ticketNumber)} color="primary">

@@ -170,10 +170,13 @@ class SaleService {
 
       if (creditPayment && customerId) {
         const amountBs = creditPayment.amount * exchangeRate.rate;
+        // Fetch session to get the user who processed the sale
+        const session = await tx.cashRegisterSession.findUnique({ where: { id: cashRegisterSessionId } });
 
         await tx.creditPayment.create({
           data: {
             customerId,
+            userId: session?.userId,
             amount: creditPayment.amount,
             amountBs,
             exchangeRate: exchangeRate.rate,
