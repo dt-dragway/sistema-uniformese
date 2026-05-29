@@ -16,6 +16,7 @@ import {
   Fade,
   CircularProgress,
   Divider,
+  IconButton,
 } from '@mui/material';
 import PrintIcon from '@mui/icons-material/Print';
 import CloseIcon from '@mui/icons-material/Close';
@@ -53,28 +54,25 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400, // Narrower for ticket look
-  bgcolor: 'rgba(7, 18, 36, 0.9)',
-  backdropFilter: 'blur(25px)',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  borderRadius: 10, // Curvatura Extrema (40px)
-  boxShadow: 'var(--institutional-shadow)',
+  width: 450, // Slightly wider for better fit
+  bgcolor: '#ffffff',
+  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+  borderRadius: '24px', // Consistent rounding
+  border: '1px solid rgba(0, 0, 0, 0.05)',
   p: 0,
   display: 'flex',
   flexDirection: 'column',
   maxHeight: '90vh',
+  overflow: 'hidden',
 };
 
 // Ticket paper style
 const ticketPaperStyle = {
-  bgcolor: '#fff', // White paper
+  bgcolor: '#f8fafc', // Light gray background for paper area
   color: '#000', // Black ink
   fontFamily: '"Courier New", Courier, monospace',
-  p: 3,
-  borderRadius: 1,
-  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+  p: 0,
   overflowY: 'auto',
-  margin: 2,
   // Force all internal typography and table cells to be black
   '& .MuiTypography-root': {
     color: '#000 !important',
@@ -162,74 +160,74 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({ open, onClose,
         <Fade in={open} timeout={300}>
           <Box sx={style}>
             {/* Modal Header */}
-            <Box sx={{ p: 2, borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="h6" color="white" fontWeight="bold">
-                Vista Previa
+            <Box sx={{ p: 2.5, borderBottom: '1px solid rgba(0,0,0,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc' }}>
+              <Typography variant="h6" sx={{ color: '#0f172a', fontWeight: 800, fontFamily: '"Outfit", sans-serif' }}>
+                Vista Previa de Ticket
               </Typography>
-              <Button onClick={onClose} sx={{ minWidth: 0, p: 1, color: 'rgba(255,255,255,0.5)' }}>
+              <IconButton onClick={onClose} size="small" sx={{ color: '#64748b' }}>
                 <CloseIcon />
-              </Button>
+              </IconButton>
             </Box>
 
             {/* Ticket Content (Scrollable) */}
-            <Box sx={{ flexGrow: 1, overflowY: 'auto', bgcolor: 'rgba(0,0,0,0.2)' }}>
-              <Box ref={ticketRef} sx={ticketPaperStyle} className="printable-ticket">
+            <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 3, bgcolor: '#f1f5f9' }}>
+              <Paper ref={ticketRef} sx={{ p: 3, borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', bgcolor: '#fff', color: '#000', fontFamily: '"Courier New", Courier, monospace' }} className="printable-ticket">
                 {/* Header */}
                 <Box sx={{ textAlign: 'center', mb: 2 }}>
-                  <img src="/images/logobn.jpg" alt="Logo" style={{ maxWidth: '120px', height: 'auto', display: 'block', margin: '0 auto 10px' }} />
-                  <Typography variant="body1" fontWeight="bold" sx={{ fontSize: '14px', textTransform: 'uppercase' }}>
+                  <img src="/images/logobn.jpg" alt="Logo" style={{ maxWidth: '100px', height: 'auto', display: 'block', margin: '0 auto 10px' }} />
+                  <Typography variant="body1" fontWeight="bold" sx={{ fontSize: '13px', textTransform: 'uppercase', color: '#000 !important' }}>
                     {BUSINESS_INFO.name}
                   </Typography>
-                  <Typography variant="caption" display="block" sx={{ fontSize: '11px' }}>
+                  <Typography variant="caption" display="block" sx={{ fontSize: '10px', color: '#000 !important' }}>
                     {BUSINESS_INFO.address}
                   </Typography>
                 </Box>
 
-                <Divider sx={{ borderStyle: 'dashed', borderColor: '#000', my: 1 }} />
+                <Divider sx={{ borderStyle: 'dashed', borderColor: '#000 !important', my: 1, opacity: 0.5 }} />
 
                 {/* Info */}
                 <Box sx={{ my: 1 }}>
-                  <Typography variant="body2" sx={{ fontSize: '12px', fontFamily: 'inherit' }}>
+                  <Typography variant="body2" sx={{ fontSize: '11px', color: '#000 !important' }}>
                     <strong>Ticket:</strong> {sale.ticketNumber}
                   </Typography>
-                  <Typography variant="body2" sx={{ fontSize: '12px', fontFamily: 'inherit' }}>
+                  <Typography variant="body2" sx={{ fontSize: '11px', color: '#000 !important' }}>
                     <strong>Fecha:</strong> {new Date(sale.createdAt).toLocaleString()}
                   </Typography>
-                  <Typography variant="body2" sx={{ fontSize: '12px', fontFamily: 'inherit' }}>
+                  <Typography variant="body2" sx={{ fontSize: '11px', color: '#000 !important' }}>
                     <strong>Cliente:</strong> {sale.customer?.name || 'CONSUMIDOR FINAL'}
                   </Typography>
                   {sale.customer?.cedula && (
-                    <Typography variant="body2" sx={{ fontSize: '12px', fontFamily: 'inherit' }}>
+                    <Typography variant="body2" sx={{ fontSize: '11px', color: '#000 !important' }}>
                       <strong>CI/RIF:</strong> {sale.customer.cedula}
                     </Typography>
                   )}
                 </Box>
 
-                <Divider sx={{ borderStyle: 'dashed', borderColor: '#000', my: 1 }} />
+                <Divider sx={{ borderStyle: 'dashed', borderColor: '#000 !important', my: 1, opacity: 0.5 }} />
 
                 {/* Items */}
                 <TableContainer component={Box} sx={{ my: 1 }}>
                   <Table size="small" padding="none">
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={{ borderBottom: '1px dashed #000', fontSize: '11px', fontWeight: 'bold', fontFamily: 'inherit', color: '#000', py: 0.5 }}>DESCRIPCIÓN</TableCell>
-                        <TableCell align="right" sx={{ borderBottom: '1px dashed #000', fontSize: '11px', fontWeight: 'bold', fontFamily: 'inherit', color: '#000', py: 0.5, width: '40px' }}>CANT</TableCell>
-                        <TableCell align="right" sx={{ borderBottom: '1px dashed #000', fontSize: '11px', fontWeight: 'bold', fontFamily: 'inherit', color: '#000', py: 0.5 }}>TOTAL</TableCell>
+                        <TableCell sx={{ borderBottom: '1px dashed #000', fontSize: '10px', fontWeight: 'bold', color: '#000 !important', py: 0.5 }}>DESCRIPCIÓN</TableCell>
+                        <TableCell align="right" sx={{ borderBottom: '1px dashed #000', fontSize: '10px', fontWeight: 'bold', color: '#000 !important', py: 0.5, width: '40px' }}>CANT</TableCell>
+                        <TableCell align="right" sx={{ borderBottom: '1px dashed #000', fontSize: '10px', fontWeight: 'bold', color: '#000 !important', py: 0.5 }}>TOTAL</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {sale.items.map((item: SaleItem) => (
                         <TableRow key={item.id}>
-                          <TableCell sx={{ border: 'none', fontSize: '11px', fontFamily: 'inherit', color: '#000', py: 0.5 }}>
+                          <TableCell sx={{ border: 'none', fontSize: '10px', color: '#000 !important', py: 0.5 }}>
                             {item.product.name}
-                            <Typography variant="caption" display="block" sx={{ fontSize: '10px', fontFamily: 'inherit' }}>
+                            <Typography variant="caption" display="block" sx={{ fontSize: '9px', color: '#000 !important' }}>
                               {formatCurrency(item.price * exchangeRate)} c/u
                             </Typography>
                           </TableCell>
-                          <TableCell align="right" sx={{ border: 'none', fontSize: '11px', fontFamily: 'inherit', color: '#000', verticalAlign: 'top', py: 0.5 }}>
+                          <TableCell align="right" sx={{ border: 'none', fontSize: '10px', color: '#000 !important', verticalAlign: 'top', py: 0.5 }}>
                             {Number.isInteger(item.quantity) ? item.quantity : item.quantity.toFixed(2)}
                           </TableCell>
-                          <TableCell align="right" sx={{ border: 'none', fontSize: '11px', fontFamily: 'inherit', color: '#000', verticalAlign: 'top', py: 0.5 }}>
+                          <TableCell align="right" sx={{ border: 'none', fontSize: '10px', color: '#000 !important', verticalAlign: 'top', py: 0.5 }}>
                             {formatCurrency(item.quantity * item.price * exchangeRate)}
                           </TableCell>
                         </TableRow>
@@ -241,14 +239,14 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({ open, onClose,
                 {/* Recargas */}
                 {pendingRecharges.length > 0 && (
                   <>
-                    <Divider sx={{ borderStyle: 'dashed', borderColor: '#000', my: 1 }} />
-                    <Typography variant="subtitle2" sx={{ fontSize: '11px', fontWeight: 'bold', mb: 0.5 }}>RECARGAS:</Typography>
+                    <Divider sx={{ borderStyle: 'dashed', borderColor: '#000 !important', my: 1, opacity: 0.5 }} />
+                    <Typography variant="subtitle2" sx={{ fontSize: '10px', fontWeight: 'bold', mb: 0.5, color: '#000 !important' }}>RECARGAS:</Typography>
                     {pendingRecharges.map((recharge, index) => (
-                      <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
-                        <Typography variant="body2" sx={{ fontSize: '11px' }}>
+                      <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
+                        <Typography variant="body2" sx={{ fontSize: '10px', color: '#000 !important' }}>
                           {recharge.serviceName} - {recharge.phoneNumber}
                         </Typography>
-                        <Typography variant="body2" sx={{ fontSize: '11px' }}>
+                        <Typography variant="body2" sx={{ fontSize: '10px', color: '#000 !important' }}>
                           Bs. {recharge.totalChargeBs.toFixed(2)}
                         </Typography>
                       </Box>
@@ -259,14 +257,14 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({ open, onClose,
                 {/* Avances de Efectivo */}
                 {pendingCashAdvances.length > 0 && (
                   <>
-                    <Divider sx={{ borderStyle: 'dashed', borderColor: '#000', my: 1 }} />
-                    <Typography variant="subtitle2" sx={{ fontSize: '11px', fontWeight: 'bold', mb: 0.5 }}>AVANCES DE EFECTIVO:</Typography>
+                    <Divider sx={{ borderStyle: 'dashed', borderColor: '#000 !important', my: 1, opacity: 0.5 }} />
+                    <Typography variant="subtitle2" sx={{ fontSize: '10px', fontWeight: 'bold', mb: 0.5, color: '#000 !important' }}>AVANCES DE EFECTIVO:</Typography>
                     {pendingCashAdvances.map((advance, index) => (
-                      <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
-                        <Typography variant="body2" sx={{ fontSize: '11px' }}>
+                      <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
+                        <Typography variant="body2" sx={{ fontSize: '10px', color: '#000 !important' }}>
                           Entrega: Bs. {advance.amountToGive.toFixed(2)}
                         </Typography>
-                        <Typography variant="body2" sx={{ fontSize: '11px' }}>
+                        <Typography variant="body2" sx={{ fontSize: '10px', color: '#000 !important' }}>
                           Cobro: Bs. {advance.totalChargeBs.toFixed(2)}
                         </Typography>
                       </Box>
@@ -274,48 +272,49 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({ open, onClose,
                   </>
                 )}
 
-                <Divider sx={{ borderStyle: 'dashed', borderColor: '#000', my: 1 }} />
+                <Divider sx={{ borderStyle: 'dashed', borderColor: '#000 !important', my: 1, opacity: 0.5 }} />
 
                 {/* Totals */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2" sx={{ fontSize: '12px', fontFamily: 'inherit' }}>SUBTOTAL:</Typography>
-                  <Typography variant="body2" sx={{ fontSize: '12px', fontFamily: 'inherit' }}>{formatCurrency(sale.totalBs)}</Typography>
+                  <Typography variant="body2" sx={{ fontSize: '11px', color: '#000 !important' }}>SUBTOTAL:</Typography>
+                  <Typography variant="body2" sx={{ fontSize: '11px', color: '#000 !important' }}>{formatCurrency(sale.totalBs)}</Typography>
                 </Box>
-
-                {/* Discount display if implemented in future */}
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-                  <Typography variant="h6" sx={{ fontSize: '16px', fontWeight: 'bold', fontFamily: 'inherit' }}>TOTAL:</Typography>
-                  <Typography variant="h6" sx={{ fontSize: '16px', fontWeight: 'bold', fontFamily: 'inherit' }}>Bs. {formatCurrency(sale.totalBs)}</Typography>
+                  <Typography variant="h6" sx={{ fontSize: '14px', fontWeight: 'bold', color: '#000 !important' }}>TOTAL:</Typography>
+                  <Typography variant="h6" sx={{ fontSize: '14px', fontWeight: 'bold', color: '#000 !important' }}>Bs. {formatCurrency(sale.totalBs)}</Typography>
                 </Box>
                 <Box sx={{ textAlign: 'right' }}>
-                  <Typography variant="caption" sx={{ fontSize: '11px', fontFamily: 'inherit' }}>REF: ${formatCurrency(sale.totalUsd)}</Typography>
+                  <Typography variant="caption" sx={{ fontSize: '10px', color: '#000 !important' }}>REF: ${formatCurrency(sale.totalUsd)}</Typography>
                 </Box>
 
-                <Divider sx={{ borderStyle: 'dashed', borderColor: '#000', my: 1 }} />
+                <Divider sx={{ borderStyle: 'dashed', borderColor: '#000 !important', my: 1, opacity: 0.5 }} />
 
                 {/* Payments */}
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="subtitle2" sx={{ fontSize: '11px', fontWeight: 'bold', fontFamily: 'inherit', mb: 0.5 }}>MÉTODOS DE PAGO:</Typography>
+                  <Typography variant="subtitle2" sx={{ fontSize: '10px', fontWeight: 'bold', mb: 0.5, color: '#000 !important' }}>MÉTODOS DE PAGO:</Typography>
                   {sale.payments.map((p: Payment) => (
                     <Box key={p.id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant="body2" sx={{ fontSize: '11px', fontFamily: 'inherit' }}>
+                      <Typography variant="body2" sx={{ fontSize: '10px', color: '#000 !important' }}>
                         {p.method} {p.reference ? `(#${p.reference})` : ''}
                       </Typography>
-                      {/* Assuming payment amounts were stored or can be derived. If not available in model, just list methods */}
                     </Box>
                   ))}
                 </Box>
 
-                <Typography variant="body2" align="center" sx={{ fontSize: '11px', fontStyle: 'italic', mt: 2 }}>
+                <Typography variant="body2" align="center" sx={{ fontSize: '10px', fontStyle: 'italic', mt: 2, color: '#000 !important' }}>
                   ¡GRACIAS POR SU COMPRA!
                 </Typography>
-              </Box>
+              </Paper>
             </Box>
 
             {/* Actions */}
-            <Box sx={{ p: 2, borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-              <Button variant="outlined" onClick={onClose} color="inherit" sx={{ borderColor: 'rgba(255,255,255,0.3)', color: 'white' }}>
+            <Box sx={{ p: 2.5, borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', justifyContent: 'flex-end', gap: 2, background: '#f8fafc' }}>
+              <Button 
+                variant="outlined" 
+                onClick={onClose} 
+                sx={{ borderRadius: '12px', px: 3, color: '#64748b', borderColor: '#e2e8f0', textTransform: 'none', fontWeight: 600 }}
+              >
                 Cerrar
               </Button>
               <Button
@@ -324,33 +323,29 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({ open, onClose,
                 disabled={isLoading}
                 startIcon={!isLoading && <PrintIcon />}
                 sx={{
-                  py: 1.2,
-                  px: 3,
-                  fontSize: '0.9rem',
-                  letterSpacing: '0.15em',
-                  fontWeight: 900,
-                  borderRadius: '9999px',
+                  py: 1.5,
+                  px: 4,
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  borderRadius: '16px',
                   background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
-                  boxShadow: '0 4px 15px rgba(0, 55, 128, 0.3)',
-                  transition: 'all 0.25s ease',
+                  boxShadow: '0 10px 15px -3px rgba(2, 85, 165, 0.3)',
+                  textTransform: 'none',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
                     background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
-                    boxShadow: '0 8px 25px rgba(2, 85, 165, 0.55)',
                     transform: 'translateY(-2px)',
                   },
-                  '&:active': {
-                    transform: 'translateY(1px)',
-                  }
                 }}
               >
-                {isLoading ? <CircularProgress size={24} color="inherit" /> : 'IMPRIMIR TICKET (F1)'}
+                {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Imprimir Ticket (F1)'}
               </Button>
             </Box>
           </Box>
         </Fade>
       </Modal>
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%', borderRadius: '12px' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

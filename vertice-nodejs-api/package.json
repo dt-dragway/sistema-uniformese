@@ -27,6 +27,9 @@
     ],
     "outputPath": "../release"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -52,6 +55,7 @@
     "typescript": "^5.9.3",
     "uuid": "^13.0.0",
     "winston": "^3.17.0",
+    "xlsx": "^0.18.5",
     "zod": "^3.24.0"
   },
   "devDependencies": {

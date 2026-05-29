@@ -69,63 +69,108 @@ export const OpenCashRegisterModal: React.FC<OpenCashRegisterModalProps> = ({
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'rgba(20, 25, 35, 0.95)', // Darker opaque background
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: 24,
-          p: 4,
-          borderRadius: 4, // More rounded
+          width: { xs: '90%', sm: 450 },
+          bgcolor: '#ffffff',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          p: { xs: 3, sm: 5 },
+          borderRadius: '24px', // Consistent with LockedSalesScreen and Login
           textAlign: 'center',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
         }}
       >
-        <Typography variant="h6" component="h2" mb={2}>
-          Iniciar Sistema de Ventas
+        <Typography variant="h5" sx={{ fontWeight: 800, color: '#0f172a', mb: 1, fontFamily: '"Outfit", sans-serif' }}>
+          Apertura de Caja
         </Typography>
-        <Typography variant="body2" mb={2}>
-          Introduce el monto inicial en efectivo con el que estás abriendo la caja.
+        <Typography variant="body2" sx={{ color: '#64748b', mb: 4, lineHeight: 1.5 }}>
+          Establezca los montos iniciales de efectivo para comenzar a registrar transacciones.
         </Typography>
-        <TextField
-          label="Monto de Apertura en USD"
-          type="number"
-          fullWidth
-          value={openingAmountUsd}
-          onChange={(e) => setOpeningAmountUsd(e.target.value === '' ? '' : Number(e.target.value))}
-          margin="normal"
-          error={!!localError}
-          helperText={localError}
-        />
-        <TextField
-          label="Monto de Apertura en Bs."
-          type="number"
-          fullWidth
-          value={openingAmountBs}
-          onChange={(e) => setOpeningAmountBs(e.target.value === '' ? '' : Number(e.target.value))}
-          margin="normal"
-          error={!!localError}
-          helperText={localError}
-        />
 
-        {error && (
-          <Alert severity="error" sx={{ mt: 2 }}>
-            {error}
+        <Box sx={{ mb: 2 }}>
+          <TextField
+            label="Monto Inicial USD (REF)"
+            type="number"
+            fullWidth
+            value={openingAmountUsd}
+            onChange={(e) => setOpeningAmountUsd(e.target.value === '' ? '' : Number(e.target.value))}
+            placeholder="0.00"
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '16px',
+                backgroundColor: '#f8fafc',
+                '& fieldset': { borderColor: '#e2e8f0' },
+                '&:hover fieldset': { borderColor: '#cbd5e1' },
+                '&.Mui-focused fieldset': { borderColor: '#0255A5' },
+              }
+            }}
+          />
+        </Box>
+
+        <Box sx={{ mb: 3 }}>
+          <TextField
+            label="Monto Inicial Bs. (Bs)"
+            type="number"
+            fullWidth
+            value={openingAmountBs}
+            onChange={(e) => setOpeningAmountBs(e.target.value === '' ? '' : Number(e.target.value))}
+            placeholder="0.00"
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '16px',
+                backgroundColor: '#f8fafc',
+                '& fieldset': { borderColor: '#e2e8f0' },
+                '&:hover fieldset': { borderColor: '#cbd5e1' },
+                '&.Mui-focused fieldset': { borderColor: '#0255A5' },
+              }
+            }}
+          />
+        </Box>
+
+        {(localError || error) && (
+          <Alert 
+            severity="error" 
+            sx={{ 
+              mb: 3, 
+              borderRadius: '12px',
+              backgroundColor: '#fef2f2',
+              color: '#b91c1c',
+              border: '1px solid #fee2e2'
+            }}
+          >
+            {localError || error}
           </Alert>
         )}
 
-        <Box mt={3} display="flex" justifyContent="space-between">
-          <Button variant="outlined" onClick={onClose} disabled={loading}>
+        <Box mt={4} display="flex" gap={2}>
+          <Button 
+            fullWidth
+            variant="outlined" 
+            onClick={onClose} 
+            disabled={loading}
+            sx={{ 
+              borderRadius: '12px', 
+              py: 1.5, 
+              textTransform: 'none', 
+              fontWeight: 600,
+              color: '#64748b',
+              borderColor: '#e2e8f0'
+            }}
+          >
             Cancelar
           </Button>
           <Button
+            fullWidth
             variant="contained"
-            color="primary"
             onClick={handleConfirm}
             disabled={loading}
             startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
             sx={{
-              backgroundColor: '#FF9B00',
+              borderRadius: '12px',
+              py: 1.5,
+              textTransform: 'none',
+              fontWeight: 600,
+              background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
               '&:hover': {
-                backgroundColor: '#E08A00',
+                background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
               },
             }}
           >

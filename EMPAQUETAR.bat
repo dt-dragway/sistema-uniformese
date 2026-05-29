@@ -283,7 +283,7 @@ echo      - Inicia todos los servicios con PM2
 echo.
 echo   4. Accede a: http://localhost:3000
 echo      - Usuario: admin
-echo      - Password: admin123
+echo      - Password: admin2425*
 echo.
 echo SCRIPTS DISPONIBLES:
 echo   INSTALAR.bat   - Instalacion completa del sistema

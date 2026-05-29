@@ -2,8 +2,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { clearVenta } from './cartSlice';
 import salesService from '../api/salesService';
 
-type QuickFilter = 'promotions' | 'favorites' | 'lowStock';
-type ViewMode = 'grid' | 'list';
+type QuickFilter = 'promotions' | 'favorites';
 
 import { Sale } from '../models/Sale';
 
@@ -11,7 +10,6 @@ interface SalesState {
   sales: Sale[];
   searchTerm: string;
   quickFilter: QuickFilter | null;
-  viewMode: ViewMode;
   sortBy: string;
   selectedCustomer: number | null;
   submitting: boolean;
@@ -25,7 +23,6 @@ const initialState: SalesState = {
   sales: [],
   searchTerm: '',
   quickFilter: null,
-  viewMode: 'grid',
   sortBy: 'default',
   selectedCustomer: null,
   submitting: false,
@@ -110,9 +107,6 @@ const salesSlice = createSlice({
     setQuickFilter: (state, action: PayloadAction<QuickFilter | null>) => {
       state.quickFilter = action.payload;
     },
-    setViewMode: (state, action: PayloadAction<ViewMode>) => {
-      state.viewMode = action.payload;
-    },
     setSortBy: (state, action: PayloadAction<string>) => {
       state.sortBy = action.payload;
     },
@@ -179,7 +173,6 @@ const salesSlice = createSlice({
 export const {
   setSearchTerm,
   setQuickFilter,
-  setViewMode,
   setSortBy,
   clearFilters,
   setSelectedCustomer,

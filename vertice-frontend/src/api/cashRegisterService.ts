@@ -91,7 +91,7 @@ const closeSessionByAdmin = (targetUserId: number, closingAmountUsd: number, clo
   return axiosInstance.post<CashRegisterSession>('/cash-register/close-by-admin', {
     targetUserId,
     closingAmountUsd,
-    closingAmountBs
+    closingAmountBs,
   });
 };
 

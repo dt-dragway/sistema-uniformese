@@ -148,7 +148,7 @@ const AdminCajaPage = () => {
         const rateToUse = exchangeRate || 0;
         const dataUri = generateSessionReport(session, rateToUse);
         setPdfDataUri(dataUri);
-        setPdfTitle(`Reporte de Cierre - ${session.user?.username || 'Cajero'} - Sesión #${session.id}`);
+        setPdfTitle(`Reporte de Cierre - ${session.user?.fullname || session.user?.username || 'Cajero'} - Sesión #${session.id}`);
         setIsPdfModalOpen(true);
     };
 
@@ -196,7 +196,7 @@ const AdminCajaPage = () => {
         try {
             const response = await cashRegisterService.processCorteZByAdmin(selectedSession.userId, conteoReal);
             setCierreResult(response.data);
-            setSuccessMessage(`Caja de ${selectedSession.user?.username || 'cajero'} cerrada. ${response.data.observaciones}`);
+            setSuccessMessage(`Caja de ${selectedSession.user?.fullname || selectedSession.user?.username || 'cajero'} cerrada. ${response.data.observaciones}`);
             handleRefresh();
         } catch (err: any) {
             setError(err.response?.data?.message || 'Error al cerrar la caja');
@@ -268,7 +268,7 @@ const AdminCajaPage = () => {
                                         <TableCell>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                 <PersonIcon color="action" />
-                                                <Typography fontWeight="medium">{session.user?.username || `Usuario #${session.userId}`}</Typography>
+                                                <Typography fontWeight="medium">{session.user?.fullname || session.user?.username || `Usuario #${session.userId}`}</Typography>
                                             </Box>
                                         </TableCell>
                                         <TableCell>{new Date(session.openedAt).toLocaleString('es-VE', { dateStyle: 'short', timeStyle: 'short' })}</TableCell>
@@ -321,7 +321,7 @@ const AdminCajaPage = () => {
                                     <TableCell>
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                             <PersonIcon color="action" />
-                                            <Typography fontWeight="medium">{session.user?.username || `Usuario #${session.userId}`}</Typography>
+                                            <Typography fontWeight="medium">{session.user?.fullname || session.user?.username || `Usuario #${session.userId}`}</Typography>
                                         </Box>
                                     </TableCell>
                                     <TableCell>{new Date(session.openedAt).toLocaleString('es-VE', { dateStyle: 'short', timeStyle: 'short' })}</TableCell>
@@ -427,7 +427,7 @@ const AdminCajaPage = () => {
             {/* ========== DIALOGO CIERRE DE CAJA ========== */}
             <Dialog open={cierreDialogOpen} onClose={() => !closing && setCierreDialogOpen(false)} maxWidth="sm" fullWidth>
                 <DialogTitle sx={{ bgcolor: 'error.main', color: 'white', display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <LockIcon /> Cierre de Caja - {selectedSession?.user?.username || 'Cajero'}
+                    <LockIcon /> Cierre de Caja - {selectedSession?.user?.fullname || selectedSession?.user?.username || 'Cajero'}
                 </DialogTitle>
                 <DialogContent sx={{ mt: 2 }}>
                     {cierreResult ? (
@@ -465,7 +465,7 @@ const AdminCajaPage = () => {
                             )}
                             <Divider sx={{ my: 2 }} />
                             <Typography variant="body1" sx={{ mb: 2 }}>Ingresa el monto <strong>contado físicamente</strong>:</Typography>
-                            <TextField fullWidth label="Monto Contado (USD)" type="number" value={closingAmountUsd} onChange={(e) => setClosingAmountUsd(e.target.value)} sx={{ mb: 2 }} inputProps={{ step: '0.01', min: '0' }} InputProps={{ startAdornment: <Typography sx={{ mr: 1, color: 'text.secondary' }}>$</Typography> }} />
+                            <TextField fullWidth label="Monto Contado (REF)" type="number" value={closingAmountUsd} onChange={(e) => setClosingAmountUsd(e.target.value)} sx={{ mb: 2 }} inputProps={{ step: '0.01', min: '0' }} InputProps={{ startAdornment: <Typography sx={{ mr: 1, color: 'text.secondary' }}>REF</Typography> }} />
                             <TextField fullWidth label="Monto Contado (Bs)" type="number" value={closingAmountBs} onChange={(e) => setClosingAmountBs(e.target.value)} inputProps={{ step: '0.01', min: '0' }} InputProps={{ startAdornment: <Typography sx={{ mr: 1, color: 'text.secondary' }}>Bs.</Typography> }} />
                         </Box>
                     )}

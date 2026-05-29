@@ -83,14 +83,14 @@ const SalesChart = ({ sales }: SalesChartProps) => {
           stroke="#808e9b"
           tick={{ fill: '#808e9b' }}
           tickLine={false}
-          tickFormatter={(value) => `$${value}`}
+          tickFormatter={(value) => `REF ${value}`}
         />
         <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
         <Legend wrapperStyle={{ paddingTop: '20px' }} />
         <Bar
           dataKey="total"
           fill="url(#colorSales)"
-          name="Total de Ventas ($)"
+          name="Total de Ventas (REF)"
           radius={[6, 6, 0, 0]}
           barSize={60}
           animationDuration={1500}

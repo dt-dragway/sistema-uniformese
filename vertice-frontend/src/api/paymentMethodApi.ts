@@ -83,4 +83,3 @@ export const deletePaymentMethod = async (id: number): Promise<boolean> => {
   }
   throw new Error('Failed to delete payment method');
 };
-

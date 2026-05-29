@@ -52,8 +52,19 @@ const UserFormModal = ({ open, onClose, onSave, userToEdit }: UserFormModalProps
         <TextField
           autoFocus
           margin="dense"
+          name="fullname"
+          label="Nombre y Apellido"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={user.fullname || ''}
+          onChange={handleChange}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          margin="dense"
           name="username"
-          label="Nombre de Usuario"
+          label="Login Ingreso"
           type="text"
           fullWidth
           variant="outlined"
@@ -79,7 +90,7 @@ const UserFormModal = ({ open, onClose, onSave, userToEdit }: UserFormModalProps
             onChange={handleChange}
             label="Rol"
           >
-            <MenuItem value="ADMIN">ADMIN</MenuItem>
+            <MenuItem value="ADMIN">ADMINISTRADOR</MenuItem>
             <MenuItem value="CASHIER">CAJERO</MenuItem>
           </Select>
         </FormControl>

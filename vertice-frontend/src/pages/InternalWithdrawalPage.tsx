@@ -1,168 +1,125 @@
-import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
-  Typography,
+  Button,
   Card,
   CardContent,
-  Grid,
   TextField,
-  Button,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Divider,
-  Autocomplete,
-  Snackbar,
-  Alert,
-  CircularProgress,
+  Typography,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  TablePagination,
+  Paper,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  Autocomplete,
+  CircularProgress,
+  Snackbar,
+  Alert,
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import HistoryIcon from '@mui/icons-material/History';
+import Grid from '@mui/material/Grid';
+import {
+  Inventory as InventoryIcon,
+  ShoppingBag as ShoppingBagIcon,
+  Delete as DeleteIcon,
+  History as HistoryIcon,
+} from '@mui/icons-material';
+import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { Product } from '../models/Product';
-import productService from '../api/productService';
 import { fetchProducts } from '../store/productsSlice';
-import axiosInstance from '../api/axiosInstance';
+import { createInternalWithdrawal, fetchInternalWithdrawals, InventoryMovement } from '../store/inventorySlice';
+import { Product } from '../models/Product';
+
+import { ProfessionalPagination } from '../components/common/ProfessionalPagination';
 
 interface WithdrawalItem {
   product: Product;
   quantity: number;
 }
 
-const InternalWithdrawalPage = () => {
+const InternalWithdrawalPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { products } = useAppSelector((state) => state.products);
+  const { internalWithdrawals: history, loading: historyLoading } = useAppSelector((state) => state.inventory);
+  
   const [withdrawalItems, setWithdrawalItems] = useState<WithdrawalItem[]>([]);
-  const [reason, setReason] = useState('Uso interno del negocio');
+  const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(false);
-  const [history, setHistory] = useState<any[]>([]);
-  const [historyLoading, setHistoryLoading] = useState(false);
   const [notification, setNotification] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
     open: false,
     message: '',
     severity: 'success',
   });
 
-  // Pagination for history
+  // Pagination state
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  // Scanner Logic
-  const [barcode, setBarcode] = useState('');
-  const scanTimer = useRef<NodeJS.Timeout | null>(null);
-
-  const fetchHistory = async () => {
-    setHistoryLoading(true);
-    try {
-      const response = await axiosInstance.get('/inventory/movements');
-      // Filter for internal consumption only
-      const filtered = response.data.filter((m: any) => m.type === 'INTERNAL_CONSUMPTION');
-      setHistory(filtered);
-    } catch (error) {
-      console.error('Error fetching history:', error);
-    } finally {
-      setHistoryLoading(false);
-    }
-  };
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     dispatch(fetchProducts());
-    fetchHistory();
+    dispatch(fetchInternalWithdrawals());
   }, [dispatch]);
-
-  // Scanner Effect
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement;
-      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
-
-      if (scanTimer.current) clearTimeout(scanTimer.current);
-
-      if (event.key === 'Enter') {
-        if (barcode) {
-          const product = products.find(p => p.barCode === barcode);
-          if (product) {
-            handleAddProduct(product);
-          } else {
-            setNotification({ open: true, message: `Producto no encontrado: ${barcode}`, severity: 'error' });
-          }
-          setBarcode('');
-        }
-        return;
-      }
-
-      if (event.key.length > 1) return;
-      event.preventDefault();
-      setBarcode(prev => prev + event.key);
-      scanTimer.current = setTimeout(() => { setBarcode(''); }, 100);
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      if (scanTimer.current) clearTimeout(scanTimer.current);
-    };
-  }, [barcode, products]);
 
   const handleAddProduct = (product: Product | null) => {
     if (!product) return;
     
-    const existing = withdrawalItems.find(item => item.product.id === product.id);
-    if (existing) {
-      setWithdrawalItems(withdrawalItems.map(item => 
-        item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-      ));
-    } else {
-      setWithdrawalItems([...withdrawalItems, { product, quantity: 1 }]);
+    if (product.stock <= 0) {
+      setNotification({ open: true, message: 'Producto sin stock disponible', severity: 'error' });
+      return;
     }
+
+    setWithdrawalItems((prev) => {
+      const exists = prev.find((item) => item.product.id === product.id);
+      if (exists) {
+        return prev.map((item) =>
+          item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, { product, quantity: 1 }];
+    });
   };
 
-  const handleRemoveItem = (id: number) => {
-    setWithdrawalItems(withdrawalItems.filter(item => item.product.id !== id));
+  const handleRemoveItem = (productId: number) => {
+    setWithdrawalItems((prev) => prev.filter((item) => item.product.id !== productId));
   };
 
-  const handleQuantityChange = (id: number, qty: number) => {
-    if (qty < 1) return;
-    setWithdrawalItems(withdrawalItems.map(item => 
-      item.product.id === id ? { ...item, quantity: qty } : item
-    ));
+  const handleQuantityChange = (productId: number, quantity: number) => {
+    if (quantity < 1) return;
+    setWithdrawalItems((prev) =>
+      prev.map((item) => (item.product.id === productId ? { ...item, quantity } : item))
+    );
   };
 
   const handleSubmit = async () => {
     if (withdrawalItems.length === 0) return;
-    
+    if (!reason.trim()) {
+      setNotification({ open: true, message: 'Debe indicar un motivo', severity: 'error' });
+      return;
+    }
+
     setLoading(true);
     try {
-      const itemsPayload = withdrawalItems.map(item => ({
-        productId: item.product.id,
-        quantity: item.quantity
-      }));
-      
-      await productService.createInternalWithdrawal(itemsPayload, reason);
-      
-      setNotification({
-        open: true,
-        message: 'Despacho interno registrado con éxito.',
-        severity: 'success'
-      });
-      
+      for (const item of withdrawalItems) {
+        await dispatch(
+          createInternalWithdrawal({
+            productId: item.product.id,
+            quantity: item.quantity,
+            reason: reason.trim(),
+          })
+        ).unwrap();
+      }
+      setNotification({ open: true, message: 'Despacho registrado con éxito', severity: 'success' });
       setWithdrawalItems([]);
-      setReason('Uso interno del negocio');
+      setReason('');
       dispatch(fetchProducts());
-      fetchHistory(); // Refresh history table
-    } catch (error: any) {
-      setNotification({ open: true, message: 'Error al registrar el despacho.', severity: 'error' });
+      dispatch(fetchInternalWithdrawals());
+    } catch (error) {
+      setNotification({ open: true, message: 'Error al registrar despacho', severity: 'error' });
     } finally {
       setLoading(false);
     }
@@ -170,22 +127,20 @@ const InternalWithdrawalPage = () => {
 
   return (
     <Box sx={{ p: 3 }} className="animate-snappy gpu-accelerated">
-      <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ mb: 4, fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+      <Typography variant="h4" sx={{ mb: 4, fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
         Despacho Interno
       </Typography>
 
       <Grid container spacing={4}>
-        {/* Left Side: Product Selection */}
         <Grid item xs={12} md={6}>
-          <Card sx={{ background: 'rgba(10, 25, 47, 0.65)', backdropFilter: 'blur(20px)', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'var(--institutional-shadow)' }}>
+          <Card sx={{ backgroundColor: '#ffffff', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.05)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05)' }}>
             <CardContent sx={{ p: 4 }}>
-              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, fontFamily: '"Kanit", sans-serif' }}>
-                <InventoryIcon color="primary" sx={{ color: '#0255A5' }} /> Seleccionar Productos
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif', mb: 3 }}>
+                <Box sx={{ p: 1, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '12px', display: 'flex' }}>
+                  <InventoryIcon sx={{ color: '#0255A5' }} /> 
+                </Box>
+                Seleccionar Productos
               </Typography>
-              <Typography variant="body2" sx={{ mb: 3, color: 'rgba(255,255,255,0.65)' }}>
-                Use el <strong>escáner</strong> o busque manualmente los productos a retirar.
-              </Typography>
-
               <Autocomplete
                 options={products}
                 getOptionLabel={(option) => `${option.barCode || ''} - ${option.name}`}
@@ -197,58 +152,40 @@ const InternalWithdrawalPage = () => {
                     variant="outlined"
                     fullWidth
                     sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 5,
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#0255A5',
-                        }
-                      },
-                      '& .MuiInputLabel-root.Mui-focused': {
-                        color: '#0255A5',
-                      }
+                      '& .MuiOutlinedInput-root': { borderRadius: '16px', backgroundColor: '#f8fafc' }
                     }}
                   />
                 )}
                 sx={{ mb: 4 }}
               />
-
               <TextField
                 label="Motivo del Despacho"
                 fullWidth
                 multiline
-                rows={2}
+                rows={3}
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                placeholder="Ej: Consumo personal, Limpieza, Muestra..."
+                placeholder="Ej: Consumo interno, Arreglo..."
                 sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 5,
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#0255A5',
-                    }
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: '#0255A5',
-                  }
+                  '& .MuiOutlinedInput-root': { borderRadius: '16px', backgroundColor: '#f8fafc' }
                 }}
               />
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Right Side: Dispatch List */}
         <Grid item xs={12} md={6}>
-          <Card sx={{ height: '100%', background: 'rgba(10, 25, 47, 0.65)', backdropFilter: 'blur(20px)', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'var(--institutional-shadow)', display: 'flex', flexDirection: 'column' }}>
+          <Card sx={{ height: '100%', backgroundColor: '#ffffff', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.05)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05)', display: 'flex', flexDirection: 'column' }}>
             <CardContent sx={{ p: 4, flexGrow: 1 }}>
-              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, fontFamily: '"Kanit", sans-serif' }}>
-                <ShoppingBagIcon color="primary" sx={{ color: '#0255A5' }} /> Lista de Despacho
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif', mb: 3 }}>
+                <Box sx={{ p: 1, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '12px', display: 'flex' }}>
+                  <ShoppingBagIcon sx={{ color: '#0255A5' }} />
+                </Box>
+                Lista de Despacho
               </Typography>
-
-              <Box sx={{ mt: 2, maxHeight: '300px', overflowY: 'auto' }}>
+              <Box sx={{ mt: 2, maxHeight: '350px', overflowY: 'auto' }}>
                 {withdrawalItems.length === 0 ? (
-                  <Box sx={{ textAlign: 'center', py: 6, color: 'rgba(255,255,255,0.3)' }}>
-                    <Typography>Escanee productos para agregar a la lista</Typography>
-                  </Box>
+                  <Typography sx={{ textAlign: 'center', py: 8, color: '#94a3b8' }}>No hay productos seleccionados</Typography>
                 ) : (
                   <List>
                     {withdrawalItems.map((item) => (
@@ -260,129 +197,95 @@ const InternalWithdrawalPage = () => {
                             </IconButton>
                           }
                         >
-                          <ListItemText primary={item.product.name} secondary={`Disponible: ${item.product.stock}`} />
+                          <ListItemText primary={item.product.name} secondary={`Stock: ${item.product.stock}`} />
                           <TextField
                             type="number"
                             size="small"
                             value={item.quantity}
                             onChange={(e) => handleQuantityChange(item.product.id, parseInt(e.target.value))}
-                            sx={{
-                              width: '80px',
-                              mr: 2,
-                              '& .MuiOutlinedInput-root': {
-                                borderRadius: 3,
-                                '&.Mui-focused fieldset': {
-                                  borderColor: '#0255A5',
-                                }
-                              },
-                              '& .MuiInputLabel-root.Mui-focused': {
-                                color: '#0255A5',
-                              }
-                            }}
-                            inputProps={{ min: 1 }}
+                            sx={{ width: '80px', mr: 2 }}
                           />
                         </ListItem>
-                        <Divider sx={{ borderColor: 'rgba(255,255,255,0.05)' }} />
+                        <Divider />
                       </React.Fragment>
                     ))}
                   </List>
                 )}
               </Box>
             </CardContent>
-            <Box sx={{ p: 4, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <Box sx={{ p: 4, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
               <Button
                 variant="contained"
                 fullWidth
                 size="large"
                 disabled={loading || withdrawalItems.length === 0}
                 onClick={handleSubmit}
-                sx={{
-                  py: 1.5,
-                  fontSize: '0.95rem',
-                  letterSpacing: '0.2em', // Municipal Style
-                  fontWeight: 900,
-                  borderRadius: '9999px', // Pill rounded
-                  background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
-                  boxShadow: '0 4px 15px rgba(0, 55, 128, 0.3)',
-                  transition: 'all 0.25s ease',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
-                    boxShadow: '0 8px 25px rgba(2, 85, 165, 0.55)',
-                    transform: 'translateY(-2px)',
-                  },
-                  '&:active': {
-                    transform: 'translateY(1px)',
-                  },
-                  '&:disabled': {
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    color: 'rgba(255, 255, 255, 0.3)',
-                  }
-                }}
+                sx={{ py: 2, borderRadius: '16px', fontWeight: 700 }}
               >
-                {loading ? <CircularProgress size={24} color="inherit" /> : 'REGISTRAR DESPACHO'}
+                {loading ? <CircularProgress size={24} color="inherit" /> : 'Registrar Despacho'}
               </Button>
             </Box>
           </Card>
         </Grid>
 
-        {/* Bottom Section: History */}
         <Grid item xs={12}>
-          <Card sx={{ background: 'rgba(30, 45, 55, 0.7)', backdropFilter: 'blur(16px)', borderRadius: 3 }}>
+          <Card sx={{ backgroundColor: '#ffffff', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.05)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
             <CardContent sx={{ p: 4 }}>
-              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-                <HistoryIcon color="primary" /> Historial Reciente de Despachos Internos
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 4, fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif' }}>
+                <Box sx={{ p: 1, backgroundColor: 'rgba(100, 116, 139, 0.08)', borderRadius: '12px', display: 'flex' }}>
+                  <HistoryIcon sx={{ color: '#64748b' }} /> 
+                </Box>
+                Historial de Movimientos Internos
               </Typography>
-
               {historyLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}><CircularProgress /></Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}><CircularProgress /></Box>
               ) : (
-                <TableContainer component={Paper} elevation={0} sx={{ backgroundColor: 'transparent' }}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Fecha</TableCell>
-                        <TableCell>Producto</TableCell>
-                        <TableCell align="right">Cantidad</TableCell>
-                        <TableCell>Motivo</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {history.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((move) => (
-                        <TableRow key={move.id}>
-                          <TableCell>{new Date(move.timestamp).toLocaleString()}</TableCell>
-                          <TableCell>{move.product?.name}</TableCell>
-                          <TableCell align="right" sx={{ color: 'error.main', fontWeight: 'bold' }}>
-                            {move.quantityChange}
-                          </TableCell>
-                          <TableCell>{move.reason}</TableCell>
+                <>
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow sx={{ backgroundColor: '#f8fafc' }}>
+                          <TableCell sx={{ fontWeight: 700, color: '#475569' }}>FECHA</TableCell>
+                          <TableCell sx={{ fontWeight: 700, color: '#475569' }}>PRODUCTO</TableCell>
+                          <TableCell align="right" sx={{ fontWeight: 700, color: '#475569' }}>CANTIDAD</TableCell>
+                          <TableCell sx={{ fontWeight: 700, color: '#475569' }}>MOTIVO</TableCell>
                         </TableRow>
-                      ))}
-                      {history.length === 0 && (
-                        <TableRow>
-                          <TableCell colSpan={4} align="center">No hay registros de despachos internos.</TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
+                      </TableHead>
+                      <TableBody>
+                        {history.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((move: InventoryMovement) => (
+                          <TableRow key={move.id} hover>
+                            <TableCell>{new Date(move.timestamp).toLocaleString()}</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>{move.product?.name}</TableCell>
+                            <TableCell align="right" sx={{ color: '#dc2626', fontWeight: 800 }}>{move.quantityChange}</TableCell>
+                            <TableCell sx={{ color: '#475569', fontStyle: 'italic' }}>{move.reason}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <ProfessionalPagination
                     count={history.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={(_, newPage) => setPage(newPage)}
                     onRowsPerPageChange={(e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0); }}
-                    labelRowsPerPage="Filas:"
                   />
-                </TableContainer>
+                </>
               )}
             </CardContent>
           </Card>
         </Grid>
       </Grid>
 
-      <Snackbar open={notification.open} autoHideDuration={6000} onClose={() => setNotification({ ...notification, open: false })}>
-        <Alert severity={notification.severity} variant="filled">{notification.message}</Alert>
+      <Snackbar 
+        open={notification.open} 
+        autoHideDuration={6000} 
+        onClose={() => setNotification({ ...notification, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity={notification.severity} sx={{ width: '100%', borderRadius: '12px' }}>
+          {notification.message}
+        </Alert>
       </Snackbar>
     </Box>
   );

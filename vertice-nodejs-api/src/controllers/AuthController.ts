@@ -9,7 +9,7 @@ export const register = async (req: Request, res: Response) => {
     const user = await registerUser(username, password, role || 'user');
     res.status(201).json({
       message: 'User registered successfully',
-      user: { id: user.id, username: user.username, role: user.role },
+      user: { id: user.id, username: user.username, role: user.role, fullname: user.fullname },
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -31,7 +31,7 @@ export const login = async (req: Request, res: Response) => {
     console.log(`[AuthController] Login successful for user: ${user.username}`);
     res
       .status(200)
-      .json({ message: 'Login successful', user: { id: user.id, username: user.username, role: user.role }, token });
+      .json({ message: 'Login successful', user: { id: user.id, username: user.username, role: user.role, fullname: user.fullname }, token });
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error(`[AuthController] Error during login: ${error.message}`);

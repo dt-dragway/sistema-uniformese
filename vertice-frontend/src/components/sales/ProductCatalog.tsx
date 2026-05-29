@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, TextField, InputAdornment, IconButton, Button, Tooltip, Typography, Paper, Divider, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, TextField, InputAdornment, IconButton, Button, Tooltip, Typography, Paper, Divider, Dialog, DialogTitle, DialogContent, DialogActions, Grid } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import AppsIcon from '@mui/icons-material/Apps';
-import ReorderIcon from '@mui/icons-material/Reorder';
 import InventoryIcon from '@mui/icons-material/Inventory'; // Low Stock
 import ClearIcon from '@mui/icons-material/Clear';
 import CalculateIcon from '@mui/icons-material/Calculate';
@@ -13,7 +11,7 @@ import ScaleIcon from '@mui/icons-material/Scale'; // For weight dialog
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 import { selectFilteredProducts } from '../../store/productsSlice';
-import { setSearchTerm, setViewMode, setQuickFilter, clearFilters, toggleCalculatorModal } from '../../store/salesSlice';
+import { setSearchTerm, setQuickFilter, clearFilters, toggleCalculatorModal } from '../../store/salesSlice';
 import { Product, UnitType } from '../../models/Product';
 import { CartItem, addVenta } from '../../store/cartSlice';
 import ProductCard from './ProductCard';
@@ -27,7 +25,7 @@ interface ProductCatalogProps {
 
 const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate, onProductSelect }) => {
   const dispatch: AppDispatch = useDispatch();
-  const { searchTerm, viewMode, quickFilter } = useSelector((state: RootState) => state.sales);
+  const { searchTerm, quickFilter } = useSelector((state: RootState) => state.sales);
   const filteredProducts = useSelector(selectFilteredProducts);
   const allProducts = useSelector((state: RootState) => state.products.products);
 
@@ -208,7 +206,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
         >
           <CurrencyExchangeIcon sx={{ color: '#0255A5', mr: 1.5, fontSize: 24 }} />
           <Box>
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', display: 'block', lineHeight: 1 }}>
+            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', display: 'block', lineHeight: 1 }}>
               TASA DE CAMBIO
             </Typography>
             <Typography variant="body1" fontWeight="bold" sx={{ color: 'white' }}>
@@ -233,7 +231,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
         >
           <ScheduleIcon sx={{ color: 'primary.main', mr: 1.5, fontSize: 24 }} />
           <Box>
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', display: 'block', lineHeight: 1 }}>
+            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', display: 'block', lineHeight: 1 }}>
               FECHA Y HORA
             </Typography>
             <Typography variant="body1" fontWeight="bold" sx={{ color: 'white' }}>
@@ -270,21 +268,22 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: 'rgba(255,255,255,0.5)' }} />
+                <SearchIcon sx={{ color: 'text.secondary' }} />
               </InputAdornment>
             ),
             endAdornment: searchTerm && (
               <InputAdornment position="end">
                 <IconButton size="small" onClick={() => dispatch(setSearchTerm(''))}>
-                  <ClearIcon fontSize="small" sx={{ color: 'rgba(255,255,255,0.5)' }} />
+                  <ClearIcon fontSize="small" sx={{ color: 'text.secondary' }} />
                 </IconButton>
               </InputAdornment>
             ),
             sx: {
               borderRadius: 2,
-              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              backgroundColor: 'background.paper',
               textTransform: 'uppercase',
-              color: 'white'
+              color: 'text.primary',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
             },
           }}
         />
@@ -295,78 +294,39 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
         <Tooltip title="Calculadora">
           <IconButton
             onClick={() => dispatch(toggleCalculatorModal())}
-            sx={{ backgroundColor: 'rgba(255,255,255,0.05)', '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' } }}
+            sx={{ backgroundColor: 'rgba(0,0,0,0.05)', color: 'text.secondary', '&:hover': { backgroundColor: 'rgba(0,0,0,0.1)' } }}
           >
             <CalculateIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Productos con bajo stock">
-          <IconButton
-            onClick={() => dispatch(setQuickFilter('lowStock'))}
-            color={quickFilter === 'lowStock' ? 'primary' : 'default'}
-            sx={{ backgroundColor: quickFilter === 'lowStock' ? 'rgba(2, 85, 165, 0.15)' : 'rgba(255,255,255,0.05)', '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' } }}
-          >
-            <InventoryIcon />
-          </IconButton>
-        </Tooltip>
 
         <Box sx={{ flexGrow: 1 }} />
-
-        <Box sx={{ display: 'flex', backgroundColor: 'rgba(0,0,0,0.2)', p: 0.5, borderRadius: 2, gap: 0.5 }}>
-          <Tooltip title="Vista de grilla">
-            <IconButton
-              size="small"
-              onClick={() => dispatch(setViewMode('grid'))}
-              sx={{
-                borderRadius: 1.5,
-                backgroundColor: viewMode === 'grid' ? 'primary.main' : 'transparent',
-                color: viewMode === 'grid' ? 'white' : 'rgba(255,255,255,0.5)',
-                '&:hover': { backgroundColor: viewMode === 'grid' ? 'primary.dark' : 'rgba(255,255,255,0.1)' }
-              }}
-            >
-              <AppsIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Vista de lista">
-            <IconButton
-              size="small"
-              onClick={() => dispatch(setViewMode('list'))}
-              sx={{
-                borderRadius: 1.5,
-                backgroundColor: viewMode === 'list' ? 'primary.main' : 'transparent',
-                color: viewMode === 'list' ? 'white' : 'rgba(255,255,255,0.5)',
-                '&:hover': { backgroundColor: viewMode === 'list' ? 'primary.dark' : 'rgba(255,255,255,0.1)' }
-              }}
-            >
-              <ReorderIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </Box>
       </Box>
 
       {/* Product Grid */}
-      <Box sx={{ flexGrow: 1, overflowY: 'auto', maxHeight: '580px', pr: 1, '&::-webkit-scrollbar': { width: '6px' }, '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '10px' } }}>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+      <Box sx={{ 
+        flexGrow: 1, 
+        overflowY: 'auto', 
+        pr: 1, 
+        '&::-webkit-scrollbar': { width: '6px' }, 
+        '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: '10px' } 
+      }}>
+        <Grid container spacing={1.5}>
           {filteredProducts.map((product) => (
-            <Box
-              key={product.id}
-              sx={{
-                width:
-                  viewMode === 'grid'
-                    ? { xs: '100%', sm: 'calc(50% - 16px)', md: 'calc(33.33% - 16px)', lg: 'calc(25% - 16px)' }
-                    : '100%',
-              }}
+            <Grid 
+              item 
+              key={product.id} 
+              xs={12}
             >
               <ProductCard
                 product={product}
                 isInCart={cartItems.some((item) => item.id === product.id)}
                 exchangeRate={exchangeRate}
                 onProductSelect={() => handleProductClick(product)}
-                viewMode={viewMode}
               />
-            </Box>
+            </Grid>
           ))}
-        </Box>
+        </Grid>
       </Box>
 
       {/* Weight/Volume Input Dialog */}

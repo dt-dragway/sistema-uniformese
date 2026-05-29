@@ -7,15 +7,20 @@ async function main() {
     console.log('Iniciando seed de la base de datos...');
 
     // Crear usuario admin
-    const hashedPassword = await bcrypt.hash('admin123', 10);
-    const admin = await prisma.user.create({
-        data: {
+    const hashedPassword = await bcrypt.hash('admin2425*', 10);
+    const admin = await prisma.user.upsert({
+        where: { username: 'admin' },
+        update: {
+            password: hashedPassword,
+            role: 'ADMIN',
+        },
+        create: {
             username: 'admin',
             password: hashedPassword,
             role: 'ADMIN',
         },
     });
-    console.log('Usuario admin creado:', admin.username);
+    console.log('Usuario admin creado o actualizado:', admin.username);
 
     // Crear tasa de cambio inicial
     const rate = await prisma.exchangeRate.create({

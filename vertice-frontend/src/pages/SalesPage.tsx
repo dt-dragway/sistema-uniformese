@@ -152,22 +152,40 @@ export const SalesPage = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1, gap: 2, minHeight: 0, height: '100%' }}>
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: { xs: 'column', md: 'row' }, 
+      flexGrow: 1, 
+      gap: 2, 
+      minHeight: 0, 
+      height: 'calc(100vh - 100px)', // Occupy full height minus header/footer
+      overflow: 'hidden'
+    }}>
       {/* Columna Izquierda: Catálogo de Productos */}
-      <Box sx={{ flex: '1 1 60%', display: 'flex', flexDirection: 'column', minWidth: 0, minHeight: 0 }}>
+      <Box sx={{ 
+        flex: { md: '1 1 65%' }, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        minWidth: 0, 
+        minHeight: 0,
+        height: '100%'
+      }}>
         <ProductCatalog cartItems={cartItems} exchangeRate={exchangeRate} onProductSelect={addProductToCart} />
       </Box>
 
       {/* Columna Derecha: Ticket de Compra */}
       <Paper
+        elevation={3}
         sx={{
-          flex: '1 1 40%',
+          flex: { md: '1 1 35%' },
           display: 'flex',
           flexDirection: 'column',
-          minWidth: 0,
+          minWidth: { md: '350px' },
           minHeight: 0,
           height: '100%',
-          // Background and styles handled by theme (MuiPaper)
+          borderRadius: '20px',
+          overflow: 'hidden',
+          border: '1px solid rgba(0,0,0,0.05)'
         }}
       >
         <Venta exchangeRate={exchangeRate} totals={totals} />

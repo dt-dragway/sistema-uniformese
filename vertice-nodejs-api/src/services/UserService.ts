@@ -10,15 +10,15 @@ export const getAllUsers = async () => {
         not: 'superadmin',
       },
     },
-    select: { id: true, username: true, role: true },
+    select: { id: true, username: true, role: true, fullname: true },
   });
 };
 
 export const getUserById = async (id: number) => {
-  return prisma.user.findUnique({ where: { id }, select: { id: true, username: true, role: true } });
+  return prisma.user.findUnique({ where: { id }, select: { id: true, username: true, role: true, fullname: true } });
 };
 
-export const createUser = async (username: string, password_plain: string, role: string) => {
+export const createUser = async (username: string, password_plain: string, role: string, fullname?: string) => {
   if (role !== Role.ADMIN && role !== Role.CASHIER) {
     throw new Error(`Invalid role specified: ${role}`);
   }
@@ -28,12 +28,13 @@ export const createUser = async (username: string, password_plain: string, role:
       username,
       password: hashedPassword,
       role: role as Role,
+      fullname,
     },
-    select: { id: true, username: true, role: true },
+    select: { id: true, username: true, role: true, fullname: true },
   });
 };
 
-export const updateUser = async (id: number, data: { username?: string; password?: string; role?: string }) => {
+export const updateUser = async (id: number, data: { username?: string; password?: string; role?: string; fullname?: string }) => {
   const updateData: Prisma.UserUpdateInput = {};
 
   if (data.username) {
@@ -51,13 +52,17 @@ export const updateUser = async (id: number, data: { username?: string; password
     updateData.role = data.role;
   }
 
+  if (data.fullname !== undefined) {
+    updateData.fullname = data.fullname;
+  }
+
   return prisma.user.update({
     where: { id },
     data: updateData,
-    select: { id: true, username: true, role: true },
+    select: { id: true, username: true, role: true, fullname: true },
   });
 };
 
 export const deleteUser = async (id: number) => {
-  return prisma.user.delete({ where: { id }, select: { id: true, username: true, role: true } });
+  return prisma.user.delete({ where: { id }, select: { id: true, username: true, role: true, fullname: true } });
 };

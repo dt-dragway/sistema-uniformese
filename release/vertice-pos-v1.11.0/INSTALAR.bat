@@ -175,6 +175,15 @@ if %errorlevel% neq 0 (
 echo [OK] Base de datos sincronizada
 
 echo.
+echo Inicializando datos por defecto...
+call npx prisma db seed
+if %errorlevel% neq 0 (
+    echo [ADVERTENCIA] No se pudieron inicializar todos los datos por defecto
+) else (
+    echo [OK] Datos por defecto inicializados
+)
+
+echo.
 echo ============================================================
 echo [PASO 6/9] Verificando compilacion de la API...
 echo ============================================================
@@ -328,7 +337,7 @@ echo   - LOGS.bat       : Ver logs en tiempo real
 echo.
 echo Usuario por defecto:
 echo   - Usuario: admin
-echo   - Password: admin123
+echo   - Password: admin2425*
 echo.
 echo IMPORTANTE: Cambia la password del admin desde el panel de usuarios
 echo.

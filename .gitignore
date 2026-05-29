@@ -68,3 +68,7 @@ release/*.yaml
 # Logs
 /logs/
 *.log
+
+# AI and other non-development tools
+.antigravitycli/
+.kilo/

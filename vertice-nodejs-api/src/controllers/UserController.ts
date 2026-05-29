@@ -29,11 +29,11 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password, role, fullname } = req.body;
     if (!username || !password || !role) {
       return res.status(400).json({ message: 'Missing required fields: username, password, role' });
     }
-    const user = await UserService.createUser(username, password, role);
+    const user = await UserService.createUser(username, password, role, fullname);
     res.status(201).json({ message: 'User created successfully', user });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -45,8 +45,8 @@ export const createUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { username, password, role } = req.body;
-    const user = await UserService.updateUser(parseInt(id), { username, password, role });
+    const { username, password, role, fullname } = req.body;
+    const user = await UserService.updateUser(parseInt(id), { username, password, role, fullname });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }

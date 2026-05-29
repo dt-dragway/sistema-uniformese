@@ -58,7 +58,7 @@ import {
 } from './controllers/CustomerController';
 import { addCredit, getAllCreditPayments } from './controllers/CreditController';
 import { getAllSuppliers, getSupplierById, createSupplier, updateSupplier, deleteSupplier } from './controllers/SupplierController';
-import { exportSalesCsv } from './controllers/ReportController'; // Import the new report controller
+import { exportSalesCsv, exportSalesExcel } from './controllers/ReportController'; // Import the new report controller
 import * as InternalReportController from './controllers/InternalReportController';
 import { register, login, getProfile, verifyAdmin } from './controllers/AuthController'; // Import AuthController
 import { getUsers, getUser, createUser, updateUser, deleteUser } from './controllers/UserController'; // Import UserController
@@ -220,9 +220,8 @@ app.post('/api/auth/verify-admin', verifyAdmin); // Add verify-admin route
 
 // Product Routes
 app.get('/api/products', (req, res) => getAllProducts(req, res));
-app.get('/api/products/low-stock', (req, res) => getLowStockProducts(req, res));
-app.get('/api/products/by-sales', (req, res) => getMostSoldProducts(req, res));
-app.get('/api/products/:id', (req, res) => getProductById(req, res));
+app.get('/api/products/most-sold', (req, res) => getMostSoldProducts(req, res));
+app.get('/api/products/barcode/:barcode', (req, res) => getProductByBarcode(req, res));
 app.get('/api/products/barcode/:barCode', (req, res) => getProductByBarcode(req, res));
 app.post('/api/products', validate(productSchema), createProduct);
 app.put('/api/products/:id', validate(updateProductSchema), updateProduct);
@@ -289,6 +288,7 @@ const settingController = new SettingController();
 const printController = new PrintController();
 // Report Routes
 app.get('/api/reports/sales/export-csv', exportSalesCsv); // New report export route
+app.get('/api/reports/sales/export-excel', exportSalesExcel);
 app.get('/api/reports/internal-dispatch', authMiddleware, InternalReportController.getInternalDispatchStats);
 
 // Recharge Routes

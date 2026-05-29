@@ -80,7 +80,7 @@ const InternalDispatchChart = ({ data }: InternalDispatchChartProps) => {
                     stroke="#808e9b"
                     tick={{ fill: '#808e9b' }}
                     tickLine={false}
-                    tickFormatter={(value) => `$${value}`}
+                    tickFormatter={(value) => `REF ${value}`}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                 <Legend wrapperStyle={{ paddingTop: '20px' }} />

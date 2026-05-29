@@ -150,7 +150,7 @@ const LoginPage = () => {
       </Box>
 
       {/* Settings Button */}
-      <Box sx={{ position: 'absolute', top: 24, left: 24, zIndex: 10 }}>
+      <Box sx={{ position: 'absolute', top: 24, left: 24, zIndex: 10, display: 'none' }}>
         <Tooltip title="Configuración Avanzada" placement="right">
           <IconButton
             onClick={() => setShowServerConfig(true)}
@@ -234,25 +234,10 @@ const LoginPage = () => {
                 }}
               >
                 Uniformese
-              </Typography>
-              
-              <Typography 
-                variant="h2" 
-                sx={{ 
-                  fontWeight: 400, 
-                  fontFamily: '"Inter", sans-serif',
-                  fontSize: { xs: '1.25rem', md: '1.75rem' },
-                  color: '#64748b',
-                  mb: 4,
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase'
-                }}
-              >
-                Tienda y Atelier
-              </Typography>
+</Typography>
 
               <Typography variant="body1" sx={{ color: '#475569', maxWidth: '400px', mx: { xs: 'auto', md: 0 }, fontSize: '1.1rem', lineHeight: 1.6 }}>
-                Accede al panel de control para gestionar ventas, inventario y catálogo de prendas.
+                Accede al panel de control para gestionar ventas, inventario.
               </Typography>
             </Box>
           </Fade>
@@ -274,7 +259,7 @@ const LoginPage = () => {
                 }}
               >
                 <Typography variant="h5" sx={{ color: '#0f172a', fontWeight: 700, mb: 1 }}>
-                  Bienvenido de nuevo
+                  Bienvenido
                 </Typography>
                 <Typography variant="body2" sx={{ color: '#64748b', mb: 4 }}>
                   Ingresa tus credenciales para continuar
@@ -412,7 +397,7 @@ const LoginPage = () => {
                     letterSpacing: '0.1em',
                   }}
                 >
-                  VÉRTICE POS • VERSIÓN {APP_VERSION}
+                  VERSIÓN 1.11.0
                 </Typography>
               </Box>
             </Box>

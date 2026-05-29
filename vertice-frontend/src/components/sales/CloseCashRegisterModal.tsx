@@ -73,21 +73,21 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
     return (
       <>
         <Box mb={2} textAlign="left">
-          <Typography variant="subtitle2" sx={{ color: '#0255A5', fontWeight: 'bold', mb: 1, fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>RESUMEN DE EFECTIVO (EN GAVETA)</Typography>
-          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>Apertura: ${openingAmountUsd.toFixed(2)} / Bs. {openingAmountBs.toFixed(2)}</Typography>
-          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>Ventas Efectivo: ${calculatedCashSalesUsd.toFixed(2)} / Bs. {calculatedCashSalesBs.toFixed(2)}</Typography>
-          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>Cobranza Efectivo: ${calculatedDebtPaymentsUsd.toFixed(2)} / Bs. {calculatedDebtPaymentsBs.toFixed(2)}</Typography>
+          <Typography variant="subtitle2" sx={{ color: '#0255A5', fontWeight: 'bold', mb: 1, fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>RESUMEN DE EFECTIVO (EN GAVETA)</Typography>
+          <Typography variant="body2" sx={{ color: '#475569' }}>Apertura: ${openingAmountUsd.toFixed(2)} / Bs. {openingAmountBs.toFixed(2)}</Typography>
+          <Typography variant="body2" sx={{ color: '#475569' }}>Ventas Efectivo: ${calculatedCashSalesUsd.toFixed(2)} / Bs. {calculatedCashSalesBs.toFixed(2)}</Typography>
+          <Typography variant="body2" sx={{ color: '#475569' }}>Cobranza Efectivo: ${calculatedDebtPaymentsUsd.toFixed(2)} / Bs. {calculatedDebtPaymentsBs.toFixed(2)}</Typography>
           
-          <Divider sx={{ my: 1, borderColor: 'rgba(255,255,255,0.08)' }} />
+          <Divider sx={{ my: 2, borderColor: 'rgba(0,0,0,0.08)' }} />
           
-          <Typography variant="subtitle2" sx={{ color: '#4caf50', fontWeight: 'bold', mt: 2, mb: 1 }}>RESUMEN ELECTRÓNICO (EN BANCO)</Typography>
-          <Typography variant="body2">Ventas / Abonos Electrónicos: Bs. {calculatedElectronicSalesBs.toFixed(2)}</Typography>
+          <Typography variant="subtitle2" sx={{ color: '#16a34a', fontWeight: 'bold', mt: 2, mb: 1, fontFamily: '"Outfit", sans-serif' }}>RESUMEN ELECTRÓNICO (EN BANCO)</Typography>
+          <Typography variant="body2" sx={{ color: '#475569' }}>Ventas / Abonos Electrónicos: Bs. {calculatedElectronicSalesBs.toFixed(2)}</Typography>
 
-          <Box sx={{ mt: 3, p: 2, bgcolor: 'rgba(255,255,255,0.05)', borderRadius: 2 }}>
-            <Typography variant="body1" fontWeight="bold">
+          <Box sx={{ mt: 3, p: 2.5, bgcolor: '#f8fafc', borderRadius: '16px', border: '1px solid #edf2f7' }}>
+            <Typography variant="body1" sx={{ color: '#0f172a', fontWeight: 800 }}>
               ESPERADO EN FÍSICO USD: ${totalExpectedInCashUsd.toFixed(2)}
             </Typography>
-            <Typography variant="body1" fontWeight="bold">
+            <Typography variant="body1" sx={{ color: '#0f172a', fontWeight: 800 }}>
               ESPERADO EN FÍSICO BS: Bs. {totalExpectedInCashBs.toFixed(2)}
             </Typography>
           </Box>
@@ -104,13 +104,11 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
           helperText={localError}
           sx={{
             '& .MuiOutlinedInput-root': {
-              borderRadius: 5,
-              '&.Mui-focused fieldset': {
-                borderColor: '#0255A5',
-              }
-            },
-            '& .MuiInputLabel-root.Mui-focused': {
-              color: '#0255A5',
+              borderRadius: '16px',
+              backgroundColor: '#f8fafc',
+              '& fieldset': { borderColor: '#e2e8f0' },
+              '&:hover fieldset': { borderColor: '#cbd5e1' },
+              '&.Mui-focused fieldset': { borderColor: '#0255A5' },
             }
           }}
         />
@@ -125,18 +123,29 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
           helperText={localError}
           sx={{
             '& .MuiOutlinedInput-root': {
-              borderRadius: 5,
-              '&.Mui-focused fieldset': {
-                borderColor: '#0255A5',
-              }
-            },
-            '& .MuiInputLabel-root.Mui-focused': {
-              color: '#0255A5',
+              borderRadius: '16px',
+              backgroundColor: '#f8fafc',
+              '& fieldset': { borderColor: '#e2e8f0' },
+              '&:hover fieldset': { borderColor: '#cbd5e1' },
+              '&.Mui-focused fieldset': { borderColor: '#0255A5' },
             }
           }}
         />
 
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+        {error && (
+          <Alert 
+            severity="error" 
+            sx={{ 
+              mt: 2, 
+              borderRadius: '12px',
+              backgroundColor: '#fef2f2',
+              color: '#b91c1c',
+              border: '1px solid #fee2e2'
+            }}
+          >
+            {error}
+          </Alert>
+        )}
       </>
     );
   };
@@ -144,57 +153,62 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box
-        className="animate-snappy gpu-accelerated"
         sx={{
           position: 'absolute',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 450,
-          bgcolor: 'rgba(7, 18, 36, 0.9)', // Glassmorphism dark blue
-          backdropFilter: 'blur(25px)',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          boxShadow: 'var(--institutional-shadow)',
-          p: 4,
-          borderRadius: 10, // Curvatura Extrema (40px)
+          width: { xs: '90%', sm: 500 },
+          bgcolor: '#ffffff',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          p: { xs: 3, sm: 5 },
+          borderRadius: '24px',
           textAlign: 'center',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
         }}
       >
-        <Typography variant="h6" component="h2" mb={2} sx={{ fontFamily: '"Kanit", sans-serif', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+        <Typography variant="h5" component="h2" mb={3} sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           Cerrar Caja
         </Typography>
         {renderContent()}
-        <Box mt={3} display="flex" justifyContent="space-between">
-          <Button variant="outlined" onClick={onClose} disabled={loading} sx={{ borderRadius: '9999px', px: 3 }}>
+        <Box mt={4} display="flex" gap={2}>
+          <Button 
+            fullWidth
+            variant="outlined" 
+            onClick={onClose} 
+            disabled={loading}
+            sx={{ 
+              borderRadius: '12px', 
+              py: 1.5, 
+              textTransform: 'none', 
+              fontWeight: 600,
+              color: '#64748b',
+              borderColor: '#e2e8f0'
+            }}
+          >
             Cancelar
           </Button>
           <Button
+            fullWidth
             variant="contained"
-            color="primary"
             onClick={handleConfirmClose}
             disabled={loading}
             startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
             sx={{
-              py: 1.2,
-              px: 3,
-              fontSize: '0.9rem',
-              letterSpacing: '0.15em',
-              fontWeight: 900,
-              borderRadius: '9999px',
+              borderRadius: '12px',
+              py: 1.5,
+              textTransform: 'none',
+              fontWeight: 600,
               background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
-              boxShadow: '0 4px 15px rgba(0, 55, 128, 0.3)',
-              transition: 'all 0.25s ease',
               '&:hover': {
                 background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
-                boxShadow: '0 8px 25px rgba(2, 85, 165, 0.55)',
                 transform: 'translateY(-2px)',
+                boxShadow: '0 15px 30px -5px rgba(2, 85, 165, 0.4)',
               },
-              '&:active': {
-                transform: 'translateY(1px)',
-              }
+              transition: 'all 0.3s ease',
             }}
           >
-            Confirmar Cierre
+            Confirmar Cierre de Caja
           </Button>
         </Box>
       </Box>

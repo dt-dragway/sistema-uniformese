@@ -118,15 +118,31 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
   }, [cartItems]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Ticket Tabs */}
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: '#ffffff' }}>
+      {/* Header / Tabs */}
+      <Box sx={{ borderBottom: '1px solid #e2e8f0', bgcolor: '#f8fafc' }}>
         <Tabs
           value={activeVentaId}
           onChange={handleTabChange}
           variant="scrollable"
           scrollButtons="auto"
-          aria-label="venta tabs"
+          sx={{
+            minHeight: '48px',
+            '& .MuiTab-root': {
+              textTransform: 'none',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              minHeight: '48px',
+              color: '#64748b',
+              '&.Mui-selected': {
+                color: '#0255A5',
+              }
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: '#0255A5',
+              height: 3,
+            }
+          }}
         >
           {ventas.map((venta) => (
             <Tab
@@ -137,11 +153,15 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                   {venta.name}
                   <IconButton
                     size="small"
-                    component="div" // To prevent event bubbling issues
+                    component="div"
                     onClick={(e) => handleCloseVenta(e, venta.id)}
-                    sx={{ ml: 1.5 }}
+                    sx={{ 
+                      ml: 1, 
+                      p: 0.2,
+                      '&:hover': { color: '#dc2626', bgcolor: 'rgba(220, 38, 38, 0.08)' } 
+                    }}
                   >
-                    <CloseIcon fontSize="small" />
+                    <CloseIcon sx={{ fontSize: 16 }} />
                   </IconButton>
                 </Box>
               }
@@ -150,42 +170,56 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
         </Tabs>
       </Box>
 
+      {/* Cart Summary Header */}
+      <Box sx={{ p: 2, borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#ffffff' }}>
+        <Typography variant="subtitle1" fontWeight={800} sx={{ color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          Carrito
+        </Typography>
+        <Chip 
+          label={`${cartItems.length} items`} 
+          size="small" 
+          sx={{ fontWeight: 700, bgcolor: 'rgba(2, 85, 165, 0.08)', color: '#0255A5' }} 
+        />
+      </Box>
+
       {/* Item List */}
       <List
         sx={{
-          height: '400px',
+          flexGrow: 1,
           overflowY: 'auto',
+          px: 2,
+          py: 1,
           '&::-webkit-scrollbar': {
-            width: '0.4em',
-          },
-          '&::-webkit-scrollbar-track': {
-            boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-            webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+            width: '6px',
           },
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'rgba(0,0,0,.1)',
-            outline: '1px solid slategrey',
+            backgroundColor: '#e2e8f0',
+            borderRadius: '10px',
           },
           ...(cartItems.length === 0 && {
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
           }),
         }}
       >
         {cartItems.length === 0 ? (
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-            <ShoppingCartOutlinedIcon sx={{ fontSize: 64, color: 'rgba(255,255,255,0.2)' }} />
-            <Typography variant="body1" color="text.secondary">
-              El carrito está vacío
+          <Box sx={{ textAlign: 'center', opacity: 0.5, py: 8 }}>
+            <ShoppingCartOutlinedIcon sx={{ fontSize: 64, color: '#94a3b8', mb: 2 }} />
+            <Typography variant="body1" fontWeight={600} color="text.secondary">
+              Tu carrito está vacío
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Selecciona productos del catálogo
             </Typography>
           </Box>
         ) : (
           cartItems.map((item) => {
             const lineTotalBs = item.price * item.quantity * exchangeRate;
             const lineTotalUsd = item.price * item.quantity;
-
-            // Renderizado especial para recargas
+            
+            // RECHARGE RENDER
             if (item.isRecharge && item.rechargeData) {
               return (
                 <ListItem
@@ -193,48 +227,56 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                   disablePadding
                   sx={{
                     mb: 1.5,
-                    bgcolor: 'rgba(255, 152, 0, 0.08)',
-                    borderRadius: 1,
-                    border: '1px solid rgba(255, 152, 0, 0.3)',
-                    p: 1,
+                    p: 1.5,
+                    borderRadius: '16px',
+                    bgcolor: 'rgba(255, 152, 0, 0.04)',
+                    border: '1px solid rgba(255, 152, 0, 0.15)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'stretch'
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
-                      <PhoneAndroidIcon sx={{ color: '#ff9800', fontSize: 28 }} />
+                  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 1 }}>
+                    <Box sx={{ p: 1, bgcolor: 'rgba(255, 152, 0, 0.1)', borderRadius: '12px', mr: 1.5, display: 'flex' }}>
+                      <PhoneAndroidIcon sx={{ color: '#ff9800', fontSize: 20 }} />
                     </Box>
-                    <Box sx={{ flexGrow: 1, mx: 1 }}>
+                    <Box sx={{ flexGrow: 1 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#ff9800' }}>
+                        <Typography variant="body2" fontWeight={700} sx={{ color: '#ff9800' }}>
                           {item.rechargeData.serviceName}
                         </Typography>
-                        <Chip label="Recarga" size="small" sx={{ bgcolor: '#ff9800', color: 'white', height: 20, fontSize: '0.65rem' }} />
+                        <Chip label="Recarga" size="small" sx={{ bgcolor: '#ff9800', color: 'white', height: 18, fontSize: '0.6rem', fontWeight: 800 }} />
                       </Box>
-                      <Typography variant="caption" color="text.secondary">
-                        {item.rechargeData.phoneNumber} | Bs. {item.rechargeData.amountBs.toFixed(2)} + {item.rechargeData.commissionPercent}% com.
-                      </Typography>
-                    </Box>
-                    <Box sx={{ textAlign: 'right' }}>
-                      <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#ff9800' }}>
-                        Bs. {item.rechargeData.totalChargeBs.toFixed(2)}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Ref: ${lineTotalUsd.toFixed(2)}
+                      <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600 }}>
+                        {item.rechargeData.phoneNumber}
                       </Typography>
                     </Box>
                     <IconButton
                       size="small"
                       onClick={() => dispatch(removeProductFromCart({ productId: item.id }))}
-                      sx={{ ml: 1 }}
+                      sx={{ p: 0.5, color: '#94a3b8', '&:hover': { color: '#dc2626' } }}
                     >
-                      <DeleteIcon fontSize="small" color="error" />
+                      <DeleteIcon fontSize="small" />
                     </IconButton>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      Bs. {item.rechargeData.amountBs.toFixed(2)} + {item.rechargeData.commissionPercent}% com.
+                    </Typography>
+                    <Box sx={{ textAlign: 'right' }}>
+                      <Typography variant="body2" fontWeight={800} sx={{ color: '#ff9800' }}>
+                        Bs. {item.rechargeData.totalChargeBs.toFixed(2)}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#64748b', display: 'block' }}>
+                        Ref: ${lineTotalUsd.toFixed(2)}
+                      </Typography>
+                    </Box>
                   </Box>
                 </ListItem>
               );
             }
 
-            // Renderizado especial para avances de efectivo
+            // CASH ADVANCE RENDER
             if (item.isCashAdvance && item.cashAdvanceData) {
               return (
                 <ListItem
@@ -242,126 +284,153 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                   disablePadding
                   sx={{
                     mb: 1.5,
-                    bgcolor: 'rgba(76, 175, 80, 0.08)',
-                    borderRadius: 1,
-                    border: '1px solid rgba(76, 175, 80, 0.3)',
-                    p: 1,
+                    p: 1.5,
+                    borderRadius: '16px',
+                    bgcolor: 'rgba(76, 175, 80, 0.04)',
+                    border: '1px solid rgba(76, 175, 80, 0.15)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'stretch'
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
-                      <PriceChangeIcon sx={{ color: '#4caf50', fontSize: 28 }} />
+                  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 1 }}>
+                    <Box sx={{ p: 1, bgcolor: 'rgba(76, 175, 80, 0.1)', borderRadius: '12px', mr: 1.5, display: 'flex' }}>
+                      <PriceChangeIcon sx={{ color: '#4caf50', fontSize: 20 }} />
                     </Box>
-                    <Box sx={{ flexGrow: 1, mx: 1 }}>
+                    <Box sx={{ flexGrow: 1 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#4caf50' }}>
+                        <Typography variant="body2" fontWeight={700} sx={{ color: '#4caf50' }}>
                           Avance Efectivo
                         </Typography>
-                        <Chip label="Avance" size="small" sx={{ bgcolor: '#4caf50', color: 'white', height: 20, fontSize: '0.65rem' }} />
+                        <Chip label="Avance" size="small" sx={{ bgcolor: '#4caf50', color: 'white', height: 18, fontSize: '0.6rem', fontWeight: 800 }} />
                       </Box>
-                      <Typography variant="caption" color="text.secondary">
-                        Bs. {item.cashAdvanceData.amountToGive.toFixed(2)} + {item.cashAdvanceData.commissionPercent}% com. | {item.cashAdvanceData.paymentMethod}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ textAlign: 'right' }}>
-                      <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#4caf50' }}>
-                        Bs. {item.cashAdvanceData.totalChargeBs.toFixed(2)}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Ref: ${lineTotalUsd.toFixed(2)}
+                      <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600 }}>
+                        {item.cashAdvanceData.paymentMethod}
                       </Typography>
                     </Box>
                     <IconButton
                       size="small"
                       onClick={() => dispatch(removeProductFromCart({ productId: item.id }))}
-                      sx={{ ml: 1 }}
+                      sx={{ p: 0.5, color: '#94a3b8', '&:hover': { color: '#dc2626' } }}
                     >
-                      <DeleteIcon fontSize="small" color="error" />
+                      <DeleteIcon fontSize="small" />
                     </IconButton>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      Entregado: Bs. {item.cashAdvanceData.amountToGive.toFixed(2)} + {item.cashAdvanceData.commissionPercent}% com.
+                    </Typography>
+                    <Box sx={{ textAlign: 'right' }}>
+                      <Typography variant="body2" fontWeight={800} sx={{ color: '#4caf50' }}>
+                        Bs. {item.cashAdvanceData.totalChargeBs.toFixed(2)}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#64748b', display: 'block' }}>
+                        Ref: ${lineTotalUsd.toFixed(2)}
+                      </Typography>
+                    </Box>
                   </Box>
                 </ListItem>
               );
             }
 
-            // Renderizado normal para productos
-            return (
-              <ListItem key={item.id} disablePadding sx={{ mb: 1.5 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    {(!item.unitType || item.unitType === 'UNIT') ? (
-                      // For unit products, show +/- buttons
-                      <>
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity - 1 }))
-                          }
-                        >
-                          <RemoveCircleOutlineIcon fontSize="small" />
-                        </IconButton>
-                        <Typography sx={{ mx: 1, minWidth: '20px', textAlign: 'center' }}>{item.quantity}</Typography>
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity + 1 }))
-                          }
-                        >
-                          <AddCircleOutlineIcon fontSize="small" />
-                        </IconButton>
-                      </>
-                    ) : (
-                      // For weight/volume products, just show the formatted quantity
-                      <Typography sx={{ px: 1, fontWeight: 'bold', color: 'primary.main' }}>
-                        {formatQuantity(item.quantity, item.unitType)}
-                      </Typography>
-                    )}
-                  </Box>
-                  <Typography variant="body2" sx={{ flexGrow: 1, mx: 2 }}>
-                    {item.name}
-                  </Typography>
-                  <Box sx={{ textAlign: 'right' }}>
-                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                      Bs. {lineTotalBs.toFixed(2)}
+            // NORMAL ITEM RENDER (Updated styling)
+            if (!item.isRecharge && !item.isCashAdvance) {
+              return (
+                <ListItem 
+                  key={item.id} 
+                  disablePadding 
+                  sx={{ 
+                    mb: 1.5, 
+                    p: 1.5, 
+                    borderRadius: '16px', 
+                    bgcolor: '#f8fafc',
+                    border: '1px solid #f1f5f9',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'stretch'
+                  }}
+                >
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                    <Typography variant="body2" fontWeight={700} sx={{ color: '#0f172a' }}>
+                      {item.name}
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                      <Typography variant="caption" color="text.secondary">
-                        Ref: ${lineTotalUsd.toFixed(2)} (${item.price.toFixed(2)} {getPriceUnitLabel(item.unitType)})
-                      </Typography>
-                      {selectedCustomer && !item.isRecharge && (
-                        <IconButton
-                          size="small"
-                          onClick={() => handleOpenEditPrice(item.id, item.price)}
-                          sx={{ padding: 0, ml: 0.5 }}
-                        >
-                          <EditIcon sx={{ fontSize: 14 }} />
-                        </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => dispatch(removeProductFromCart({ productId: item.id }))}
+                      sx={{ p: 0.5, color: '#94a3b8', '&:hover': { color: '#dc2626' } }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                  
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: '#ffffff', borderRadius: '12px', border: '1px solid #e2e8f0', p: 0.5 }}>
+                      {(!item.unitType || item.unitType === 'UNIT') ? (
+                        <>
+                          <IconButton
+                            size="small"
+                            onClick={() => dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity - 1 }))}
+                            sx={{ color: '#0255A5' }}
+                          >
+                            <RemoveCircleOutlineIcon fontSize="small" />
+                          </IconButton>
+                          <Typography fontWeight={700} sx={{ mx: 1.5, minWidth: '20px', textAlign: 'center' }}>{item.quantity}</Typography>
+                          <IconButton
+                            size="small"
+                            onClick={() => dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity + 1 }))}
+                            sx={{ color: '#0255A5' }}
+                          >
+                            <AddCircleOutlineIcon fontSize="small" />
+                          </IconButton>
+                        </>
+                      ) : (
+                        <Typography sx={{ px: 1.5, fontWeight: 700, color: '#0255A5', fontSize: '0.9rem' }}>
+                          {formatQuantity(item.quantity, item.unitType)}
+                        </Typography>
                       )}
                     </Box>
+
+                    <Box sx={{ textAlign: 'right' }}>
+                      <Typography variant="body1" fontWeight={800} sx={{ color: '#0f172a' }}>
+                        Bs. {lineTotalBs.toFixed(2)}
+                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5 }}>
+                        <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600 }}>
+                          Ref: ${lineTotalUsd.toFixed(2)}
+                        </Typography>
+                        {selectedCustomer && (
+                          <IconButton
+                            size="small"
+                            onClick={() => handleOpenEditPrice(item.id, item.price)}
+                            sx={{ p: 0.2, color: '#0255A5' }}
+                          >
+                            <EditIcon sx={{ fontSize: 14 }} />
+                          </IconButton>
+                        )}
+                      </Box>
+                    </Box>
                   </Box>
-                  <IconButton
-                    size="small"
-                    onClick={() => dispatch(removeProductFromCart({ productId: item.id }))}
-                    sx={{ ml: 1 }}
-                  >
-                    <DeleteIcon fontSize="small" color="error" />
-                  </IconButton>
-                </Box>
-              </ListItem>
-            );
+                </ListItem>
+              );
+            }
+            
+            // (Keep recharge/advance renders but styled similar to above if possible)
+            return null; // Simplified for the tool call, but I will include them in a full replace if needed.
           })
         )}
-        <div ref={messagesEndRef} /> {/* <-- Added ref for auto-scrolling */}
+        <div ref={messagesEndRef} />
       </List>
 
-      {/* Checkout Section */}
-      <Box sx={{ mt: 'auto', p: 2, borderTop: '1px solid #eee' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-          <Typography variant="body1">Subtotal:</Typography>
-          <Box>
-            <Typography variant="body1">Bs. {totals.bs.toFixed(2)}</Typography>
-            <Typography variant="caption" color="text.secondary">
-              Ref: ${totals.usd.toFixed(2)}
-            </Typography>
+      {/* Totals & Checkout Section */}
+      <Box sx={{ p: 2, bgcolor: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
+        <Box sx={{ px: 1, mb: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+            <Typography variant="body2" fontWeight={600} color="text.secondary">Subtotal</Typography>
+            <Typography variant="body2" fontWeight={700}>Bs. {totals.bs.toFixed(2)}</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography variant="body2" fontWeight={600} color="text.secondary">Ref. Total</Typography>
+            <Typography variant="body2" fontWeight={700}>${totals.usd.toFixed(2)}</Typography>
           </Box>
         </Box>
         <Checkout cartItems={cartItems} totals={totals} />
@@ -369,7 +438,7 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
 
       {/* Edit Price Modal */}
       <Dialog open={editPriceModalOpen} onClose={handleCloseEditPrice}>
-        <DialogTitle>Ajustar Precio (USD)</DialogTitle>
+        <DialogTitle>Ajustar Precio (REF)</DialogTitle>
         <DialogContent>
           <Typography variant="body2" sx={{ mb: 2 }}>
             Ingrese el nuevo precio unitario en Dólares.
@@ -377,14 +446,14 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
           <TextField
             autoFocus
             margin="dense"
-            label="Precio Unitario ($)"
+            label="Precio Unitario (REF)"
             type="number"
             fullWidth
             variant="outlined"
             value={newPriceInput}
             onChange={(e) => setNewPriceInput(e.target.value)}
             InputProps={{
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
+              startAdornment: <InputAdornment position="start">REF</InputAdornment>,
             }}
             onKeyPress={(e) => {
               if (e.key === 'Enter') {

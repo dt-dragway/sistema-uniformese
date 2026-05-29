@@ -25,7 +25,7 @@ INSTALACION RAPIDA:
 
   4. Accede a: http://localhost:3000
      - Usuario: admin
-     - Password: admin123
+     - Password: admin2425*
 
 SCRIPTS DISPONIBLES:
   INSTALAR.bat   - Instalacion completa del sistema

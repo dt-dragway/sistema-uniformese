@@ -160,9 +160,14 @@ const UserManagementPage = () => {
                   >
                     {user.role === 'ADMIN' ? <AdminPanelSettingsIcon sx={{ fontSize: 40 }} /> : <PointOfSaleIcon sx={{ fontSize: 40 }} />}
                   </Avatar>
-                  <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    {user.username}
+                  <Typography variant="h6" fontWeight="bold" sx={{ mb: 0.5 }}>
+                    {user.fullname || user.username}
                   </Typography>
+                  {user.fullname && (
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5, display: 'block' }}>
+                      Usuario: {user.username}
+                    </Typography>
+                  )}
                   <Chip
                     label={user.role === 'CASHIER' ? 'CAJERO' : user.role}
                     color={user.role === 'ADMIN' ? 'error' : 'success'}
@@ -209,9 +214,16 @@ const UserManagementPage = () => {
                   <TableCell>{user.id}</TableCell>
                   <TableCell sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Avatar sx={{ width: 30, height: 30, bgcolor: user.role === 'ADMIN' ? 'error.main' : 'primary.main' }}>
-                      {user.username.charAt(0).toUpperCase()}
+                      {(user.fullname || user.username).charAt(0).toUpperCase()}
                     </Avatar>
-                    {user.username}
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <Typography fontWeight="medium">{user.fullname || user.username}</Typography>
+                      {user.fullname && (
+                        <Typography variant="caption" color="text.secondary">
+                          Usuario: {user.username}
+                        </Typography>
+                      )}
+                    </Box>
                   </TableCell>
                   <TableCell>
                     <Chip

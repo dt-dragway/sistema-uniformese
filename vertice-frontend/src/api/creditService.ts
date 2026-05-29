@@ -1,6 +1,12 @@
 import axiosInstance from './axiosInstance';
 
-export const addCredit = async (customerId: number, amount: number, description: string, paymentMethod: string, reference?: string) => {
+export const addCredit = async (
+  customerId: number,
+  amount: number,
+  description: string,
+  paymentMethod: string,
+  reference?: string
+) => {
   const response = await axiosInstance.post(`/customers/${customerId}/credit`, {
     amount,
     description,

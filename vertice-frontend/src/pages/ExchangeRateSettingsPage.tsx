@@ -53,64 +53,65 @@ const ExchangeRateSettingsPage: React.FC = () => {
     <Box sx={{ p: 3, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }} className="animate-snappy gpu-accelerated">
       <Card 
         sx={{ 
-          maxWidth: 600, 
+          maxWidth: 650, 
           width: '100%', 
           mt: 4,
-          background: 'rgba(10, 25, 47, 0.65)', // Glassmorphism dark blue
-          backdropFilter: 'blur(20px)',
-          borderRadius: 10, // Curvatura Extrema (40px)
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          boxShadow: 'var(--institutional-shadow)',
+          backgroundColor: '#ffffff',
+          borderRadius: '24px',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)',
         }}
       >
-        <CardContent sx={{ p: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, borderBottom: '1px solid rgba(255,255,255,0.08)', pb: 2 }}>
-            <CurrencyExchangeIcon sx={{ fontSize: 40, color: '#0255A5', mr: 2 }} />
+        <CardContent sx={{ p: { xs: 4, sm: 6 } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, borderBottom: '1px solid rgba(0,0,0,0.06)', pb: 2.5 }}>
+            <Box sx={{ p: 1.5, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '16px', mr: 2.5 }}>
+              <CurrencyExchangeIcon sx={{ fontSize: 40, color: '#0255A5' }} />
+            </Box>
             <Box>
-              <Typography variant="h5" fontWeight="bold" sx={{ color: 'white', fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <Typography variant="h5" sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Tasa de Cambio
               </Typography>
-              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.65)' }}>
-                Configuración del valor del Dólar (USD) en Bolívares (Bs.)
+              <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 500 }}>
+                Configuración del valor del Dólar (REF) respecto al Bolívar (Bs.)
               </Typography>
             </Box>
           </Box>
  
-          <Grid container spacing={3}>
+          <Grid container spacing={4}>
             {/* Tarjeta de Tasa Actual */}
             <Grid item xs={12}>
               <Box 
                 sx={{ 
-                  p: 3, 
-                  borderRadius: 5, 
-                  background: 'linear-gradient(135deg, rgba(2, 85, 165, 0.15) 0%, rgba(0, 55, 128, 0.05) 100%)',
-                  border: '1px solid rgba(2, 85, 165, 0.25)',
+                  p: 4, 
+                  borderRadius: '20px', 
+                  background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+                  border: '1px solid #bae6fd',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between'
                 }}
               >
                 <Box>
-                  <Typography variant="subtitle2" sx={{ color: '#0255A5', mb: 0.5, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1, fontFamily: '"Kanit", sans-serif' }}>
-                    Tasa Actual
+                  <Typography variant="overline" sx={{ color: '#0369a1', fontWeight: 800, letterSpacing: '0.1em', display: 'block', mb: 1 }}>
+                    TASA ACTUAL EN SISTEMA
                   </Typography>
-                  <Typography variant="h3" fontWeight="bold" sx={{ color: 'white', fontFamily: '"Kanit", sans-serif' }}>
+                  <Typography variant="h2" sx={{ fontWeight: 900, color: '#0c4a6e', fontFamily: '"Outfit", sans-serif' }}>
                     {exchangeRate.toFixed(2)}
-                    <Typography component="span" variant="h5" sx={{ color: 'rgba(255,255,255,0.5)', ml: 1 }}>Bs.</Typography>
+                    <Typography component="span" variant="h4" sx={{ color: '#0284c7', ml: 1.5, fontWeight: 600 }}>Bs.</Typography>
                   </Typography>
                 </Box>
-                <TrendingUpIcon sx={{ fontSize: 60, color: 'rgba(2, 85, 165, 0.25)' }} />
+                <TrendingUpIcon sx={{ fontSize: 70, color: 'rgba(2, 132, 199, 0.15)' }} />
               </Box>
             </Grid>
  
             {/* Formulario de Actualización */}
             <Grid item xs={12}>
-              <Typography variant="body1" sx={{ mb: 2, mt: 1, color: 'white' }}>
-                Actualizar Tasa:
+              <Typography variant="body1" sx={{ mb: 2, fontWeight: 600, color: '#475569' }}>
+                Establecer Nueva Tasa:
               </Typography>
               <TextField
                 fullWidth
-                label="Nueva Tasa (Bs. por 1 USD)"
+                label="Valor en Bolívares por 1 Dólar"
                 type="number"
                 value={newRate || ''}
                 onChange={(e) => setNewRate(parseFloat(e.target.value) || 0)}
@@ -121,18 +122,15 @@ const ExchangeRateSettingsPage: React.FC = () => {
                       <AttachMoneyIcon sx={{ color: '#0255A5' }} />
                     </InputAdornment>
                   ),
-                  sx: { fontSize: '1.2rem' }
+                  sx: { fontSize: '1.25rem', fontWeight: 700 }
                 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                    borderRadius: 5,
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#0255A5',
-                    }
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: '#0255A5',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '16px',
+                    '& fieldset': { borderColor: '#e2e8f0' },
+                    '&:hover fieldset': { borderColor: '#cbd5e1' },
+                    '&.Mui-focused fieldset': { borderColor: '#0255A5' },
                   }
                 }}
               />
@@ -140,8 +138,8 @@ const ExchangeRateSettingsPage: React.FC = () => {
  
             <Grid item xs={12}>
               {error && (
-                <Alert severity="error" sx={{ mb: 2, backgroundColor: 'rgba(211, 47, 47, 0.25)', color: '#ffcdd2', borderRadius: 4 }}>
-                  Error: {error}
+                <Alert severity="error" sx={{ mb: 3, borderRadius: '12px' }}>
+                  {error}
                 </Alert>
               )}
               
@@ -152,29 +150,22 @@ const ExchangeRateSettingsPage: React.FC = () => {
                 onClick={handleSave}
                 disabled={loading || newRate === exchangeRate}
                 sx={{
-                  py: 1.5,
-                  fontSize: '0.95rem',
-                  letterSpacing: '0.2em', // Municipal Style
-                  fontWeight: 900,
-                  borderRadius: '9999px', // Pill shape
+                  py: 2,
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  borderRadius: '16px',
                   background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
-                  boxShadow: '0 4px 15px rgba(0, 55, 128, 0.3)',
-                  transition: 'all 0.25s ease',
+                  boxShadow: '0 10px 20px -5px rgba(2, 85, 165, 0.3)',
+                  textTransform: 'none',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
                     background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
-                    boxShadow: '0 8px 25px rgba(2, 85, 165, 0.55)',
                     transform: 'translateY(-2px)',
+                    boxShadow: '0 15px 30px -5px rgba(2, 85, 165, 0.4)',
                   },
-                  '&:active': {
-                    transform: 'translateY(1px)',
-                  },
-                  '&:disabled': {
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    color: 'rgba(255, 255, 255, 0.3)',
-                  }
                 }}
               >
-                {loading ? <CircularProgress size={26} color="inherit" /> : 'GUARDAR NUEVA TASA'}
+                {loading ? <CircularProgress size={26} color="inherit" /> : 'Actualizar Tasa de Cambio'}
               </Button>
             </Grid>
           </Grid>
@@ -182,8 +173,17 @@ const ExchangeRateSettingsPage: React.FC = () => {
       </Card>
 
       <Snackbar open={showSuccess} autoHideDuration={3000} onClose={handleCloseSuccess}>
-        <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%', backgroundColor: 'rgba(46, 125, 50, 0.9)', color: 'white' }}>
-          Tasa de cambio actualizada con éxito!
+        <Alert 
+          onClose={handleCloseSuccess} 
+          severity="success" 
+          sx={{ 
+            width: '100%', 
+            borderRadius: '12px',
+            boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
+            fontWeight: 600
+          }}
+        >
+          ¡Tasa de cambio actualizada correctamente!
         </Alert>
       </Snackbar>
 

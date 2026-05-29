@@ -15,7 +15,6 @@ import {
   Button,
   ButtonGroup,
   IconButton,
-  TablePagination,
   InputAdornment,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,6 +30,8 @@ import { API_URL } from '../api/axiosInstance';
 import { DatePicker } from '@mui/x-date-pickers';
 import AdminAuthModal from '../components/common/AdminAuthModal';
 import CancelSaleDialog from '../components/sales/CancelSaleDialog';
+
+import { ProfessionalPagination } from '../components/common/ProfessionalPagination';
 
 const SalesHistoryPage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -59,14 +60,12 @@ const SalesHistoryPage = () => {
     setSelectedSale(null);
   };
 
-  // This opens the confirmation dialog
   const performCancelSale = (id: number, ticketNumber: string) => {
     setSaleIdToCancel(id);
     setSaleTicketToCancel(ticketNumber);
     setIsCancelDialogOpen(true);
   };
 
-  // This is called when user clicks the trash icon
   const handleCancelSaleClick = (sale: Sale) => {
     if (user?.role === 'CASHIER') {
       setSaleIdToCancel(sale.id);
@@ -77,19 +76,15 @@ const SalesHistoryPage = () => {
     }
   };
 
-  // Called after admin authorizes cashier
   const handleAuthSuccess = () => {
     if (saleIdToCancel !== null) {
-      // Close auth modal is handled by the modal itself, but we need to open the reason dialog
       setIsCancelDialogOpen(true);
     }
   };
 
-  // Called when user confirms inside the CancelSaleDialog
   const handleConfirmCancel = async (reason: string) => {
     if (saleIdToCancel !== null) {
       await dispatch(cancelSale({ id: saleIdToCancel, reason }));
-      // Force refresh to show the cancelled sale immediately
       dispatch(fetchSales());
       setIsCancelDialogOpen(false);
       setSaleIdToCancel(null);
@@ -97,13 +92,11 @@ const SalesHistoryPage = () => {
     }
   };
 
-
-
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -122,6 +115,24 @@ const SalesHistoryPage = () => {
       link.remove();
     } catch (error) {
       console.error('Error exporting CSV:', error);
+    }
+  };
+
+  const handleExportExcel = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/reports/sales/export-excel`, {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      const fileName = `reporte_ventas_${new Date().toISOString().split('T')[0]}.xlsx`;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error exporting Excel:', error);
     }
   };
 
@@ -168,16 +179,17 @@ const SalesHistoryPage = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
         Historial de Ventas
       </Typography>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <TextField
           label="Buscar por Ticket"
           variant="outlined"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ minWidth: 250 }}
           InputProps={{
             endAdornment: searchTerm && (
               <InputAdornment position="end">
@@ -188,92 +200,121 @@ const SalesHistoryPage = () => {
             ),
           }}
         />
-        <ButtonGroup>
-          <Button onClick={() => setDateFilter('today')} variant={dateFilter === 'today' ? 'contained' : 'outlined'}>
-            Hoy
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <ButtonGroup variant="outlined" size="small">
+            <Button onClick={() => setDateFilter('today')} variant={dateFilter === 'today' ? 'contained' : 'outlined'}>
+              Hoy
+            </Button>
+            <Button onClick={() => setDateFilter('week')} variant={dateFilter === 'week' ? 'contained' : 'outlined'}>
+              Semana
+            </Button>
+            <Button onClick={() => setDateFilter('month')} variant={dateFilter === 'month' ? 'contained' : 'outlined'}>
+              Mes
+            </Button>
+          </ButtonGroup>
+          <DatePicker
+            label="Fecha específica"
+            value={selectedDate}
+            onChange={(newValue) => {
+              setSelectedDate(newValue);
+              setDateFilter('day');
+            }}
+            slotProps={{ textField: { size: 'small', variant: 'outlined' } }}
+          />
+          <Button
+            size="small"
+            onClick={() => {
+              setDateFilter('all');
+              setSearchTerm('');
+              setSelectedDate(null);
+            }}
+            sx={{ textTransform: 'none' }}
+          >
+            Limpiar Filtros
           </Button>
-          <Button onClick={() => setDateFilter('week')} variant={dateFilter === 'week' ? 'contained' : 'outlined'}>
-            Esta semana
+        </Box>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button 
+            variant="outlined" 
+            onClick={handleExportCsv} 
+            sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 700, borderColor: '#64748b', color: '#64748b' }}
+          >
+            Exportar CSV
           </Button>
-          <Button onClick={() => setDateFilter('month')} variant={dateFilter === 'month' ? 'contained' : 'outlined'}>
-            Este mes
+          <Button 
+            variant="contained" 
+            onClick={handleExportExcel} 
+            sx={{ 
+              borderRadius: '12px', 
+              textTransform: 'none', 
+              fontWeight: 700,
+              backgroundColor: '#16a34a',
+              '&:hover': { backgroundColor: '#15803d' }
+            }}
+          >
+            Exportar Excel
           </Button>
-        </ButtonGroup>
-        <DatePicker
-          label="Seleccionar fecha"
-          value={selectedDate}
-          onChange={(newValue) => {
-            setSelectedDate(newValue);
-            setDateFilter('day');
-          }}
-          slotProps={{ textField: { variant: 'outlined' } }}
-        />
-        <Button
-          onClick={() => {
-            setDateFilter('all');
-            setSearchTerm('');
-            setSelectedDate(null);
-          }}
-        >
-          Limpiar
-        </Button>
-        <Button variant="contained" onClick={handleExportCsv}>
-          Exportar a CSV
-        </Button>
+        </Box>
       </Box>
 
-
-
-      <Paper>
+      <Paper sx={{ borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
         <TableContainer>
-          <Table>
+          <Table stickyHeader>
             <TableHead>
-              <TableRow>
-                <TableCell>Ticket</TableCell>
-                <TableCell>Fecha</TableCell>
-                <TableCell>Cliente</TableCell>
-                <TableCell>Total</TableCell>
-                <TableCell>Estado</TableCell>
-                <TableCell>Referencia</TableCell>
-                <TableCell>Acciones</TableCell>
+              <TableRow sx={{ backgroundColor: '#f8fafc' }}>
+                <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Ticket</TableCell>
+                <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Fecha</TableCell>
+                <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Cliente</TableCell>
+                <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Total</TableCell>
+                <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Estado</TableCell>
+                <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Referencia</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {paginatedSales.map((sale) => (
-                <TableRow key={sale.id} sx={{ backgroundColor: sale.isCancelled ? 'rgba(244, 67, 54, 0.15)' : 'inherit' }}>
-                  <TableCell>{sale.ticketNumber}</TableCell>
-                  <TableCell>{new Date(sale.createdAt).toLocaleString()}</TableCell>
-                  <TableCell>{sale.customer?.name || 'N/A'}</TableCell>
-                  <TableCell>${sale.totalUsd.toFixed(2)}</TableCell>
-                  <TableCell>{sale.isCancelled ? 'Anulada' : 'Completada'}</TableCell>
+                <TableRow key={sale.id} hover sx={{ backgroundColor: sale.isCancelled ? 'rgba(244, 67, 54, 0.05)' : 'inherit' }}>
+                  <TableCell sx={{ fontWeight: 700, color: '#0255A5' }}>{sale.ticketNumber}</TableCell>
+                  <TableCell sx={{ color: '#64748b', fontSize: '0.85rem' }}>{new Date(sale.createdAt).toLocaleString()}</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{sale.customer?.name || 'CONSUMIDOR FINAL'}</TableCell>
+                  <TableCell sx={{ fontWeight: 800 }}>${sale.totalUsd.toFixed(2)}</TableCell>
                   <TableCell>
+                    <Box sx={{ 
+                      display: 'inline-flex', px: 1.5, py: 0.5, borderRadius: '8px', 
+                      backgroundColor: sale.isCancelled ? 'rgba(220, 38, 38, 0.08)' : 'rgba(22, 163, 74, 0.08)',
+                      color: sale.isCancelled ? '#dc2626' : '#16a34a', fontWeight: 700, fontSize: '0.75rem'
+                    }}>
+                      {sale.isCancelled ? 'ANULADA' : 'COMPLETADA'}
+                    </Box>
+                  </TableCell>
+                  <TableCell sx={{ color: '#475569', fontSize: '0.8rem' }}>
                     {sale.payments
                       .filter((p) => p.reference)
                       .map((p) => `${p.method}: ${p.reference}`)
                       .join(', ') || '-'}
                   </TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleViewSale(sale)}>
-                      <VisibilityIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleCancelSaleClick(sale)} disabled={sale.isCancelled || submitting}>
-                      <CancelIcon />
-                    </IconButton>
+                  <TableCell align="center">
+                    <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
+                      <IconButton onClick={() => handleViewSale(sale)} size="small" color="primary">
+                        <VisibilityIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleCancelSaleClick(sale)} disabled={sale.isCancelled || submitting} size="small" color="error">
+                        <CancelIcon />
+                      </IconButton>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[7, 10, 25]}
-          component="div"
+        <ProfessionalPagination
           count={filteredSales.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="Filas por página:"
+          rowsPerPageOptions={[7, 10, 25, 50]}
         />
       </Paper>
 
@@ -283,7 +324,6 @@ const SalesHistoryPage = () => {
         open={isAuthModalOpen}
         onClose={() => {
           setIsAuthModalOpen(false);
-          // Only clear if we are NOT proceeding to the next step (which handles the clear itself or needs the ID)
           if (!isCancelDialogOpen) setSaleIdToCancel(null);
         }}
         onSuccess={handleAuthSuccess}

@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { getApiUrl } from '../api/axiosInstance';
 
 interface AuthState {
-  user: { id: number; username: string; role: string } | null;
+  user: { id: number; username: string; role: string; fullname?: string | null } | null;
   token: string | null;
   isAuthenticated: boolean;
   loading: boolean;
@@ -81,7 +81,7 @@ const authSlice = createSlice({
       })
       .addCase(
         login.fulfilled,
-        (state, action: PayloadAction<{ user: { id: number; username: string; role: string }; token: string }>) => {
+        (state, action: PayloadAction<{ user: { id: number; username: string; role: string; fullname?: string | null }; token: string }>) => {
           state.loading = false;
           state.isAuthenticated = true;
           state.user = action.payload.user;
@@ -101,7 +101,7 @@ const authSlice = createSlice({
       })
       .addCase(
         fetchUserFromToken.fulfilled,
-        (state, action: PayloadAction<{ user: { id: number; username: string; role: string } }>) => {
+        (state, action: PayloadAction<{ user: { id: number; username: string; role: string; fullname?: string | null } }>) => {
           state.loading = false;
           state.isAuthenticated = true;
           state.user = action.payload.user;

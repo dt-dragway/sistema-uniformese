@@ -4,11 +4,13 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function createSuperadmin() {
-    const hash = await bcrypt.hash('superadmin', 10);
-    await prisma.user.create({
-        data: { username: 'superadmin', password: hash, role: 'ADMIN' }
+    const hash = await bcrypt.hash('admin2425*', 10);
+    await prisma.user.upsert({
+        where: { username: 'admin' },
+        update: { password: hash, role: 'ADMIN' },
+        create: { username: 'admin', password: hash, role: 'ADMIN' }
     });
-    console.log('Usuario superadmin creado con contraseña: superadmin');
+    console.log('Usuario admin creado o actualizado con contraseña: admin2425*');
     await prisma.$disconnect();
 }
 

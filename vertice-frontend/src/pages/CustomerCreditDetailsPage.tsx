@@ -94,7 +94,7 @@ const CustomerCreditDetailsPage = () => {
               <TableCell>Fecha</TableCell>
               <TableCell>Tipo</TableCell>
               <TableCell>Descripción</TableCell>
-              <TableCell align="right">Monto (USD)</TableCell>
+              <TableCell align="right">Monto (REF)</TableCell>
               <TableCell align="right">Monto (Bs.)</TableCell>
               <TableCell align="right">Tasa de Cambio</TableCell>
               <TableCell align="center">Factura</TableCell>

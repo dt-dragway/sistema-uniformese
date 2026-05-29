@@ -2,8 +2,8 @@ import axiosInstance from './axiosInstance';
 import { Sale } from '../models/Sale';
 
 interface SalePayload {
-  items: { productId: number; quantity: number; price: number; }[];
-  payments: { method: string; amount: number; reference?: string; }[];
+  items: { productId: number; quantity: number; price: number }[];
+  payments: { method: string; amount: number; reference?: string }[];
   totalUsd: number;
   totalBs: number;
   customerId?: number;
@@ -50,7 +50,7 @@ interface DuplicateReferenceResult {
 const checkDuplicateReference = (reference: string, paymentMethods?: string[]) => {
   return axiosInstance.post<DuplicateReferenceResult>('/sales/check-reference', {
     reference,
-    paymentMethods: paymentMethods || ['Pago Móvil', 'Transferencia']
+    paymentMethods: paymentMethods || ['Pago Móvil', 'Transferencia'],
   });
 };
 

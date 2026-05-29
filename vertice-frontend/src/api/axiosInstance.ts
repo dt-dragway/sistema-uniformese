@@ -43,7 +43,6 @@ export const getApiUrl = (): string => getBaseURL();
 // Exportamos para compatibilidad con código existente
 export const API_URL = getBaseURL();
 
-
 const axiosInstance = axios.create({
   baseURL: getBaseURL(),
   headers: {

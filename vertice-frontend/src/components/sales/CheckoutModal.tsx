@@ -40,7 +40,7 @@ interface Payment {
   id: number;
   method: string;
   amount: string;
-  currency: 'Bs.' | '$';
+  currency: 'Bs.' | 'REF';
   reference?: string;
 }
 
@@ -69,7 +69,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
   const totalPaidBs = payments.reduce((acc, p) => {
     if (p.method === 'Crédito a Cliente') return acc;
     const numericAmount = parseFloat(p.amount.replace(',', '.')) || 0;
-    const amountInBs = p.currency === '$' ? numericAmount * exchangeRate : numericAmount;
+    const amountInBs = p.currency === 'REF' ? numericAmount * exchangeRate : numericAmount;
     return acc + (amountInBs || 0);
   }, 0);
 
@@ -93,8 +93,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
         if (p.id === id) {
           const updatedPayment = { ...p, [field]: value };
           if (field === 'method') {
-            updatedPayment.currency = value === 'Efectivo $' ? '$' : 'Bs.';
-            if (value === 'Efectivo $') {
+            updatedPayment.currency = value === 'Efectivo REF' ? 'REF' : 'Bs.';
+            if (value === 'Efectivo REF') {
               updatedPayment.amount = ''; // Clear amount when switching to USD cash
             }
           }
@@ -109,7 +109,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
     const currentPaidBs = payments.reduce((acc, p) => {
       if (p.method === 'Crédito a Cliente') return acc;
       const numericAmount = parseFloat(p.amount.replace(',', '.')) || 0;
-      const amountInBs = p.currency === '$' ? numericAmount * exchangeRate : numericAmount;
+      const amountInBs = p.currency === 'REF' ? numericAmount * exchangeRate : numericAmount;
       return acc + (amountInBs || 0);
     }, 0);
 
@@ -181,7 +181,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
     const currentPaidBs = payments.reduce((acc, p) => {
       if (p.method === 'Crédito a Cliente') return acc;
       const numericAmount = parseFloat(p.amount.replace(',', '.')) || 0;
-      return acc + (p.currency === '$' ? numericAmount * exchangeRate : numericAmount);
+      return acc + (p.currency === 'REF' ? numericAmount * exchangeRate : numericAmount);
     }, 0);
 
     const balance = parseFloat((totalWithDiscount - currentPaidBs).toFixed(2));
@@ -192,7 +192,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
         amountInUsd = balance > 0 ? balance / exchangeRate : 0;
       } else {
         const numericAmount = parseFloat(p.amount.replace(',', '.')) || 0;
-        amountInUsd = p.currency === '$' ? numericAmount : numericAmount / exchangeRate;
+        amountInUsd = p.currency === 'REF' ? numericAmount : numericAmount / exchangeRate;
       }
       return {
         method: p.method,
@@ -301,7 +301,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
     const totalPaidByOtherMethods = payments.reduce((acc, p) => {
       if (p.method === 'Crédito a Cliente') return acc;
       const numericAmount = parseFloat(p.amount.replace(',', '.')) || 0;
-      const amountInBs = p.currency === '$' ? numericAmount * exchangeRate : numericAmount;
+      const amountInBs = p.currency === 'REF' ? numericAmount * exchangeRate : numericAmount;
       return acc + amountInBs;
     }, 0);
 
@@ -331,7 +331,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
 
   // --- 4. RENDER LOGIC ---
 
-  const basePaymentMethods = ['Efectivo Bs.', 'Efectivo $', 'Tarjeta', 'Pago Móvil', 'Biopago', 'Transferencia'];
+  const basePaymentMethods = ['Efectivo Bs.', 'Efectivo REF', 'Tarjeta', 'Pago Móvil', 'Biopago', 'Transferencia'];
   const paymentMethodsList = customerId ? [...basePaymentMethods, 'Crédito a Cliente'] : basePaymentMethods;
   const changeData = getChange();
 
@@ -351,44 +351,42 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
     <Modal open={open} onClose={onClose}>
       <>
         <Box
-          className="animate-snappy gpu-accelerated"
           sx={{
             position: 'absolute',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 800,
-            bgcolor: 'rgba(7, 18, 36, 0.9)', // Glassmorphism
-            backdropFilter: 'blur(25px)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            borderRadius: 10, // Curvatura Extrema (40px)
-            boxShadow: 'var(--institutional-shadow)',
+            width: { xs: '95%', md: 850 },
+            bgcolor: '#ffffff',
+            borderRadius: '24px', // Consistent rounding
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
             p: 0,
-            overflow: 'hidden'
+            overflow: 'hidden',
+            border: '1px solid rgba(0, 0, 0, 0.05)',
           }}
         >
           {/* Header */}
-          <Box sx={{ p: 3, borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
+          <Box sx={{ p: 3, borderBottom: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', background: '#f8fafc' }}>
             <ReceiptLongIcon sx={{ color: '#0255A5', mr: 2, fontSize: 32 }} />
-            <Typography variant="h5" component="h2" fontWeight="bold" sx={{ fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <Typography variant="h5" component="h2" fontWeight={800} sx={{ fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#0f172a' }}>
               Finalizar Venta
             </Typography>
           </Box>
 
-          <Grid container sx={{ height: 500 }}>
+          <Grid container sx={{ minHeight: 500 }}>
             {/* Left Side: Payment Methods */}
-            <Grid item xs={7} sx={{ p: 3, borderRight: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column' }}>
-              <Box ref={paymentsContainerRef} sx={{ flexGrow: 1, overflowY: 'auto', pr: 1, '&::-webkit-scrollbar': { width: '4px' }, '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '4px' } }}>
+            <Grid item xs={12} md={7} sx={{ p: 3, borderRight: { md: '1px solid rgba(0,0,0,0.06)' }, display: 'flex', flexDirection: 'column' }}>
+              <Box ref={paymentsContainerRef} sx={{ flexGrow: 1, overflowY: 'auto', pr: 1, maxHeight: 400, '&::-webkit-scrollbar': { width: '6px' }, '&::-webkit-scrollbar-thumb': { backgroundColor: '#e2e8f0', borderRadius: '10px' } }}>
                 {payments.map((payment, index) => {
                   const requiresReference = payment.method === 'Pago Móvil' || payment.method === 'Transferencia';
                   return (
-                    <Box key={payment.id} sx={{ mb: 2, p: 2, bgcolor: 'rgba(0,0,0,0.2)', borderRadius: 2, border: '1px solid rgba(255,255,255,0.05)' }}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
-                        <Typography variant="subtitle2" color="rgba(255,255,255,0.7)">
-                          Pago #{index + 1}
+                    <Box key={payment.id} sx={{ mb: 2, p: 2.5, bgcolor: '#f8fafc', borderRadius: '20px', border: '1px solid #edf2f7' }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                        <Typography variant="subtitle2" sx={{ color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          Forma de Pago #{index + 1}
                         </Typography>
                         {payments.length > 1 && (
-                          <IconButton size="small" onClick={() => removePaymentMethod(payment.id)} color="error">
+                          <IconButton size="small" onClick={() => removePaymentMethod(payment.id)} color="error" sx={{ backgroundColor: '#fee2e2', '&:hover': { backgroundColor: '#fecaca' } }}>
                             <RemoveCircleOutlineIcon fontSize="small" />
                           </IconButton>
                         )}
@@ -402,22 +400,29 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
                         }}
                         aria-label="payment method"
                         size="small"
-                        sx={{ flexWrap: 'wrap', mb: 2, width: '100%' }}
+                        sx={{ 
+                          flexWrap: 'wrap', 
+                          mb: 2.5, 
+                          width: '100%',
+                          gap: 1,
+                          '& .MuiToggleButtonGroup-grouped': {
+                            border: '1px solid #e2e8f0 !important',
+                            borderRadius: '12px !important',
+                            mx: 0,
+                            mb: 1,
+                            textTransform: 'none',
+                            fontWeight: 600,
+                            color: '#64748b',
+                            '&.Mui-selected': {
+                              backgroundColor: 'rgba(2, 85, 165, 0.08) !important',
+                              color: '#0255A5',
+                              borderColor: '#0255A5 !important',
+                            }
+                          }
+                        }}
                       >
                         {paymentMethodsList.map((m) => (
-                          <ToggleButton
-                            key={m}
-                            value={m}
-                            aria-label={m}
-                            sx={{
-                              flexGrow: 1,
-                              py: 0.5,
-                              px: 1,
-                              fontSize: '0.75rem',
-                              border: '1px solid rgba(255,255,255,0.1)',
-                              '&.Mui-selected': { bgcolor: 'rgba(2, 85, 165, 0.18) !important', color: '#0255A5' }
-                            }}
-                          >
+                          <ToggleButton key={m} value={m} aria-label={m} sx={{ px: 2, py: 1 }}>
                             {m}
                           </ToggleButton>
                         ))}
@@ -431,6 +436,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
                             label={`Monto (${payment.currency})`}
                             value={payment.amount || ''}
                             onChange={(e) => handlePaymentChange(payment.id, 'amount', e.target.value)}
+                            sx={{
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: '12px',
+                                backgroundColor: '#ffffff',
+                              }
+                            }}
                           />
                         </Grid>
                         {requiresReference && (
@@ -441,6 +452,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
                               label="Referencia"
                               value={payment.reference || ''}
                               onChange={(e) => handlePaymentChange(payment.id, 'reference', e.target.value)}
+                              sx={{
+                                '& .MuiOutlinedInput-root': {
+                                  borderRadius: '12px',
+                                  backgroundColor: '#ffffff',
+                                }
+                              }}
                             />
                           </Grid>
                         )}
@@ -453,58 +470,66 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
               <Button
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={addPaymentMethod}
-                sx={{ mt: 2, alignSelf: 'flex-start' }}
+                sx={{ 
+                  mt: 2, 
+                  alignSelf: 'flex-start',
+                  borderRadius: '12px',
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  px: 3
+                }}
                 variant="outlined"
-                color="secondary"
               >
-                Agregar otro pago
+                Agregar otro método
               </Button>
             </Grid>
 
             {/* Right Side: Totals Summary */}
-            <Grid item xs={5} sx={{ bgcolor: 'rgba(0,0,0,0.2)', p: 3, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Grid item xs={12} md={5} sx={{ bgcolor: '#f1f5f9', p: 4, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <Box sx={{ mb: 4, textAlign: 'center' }}>
-                <Typography variant="body2" color="rgba(255,255,255,0.6)" gutterBottom>
+                <Typography variant="overline" sx={{ color: '#64748b', fontWeight: 800, letterSpacing: '0.1em' }}>
                   TOTAL A PAGAR
                 </Typography>
-                <Typography variant="h3" fontWeight="bold" color="white" sx={{ fontFamily: '"Kanit", sans-serif' }}>
-                  <span style={{ fontSize: '1.5rem', verticalAlign: 'top', marginRight: '4px' }}>Bs.</span>
+                <Typography variant="h2" sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', my: 1 }}>
+                  <span style={{ fontSize: '1.5rem', verticalAlign: 'top', marginRight: '4px', fontWeight: 600 }}>Bs.</span>
                   {totalWithDiscount.toFixed(2)}
                 </Typography>
-                <Typography variant="h5" color="#0255A5" sx={{ mt: 1, opacity: 0.9, fontFamily: '"Kanit", sans-serif' }}>
-                  $ {(totals.usd - (discount / exchangeRate)).toFixed(2)}
-                </Typography>
+                <Box sx={{ display: 'inline-flex', alignItems: 'center', px: 2, py: 0.5, bgcolor: 'rgba(2, 85, 165, 0.08)', borderRadius: '12px' }}>
+                  <Typography variant="h6" sx={{ color: '#0255A5', fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}>
+                    REF {(totals.usd - (discount / exchangeRate)).toFixed(2)}
+                  </Typography>
+                </Box>
               </Box>
 
-              <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.1)' }} />
+              <Divider sx={{ my: 3, borderColor: 'rgba(0,0,0,0.06)' }} />
 
-              <Box sx={{ mt: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                  <Typography variant="body1">Pagado:</Typography>
-                  <Typography variant="body1" fontWeight="bold">Bs. {totalPaidBs.toFixed(2)}</Typography>
+              <Box sx={{ mt: 1 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+                  <Typography variant="body1" sx={{ color: '#475569', fontWeight: 500 }}>Pagado:</Typography>
+                  <Typography variant="body1" sx={{ color: '#0f172a', fontWeight: 700 }}>Bs. {totalPaidBs.toFixed(2)}</Typography>
                 </Box>
 
                 {remainingBalance > 0 ? (
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', color: '#f44336' }}>
-                    <Typography variant="body1">Faltante:</Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', color: '#dc2626', p: 2, bgcolor: '#fef2f2', borderRadius: '16px', border: '1px solid #fee2e2' }}>
+                    <Typography variant="body1" sx={{ fontWeight: 600 }}>Faltante:</Typography>
                     <Box sx={{ textAlign: 'right' }}>
-                      <Typography variant="h6" fontWeight="bold">Bs. {remainingBalance.toFixed(2)}</Typography>
-                      <Typography variant="body2" sx={{ opacity: 0.8 }}>$ {(remainingBalance / exchangeRate).toFixed(2)}</Typography>
+                      <Typography variant="h6" sx={{ fontWeight: 800 }}>Bs. {remainingBalance.toFixed(2)}</Typography>
+                      <Typography variant="body2" sx={{ opacity: 0.8 }}>REF {(remainingBalance / exchangeRate).toFixed(2)}</Typography>
                     </Box>
                   </Box>
                 ) : (
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4caf50', my: 2, py: 1, bgcolor: 'rgba(76, 175, 80, 0.1)', borderRadius: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#16a34a', my: 2, py: 2, bgcolor: '#f0fdf4', borderRadius: '16px', border: '1px solid #dcfce7' }}>
                     <CheckCircleIcon sx={{ mr: 1 }} />
-                    <Typography variant="h6" fontWeight="bold">COMPLETADO</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pago Completo</Typography>
                   </Box>
                 )}
 
                 {changeData && (
-                  <Box sx={{ mt: 2, p: 2, bgcolor: 'rgba(255,255,255,0.04)', borderRadius: 2, borderLeft: '4px solid #4caf50' }}>
-                    <Typography variant="caption" color="rgba(255,255,255,0.6)">CAMBIO / VUELTO</Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                      <Typography variant="h6" fontWeight="bold">Bs. {changeData.bs.toFixed(2)}</Typography>
-                      <Typography variant="body2" color="#0255A5">$ {changeData.usd.toFixed(2)}</Typography>
+                  <Box sx={{ mt: 3, p: 2.5, bgcolor: '#ffffff', borderRadius: '20px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', borderLeft: '6px solid #16a34a' }}>
+                    <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>CAMBIO / VUELTO</Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', mt: 1 }}>
+                      <Typography variant="h5" sx={{ fontWeight: 900, color: '#0f172a' }}>Bs. {changeData.bs.toFixed(2)}</Typography>
+                      <Typography variant="h6" sx={{ color: '#0255A5', fontWeight: 700 }}>REF {changeData.usd.toFixed(2)}</Typography>
                     </Box>
                   </Box>
                 )}
@@ -513,9 +538,14 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
           </Grid>
 
           {/* Footer Actions */}
-          <Box sx={{ p: 2, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'flex-end', gap: 2, background: 'rgba(255,255,255,0.02)' }}>
-            <Button variant="text" onClick={onClose} disabled={submitting} sx={{ borderRadius: '9999px', px: 3, color: 'rgba(255,255,255,0.6)' }}>
-              CANCELAR
+          <Box sx={{ p: 3, borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', justifyContent: 'flex-end', gap: 2, background: '#f8fafc' }}>
+            <Button 
+              variant="text" 
+              onClick={onClose} 
+              disabled={submitting} 
+              sx={{ borderRadius: '12px', px: 4, color: '#64748b', fontWeight: 600 }}
+            >
+              Cancelar
             </Button>
             <Button
               variant="contained"
@@ -523,29 +553,39 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, totals, di
               disabled={submitting || (remainingBalance > 0 && !(isCreditSale && customerId))}
               startIcon={!submitting && <PaymentIcon />}
               sx={{
-                px: 4, py: 1.2, fontSize: '0.95rem',
-                letterSpacing: '0.15em',
-                fontWeight: 900,
-                borderRadius: '9999px', // Pill rounded
-                background: 'linear-gradient(135deg, #4caf50, #2e7d32)',
-                boxShadow: '0 4px 15px rgba(76, 175, 80, 0.4)',
+                px: 6, 
+                py: 1.5, 
+                fontSize: '1rem',
+                fontWeight: 700,
+                borderRadius: '16px',
+                background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                color: 'white',
+                boxShadow: '0 10px 15px -3px rgba(5, 150, 105, 0.3)',
+                textTransform: 'none',
+                transition: 'all 0.3s ease',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #66bb6a, #388e3c)',
-                  boxShadow: '0 6px 20px rgba(76, 175, 80, 0.6)',
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                   transform: 'translateY(-2px)',
+                  boxShadow: '0 20px 25px -5px rgba(5, 150, 105, 0.4)',
                 },
-                '&:active': {
-                  transform: 'translateY(1px)',
-                },
-                '&:disabled': { background: 'rgba(255, 255, 255, 0.1)', color: 'rgba(255, 255, 255, 0.3)' }
+                '&:disabled': { backgroundColor: '#e2e8f0', color: '#94a3b8' }
               }}
             >
-              {submitting ? <CircularProgress size={24} color="inherit" /> : 'CONFIRMAR PAGO'}
+              {submitting ? <CircularProgress size={24} color="inherit" /> : 'Confirmar Venta'}
             </Button>
           </Box>
 
           <Snackbar open={showErrorSnackbar} autoHideDuration={6000} onClose={handleCloseErrorSnackbar}>
-            <Alert onClose={handleCloseErrorSnackbar} severity="error" sx={{ width: '100%', bgcolor: 'rgba(211, 47, 47, 0.9)', color: 'white' }}>
+            <Alert 
+              onClose={handleCloseErrorSnackbar} 
+              severity="error" 
+              sx={{ 
+                width: '100%', 
+                borderRadius: '12px',
+                fontWeight: 600,
+                boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'
+              }}
+            >
               {errorMessage}
             </Alert>
           </Snackbar>

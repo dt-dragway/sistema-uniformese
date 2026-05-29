@@ -22,7 +22,7 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
   // --- Session Info ---
   doc.setFontSize(10);
   lastY += 10;
-  doc.text(`Operador: ${session.user.username}`, 14, lastY);
+  doc.text(`Operador: ${session.user.fullname || session.user.username}`, 14, lastY);
   doc.text(`Apertura: ${new Date(session.openedAt).toLocaleString()}`, 14, (lastY += 5));
   doc.text(`Cierre: ${new Date(session.closedAt).toLocaleString()}`, 100, lastY);
   if (exchangeRate > 0) {
@@ -37,13 +37,13 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
   lastY += 6;
 
   const sessionSalesBody = [
-    ['Ventas en Efectivo', `$${session.calculatedCashSalesUsd.toFixed(2)}`, `Bs. ${session.calculatedCashSalesBs.toFixed(2)}`],
+    ['Ventas en Efectivo', `REF ${session.calculatedCashSalesUsd.toFixed(2)}`, `Bs. ${session.calculatedCashSalesBs.toFixed(2)}`],
     ['Ventas Electrónicas (Pago Móvil, Transferencia)', 'N/A', `Bs. ${session.calculatedElectronicSalesBs.toFixed(2)}`],
   ];
 
   autoTable(doc, {
     startY: lastY,
-    head: [['Descripción', 'Monto (USD)', 'Monto (Bs.)']],
+    head: [['Descripción', 'Monto (REF)', 'Monto (Bs.)']],
     body: sessionSalesBody,
     theme: 'grid',
     headStyles: { fillColor: [22, 160, 133], textColor: 255, fontStyle: 'bold' },
@@ -57,12 +57,12 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
   lastY += 6;
 
   const otherIncomeBody = [
-    ['Cobranza de Deudas (Pagos de créditos anteriores)', `$${session.calculatedDebtPaymentsUsd.toFixed(2)}`, `Bs. ${session.calculatedDebtPaymentsBs.toFixed(2)}`],
+    ['Cobranza de Deudas (Pagos de créditos anteriores)', `REF ${session.calculatedDebtPaymentsUsd.toFixed(2)}`, `Bs. ${session.calculatedDebtPaymentsBs.toFixed(2)}`],
   ];
 
   autoTable(doc, {
     startY: lastY,
-    head: [['Descripción', 'Monto (USD)', 'Monto (Bs.)']],
+    head: [['Descripción', 'Monto (REF)', 'Monto (Bs.)']],
     body: otherIncomeBody,
     theme: 'grid',
     headStyles: { fillColor: [22, 160, 133], textColor: 255, fontStyle: 'bold' },
@@ -84,7 +84,7 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
 
     autoTable(doc, {
       startY: lastY,
-      head: [['Concepto', 'Monto (USD)', 'Monto (Bs.)']],
+      head: [['Concepto', 'Monto (REF)', 'Monto (Bs.)']],
       body: advancesBody,
       theme: 'grid',
       headStyles: { fillColor: [52, 152, 219], textColor: 255, fontStyle: 'bold' },
@@ -105,16 +105,16 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
   lastY += 6;
 
   const summaryBody: any = [
-    ['Monto de Apertura', `$${session.openingAmountUsd.toFixed(2)}`, `Bs. ${session.openingAmountBs.toFixed(2)}`],
-    ['(+) Total de Ingresos', `$${totalCashIncomeUsd.toFixed(2)}`, `Bs. ${totalCashIncomeBs.toFixed(2)}`],
-    ['(=) Total Esperado en Caja', `$${expectedUsd.toFixed(2)}`, `Bs. ${expectedBs.toFixed(2)}`],
-    ['Monto Contado al Cierre', `$${(session.closingAmountUsd || 0).toFixed(2)}`, `Bs. ${(session.closingAmountBs || 0).toFixed(2)}`],
-    ['Discrepancia (Sobrante / Faltante)', { content: `$${session.discrepancyUsd.toFixed(2)}`, styles: { textColor: session.discrepancyUsd === 0 ? [0, 0, 0] : (session.discrepancyUsd > 0 ? [0, 128, 0] : [255, 0, 0]) } }, { content: `Bs. ${session.discrepancyBs.toFixed(2)}`, styles: { textColor: session.discrepancyBs === 0 ? [0, 0, 0] : (session.discrepancyBs > 0 ? [0, 128, 0] : [255, 0, 0]) } }],
+    ['Monto de Apertura', `REF ${session.openingAmountUsd.toFixed(2)}`, `Bs. ${session.openingAmountBs.toFixed(2)}`],
+    ['(+) Total de Ingresos', `REF ${totalCashIncomeUsd.toFixed(2)}`, `Bs. ${totalCashIncomeBs.toFixed(2)}`],
+    ['(=) Total Esperado en Caja', `REF ${expectedUsd.toFixed(2)}`, `Bs. ${expectedBs.toFixed(2)}`],
+    ['Monto Contado al Cierre', `REF ${(session.closingAmountUsd || 0).toFixed(2)}`, `Bs. ${(session.closingAmountBs || 0).toFixed(2)}`],
+    ['Discrepancia (Sobrante / Faltante)', { content: `REF ${session.discrepancyUsd.toFixed(2)}`, styles: { textColor: session.discrepancyUsd === 0 ? [0, 0, 0] : (session.discrepancyUsd > 0 ? [0, 128, 0] : [255, 0, 0]) } }, { content: `Bs. ${session.discrepancyBs.toFixed(2)}`, styles: { textColor: session.discrepancyBs === 0 ? [0, 0, 0] : (session.discrepancyBs > 0 ? [0, 128, 0] : [255, 0, 0]) } }],
   ];
 
   autoTable(doc, {
     startY: lastY,
-    head: [['Concepto', 'Monto (USD)', 'Monto (Bs.)']],
+    head: [['Concepto', 'Monto (REF)', 'Monto (Bs.)']],
     body: summaryBody,
     theme: 'striped',
     headStyles: { fillColor: [44, 62, 80], fontStyle: 'bold' },
@@ -130,12 +130,12 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
   lastY += 6;
 
   const nonCashBody = [
-    ['Ventas a Crédito (Generan Cuentas por Cobrar)', `$${session.calculatedCreditSalesUsd.toFixed(2)}`, creditSalesBs],
+    ['Ventas a Crédito (Generan Cuentas por Cobrar)', `REF ${session.calculatedCreditSalesUsd.toFixed(2)}`, creditSalesBs],
   ];
 
   autoTable(doc, {
     startY: lastY,
-    head: [['Descripción', 'Monto (USD)', 'Monto (Bs.)']],
+    head: [['Descripción', 'Monto (REF)', 'Monto (Bs.)']],
     body: nonCashBody,
     theme: 'grid',
     headStyles: { fillColor: [142, 68, 173], textColor: 255, fontStyle: 'bold' },

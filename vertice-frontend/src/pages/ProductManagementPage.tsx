@@ -16,18 +16,23 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TablePagination,
+  Tooltip,
+  IconButton,
+  InputAdornment,
+  Snackbar,
+  Alert,
+  Autocomplete,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  InputAdornment,
-  IconButton,
-  Snackbar,
-  Alert,
 } from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
-import { useState, useEffect, useRef } from 'react';
+import {
+  Add as AddIcon,
+  Search as SearchIcon,
+  Clear as ClearIcon,
+} from '@mui/icons-material';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { fetchProducts, createProduct, updateProduct, deleteProduct } from '../store/productsSlice';
@@ -35,174 +40,86 @@ import { Product, UnitType } from '../models/Product';
 import AddStockModal from '../components/inventory/AddStockModal';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 
+import { ProfessionalPagination } from '../components/common/ProfessionalPagination';
+
 // Helper functions for unit type labels
-const getUnitLabel = (unitType: UnitType): string => {
-  switch (unitType) {
-    case 'KG': return 'kg';
-    case 'LITER': return 'L';
-    default: return 'und';
-  }
-};
+const getUnitLabel = (_unitType: UnitType): string => 'prendas';
 
 // Format price without unnecessary decimals (.00)
 const formatPrice = (price: number): string => {
-  return price % 1 === 0 ? price.toFixed(0) : price.toFixed(2);
-};
-
-const getPriceLabel = (unitType: UnitType): string => {
-  switch (unitType) {
-    case 'KG': return 'Precio por Kg ($)';
-    case 'LITER': return 'Precio por Litro ($)';
-    default: return 'Precio ($)';
-  }
-};
-
-const getStockLabel = (unitType: UnitType): string => {
-  switch (unitType) {
-    case 'KG': return 'Stock (Kg)';
-    case 'LITER': return 'Stock (Litros)';
-    default: return 'Stock (Unidades)';
-  }
+  return new Intl.NumberFormat('de-DE', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(price);
 };
 
 const ProductManagementPage = () => {
   const dispatch: AppDispatch = useDispatch();
   const { products, loading, error } = useSelector((state: RootState) => state.products);
   const { exchangeRate } = useSelector((state: RootState) => state.appConfig);
+
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterTipo, setFilterTipo] = useState<string>('TODOS');
+  const [filterCaracteristica, setFilterCaracteristica] = useState<string>('TODOS');
+  const [filterTela, setFilterTela] = useState<string>('TODOS');
+  const [filterColor, setFilterColor] = useState<string>('TODOS');
+  const [filterDetalle, setFilterDetalle] = useState<string>('TODOS');
+  const [filterTalla, setFilterTalla] = useState<string>('TODOS');
   const [selectedTab, setSelectedTab] = useState(0);
+
+  // Pagination
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  // Modals state
   const [openModal, setOpenModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Partial<Product>>({});
   const [addStockModalOpen, setAddStockModalOpen] = useState(false);
   const [productForStockUpdate, setProductForStockUpdate] = useState<Product | null>(null);
-  const [page, setPage] = useState(0); // <-- Added pagination state
-  const [rowsPerPage, setRowsPerPage] = useState(10); // <-- Added pagination state
 
-  // Delete confirmation dialog state
+  // Delete dialog state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({ open: false, message: '', severity: 'success' });
+
+  // Snackbar state
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error',
+  });
+
+  // Barcode scanner support
+  const barcodeBuffer = useRef('');
+  const scanTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setSelectedTab(newValue);
-    setPage(0); // <-- Reset page when changing tabs
-  };
-
-  const handleOpenModal = (product?: Product) => {
-    if (product) {
-      setIsEditing(true);
-      setSelectedProduct(product);
-    } else {
-      setIsEditing(false);
-      setSelectedProduct({ unitType: 'UNIT' }); // Default unit type
-    }
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
-  const handleOpenAddStockModal = (product: Product) => {
-    setProductForStockUpdate(product);
-    setAddStockModalOpen(true);
-  };
-
-  const handleCloseAddStockModal = () => {
-    setAddStockModalOpen(false);
-    setProductForStockUpdate(null);
-    dispatch(fetchProducts());
-  };
-
-  const handleProductChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    if (name === 'name' || name === 'barCode') {
-      setSelectedProduct((prev) => ({ ...prev, [name]: value.toUpperCase() }));
-    } else {
-      setSelectedProduct((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleSaveProduct = async () => {
-    // Clean the product data - only send fields that the backend schema expects
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, createdAt, updatedAt, categoryId, ...restData } = selectedProduct as Product;
-
-    const productData = {
-      name: restData.name || '',
-      description: restData.description || undefined,
-      price: parseFloat(String(restData.price)) || 0,
-      cost: parseFloat(String(restData.cost)) || 0,
-      stock: parseFloat(String(restData.stock)) || 0,
-      minStock: parseFloat(String(restData.minStock)) || 0,
-      desiredStock: parseFloat(String(restData.desiredStock)) || 0,
-      offerPrice: parseFloat(String(restData.offerPrice)) || 0,
-      unitType: restData.unitType || 'UNIT',
-      barCode: restData.barCode || undefined,
-    };
-
-    const action = isEditing
-      ? updateProduct({ id: id, ...productData } as Product)
-      : createProduct(productData as Omit<Product, 'id'>);
-
-    try {
-      await dispatch(action).unwrap();
-      // Only fetch products and close modal on success
-      dispatch(fetchProducts());
-      handleCloseModal();
-    } catch (error) {
-      console.error('Failed to save product:', error);
-      // Optionally, show an error message to the user
-    }
-  };
-
-  const handleDeleteClick = (product: Product) => {
-    setProductToDelete(product);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleDeleteCancel = () => {
-    setDeleteDialogOpen(false);
-    setProductToDelete(null);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!productToDelete) return;
-
-    setIsDeleting(true);
-    try {
-      await dispatch(deleteProduct(productToDelete.id)).unwrap();
-      setSnackbar({ open: true, message: `Producto "${productToDelete.name}" eliminado correctamente`, severity: 'success' });
-      setDeleteDialogOpen(false);
-      setProductToDelete(null);
-    } catch (errorMessage) {
-      setSnackbar({ open: true, message: String(errorMessage) || 'Error al eliminar el producto', severity: 'error' });
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
-  // <-- Added pagination handlers
-  const handleChangePage = (_event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-
+  // Filter logic including clothing attributes
   const filteredProducts = products.filter(
-    (product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (product.barCode && product.barCode.includes(searchTerm))
+    (product) => {
+      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            (product.barCode && product.barCode.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      const productTipo = (product.tipo || '').trim().toUpperCase();
+      const productCaract = (product.caracteristica || '').trim().toUpperCase();
+      const productTela = (product.tela || '').trim().toUpperCase();
+      const productColor = (product.color || '').trim().toUpperCase();
+      const productDetalle = (product.detalle || '').trim().toUpperCase();
+      const productTalla = (product.talla || '').trim().toUpperCase();
+      
+      const matchesTipo = filterTipo === 'TODOS' || productTipo === filterTipo.trim().toUpperCase();
+      const matchesCaract = filterCaracteristica === 'TODOS' || productCaract === filterCaracteristica.trim().toUpperCase();
+      const matchesTela = filterTela === 'TODOS' || productTela === filterTela.trim().toUpperCase();
+      const matchesColor = filterColor === 'TODOS' || productColor === filterColor.trim().toUpperCase();
+      const matchesDetalle = filterDetalle === 'TODOS' || productDetalle === filterDetalle.trim().toUpperCase();
+      const matchesTalla = filterTalla === 'TODOS' || productTalla === filterTalla.trim().toUpperCase();
+      
+      return matchesSearch && matchesTipo && matchesCaract && matchesTela && matchesColor && matchesDetalle && matchesTalla;
+    }
   );
 
   const productsWithCode = filteredProducts.filter((product) => product.barCode);
@@ -210,50 +127,46 @@ const ProductManagementPage = () => {
 
   const productsToDisplay = selectedTab === 0 ? productsWithCode : productsWithoutCode;
 
-  const paginatedProducts = productsToDisplay.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage); // <-- Added slicing for pagination
+  // Extract unique values for filters (Normalized and Trimmed)
+  const uniqueTipos = Array.from(new Set(products.map(p => (p.tipo || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
+  const uniqueCaracteristicas = Array.from(new Set(products.map(p => (p.caracteristica || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
+  const uniqueTelas = Array.from(new Set(products.map(p => (p.tela || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
+  const uniqueColores = Array.from(new Set(products.map(p => (p.color || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
+  const uniqueDetalles = Array.from(new Set(products.map(p => (p.detalle || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
+  const uniqueTallas = Array.from(new Set(products.map(p => (p.talla || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
+
+  const paginatedProducts = productsToDisplay.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   // Barcode processing logic
   const processBarcode = (scannedCode: string) => {
     const product = products.find((p) => p.barCode === scannedCode);
     if (product) {
-      handleOpenAddStockModal(product);
+      handleOpenModal(product);
     } else {
-      setIsEditing(false);
-      setSelectedProduct({ barCode: scannedCode });
-      setOpenModal(true);
+      handleOpenModal({ barCode: scannedCode });
     }
   };
 
-  // Global scan listener
-  const [barcodeBuffer, setBarcodeBuffer] = useState('');
-  const scanTimer = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
-    const handleGlobalKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement;
-      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT')) {
-        return;
-      }
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
-      if (scanTimer.current) {
-        clearTimeout(scanTimer.current);
-      }
+      if (scanTimer.current) clearTimeout(scanTimer.current);
 
-      if (event.key === 'Enter') {
-        if (barcodeBuffer) {
-          // setSearchTerm(barcodeBuffer); // Removed this line
-          processBarcode(barcodeBuffer);
-          setBarcodeBuffer('');
+      if (e.key === 'Enter') {
+        if (barcodeBuffer.current.length > 3) {
+          processBarcode(barcodeBuffer.current);
         }
+        barcodeBuffer.current = '';
         return;
       }
 
-      if (event.key.length > 1) return;
-
-      setBarcodeBuffer((prev) => prev + event.key);
+      if (e.key.length === 1) {
+        barcodeBuffer.current += e.key;
+      }
 
       scanTimer.current = setTimeout(() => {
-        setBarcodeBuffer('');
+        barcodeBuffer.current = '';
         scanTimer.current = null;
       }, 100);
     };
@@ -266,31 +179,117 @@ const ProductManagementPage = () => {
     };
   }, [products, barcodeBuffer]);
 
-  if (loading && products.length === 0) return <Typography>Cargando productos...</Typography>;
-  if (error && products.length === 0) return <Typography color="error">Error al cargar productos: {error}</Typography>;
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setSelectedTab(newValue);
+    setPage(0);
+  };
+
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleOpenModal = (product: Partial<Product> = {}) => {
+    setSelectedProduct({ ...product, unitType: product.unitType || 'UNIT' });
+    setIsEditing(!!product.id);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedProduct({});
+    setIsEditing(false);
+  };
+
+  const handleProductChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const transformedValue = (name === 'name' || name === 'barCode') ? value.toUpperCase() : value;
+    setSelectedProduct((prev) => ({ ...prev, [name]: transformedValue }));
+  };
+
+  const handleSaveProduct = async () => {
+    const restData = { ...selectedProduct };
+    const productData: any = {
+      ...restData,
+      price: parseFloat(String(restData.price)) || 0,
+      stock: parseFloat(String(restData.stock)) || 0,
+      minStock: 0,
+    };
+
+    try {
+      if (isEditing) {
+        await dispatch(updateProduct(productData as Product)).unwrap();
+        setSnackbar({ open: true, message: 'Producto actualizado con éxito', severity: 'success' });
+      } else {
+        await dispatch(createProduct(productData as Omit<Product, 'id'>)).unwrap();
+        setSnackbar({ open: true, message: 'Producto creado con éxito', severity: 'success' });
+      }
+      handleCloseModal();
+    } catch (err) {
+      setSnackbar({ open: true, message: 'Error al guardar el producto', severity: 'error' });
+    }
+  };
+
+  const handleDeleteClick = (product: Product) => {
+    setProductToDelete(product);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!productToDelete) return;
+    setIsDeleting(true);
+    try {
+      await dispatch(deleteProduct(productToDelete.id)).unwrap();
+      setSnackbar({ open: true, message: 'Producto eliminado con éxito', severity: 'success' });
+      setDeleteDialogOpen(false);
+    } catch (err) {
+      setSnackbar({ open: true, message: String(err), severity: 'error' });
+    } finally {
+      setIsDeleting(false);
+      setProductToDelete(null);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setProductToDelete(null);
+  };
+
+  const handleOpenAddStockModal = (product: Product) => {
+    setProductForStockUpdate(product);
+    setAddStockModalOpen(true);
+  };
+
+  const handleCloseAddStockModal = () => {
+    setAddStockModalOpen(false);
+    setProductForStockUpdate(null);
+  };
+
+  if (loading && products.length === 0) return <Typography sx={{ p: 3 }}>Cargando productos...</Typography>;
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Gestión de Productos
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        Gestión de Inventario
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3, alignItems: 'center' }}>
         <TextField
-          label="Buscar o escanear código de barras"
+          label="Buscar por nombre o código de barras"
           variant="outlined"
+          placeholder="Escanee o escriba aquí..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              const scannedCode = (e.target as HTMLInputElement).value;
-              if (scannedCode) {
-                processBarcode(scannedCode);
-                setSearchTerm('');
-              }
-            }
-          }}
-          sx={{ width: '300px' }}
+          sx={{ minWidth: '350px', flexGrow: 1, '& .MuiOutlinedInput-root': { borderRadius: '16px', backgroundColor: '#ffffff' } }}
           InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon color="primary" />
+              </InputAdornment>
+            ),
             endAdornment: searchTerm && (
               <InputAdornment position="end">
                 <IconButton size="small" onClick={() => setSearchTerm('')}>
@@ -300,159 +299,325 @@ const ProductManagementPage = () => {
             ),
           }}
         />
-        <Box>
-          <Button variant="contained" color="primary" onClick={() => handleOpenModal()} sx={{ height: '56px' }}>
-            Añadir Nuevo Producto
-          </Button>
-        </Box>
+
+        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => handleOpenModal()} sx={{ height: '56px', px: 4, borderRadius: '16px', fontWeight: 700, textTransform: 'none' }}>
+          Nuevo Producto
+        </Button>
       </Box>
 
-      <Tabs value={selectedTab} onChange={handleTabChange} sx={{ mb: 2 }}>
-        <Tab label="Productos con Código" />
-        <Tab label="Productos sin Código" />
+      <Tabs value={selectedTab} onChange={handleTabChange} sx={{ mb: 3, borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+        <Tab label="Con Código de Barras" sx={{ fontWeight: 700 }} />
+        <Tab label="Sin Código de Barras" sx={{ fontWeight: 700 }} />
       </Tabs>
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Código</TableCell>
-              <TableCell align="right">Precio</TableCell>
-              <TableCell align="right">Stock</TableCell>
-              <TableCell align="right">Stock Mínimo</TableCell>
-              <TableCell align="center">Acciones</TableCell>
+              <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Nombre</TableCell>
+              <TableCell sx={{ minWidth: 160 }}>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Tipo de Prenda</Typography>
+                <Select
+                  value={filterTipo}
+                  onChange={(e) => { setFilterTipo(e.target.value); setPage(0); }}
+                  size="small"
+                  fullWidth
+                  sx={{ 
+                    height: '32px', 
+                    fontSize: '0.75rem', 
+                    backgroundColor: '#f8fafc',
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                  }}
+                >
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
+                  {uniqueTipos.map(t => <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>{t}</MenuItem>)}
+                </Select>
+              </TableCell>
+              <TableCell sx={{ minWidth: 160 }}>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Característica</Typography>
+                <Select
+                  value={filterCaracteristica}
+                  onChange={(e) => { setFilterCaracteristica(e.target.value); setPage(0); }}
+                  size="small"
+                  fullWidth
+                  sx={{ 
+                    height: '32px', 
+                    fontSize: '0.75rem', 
+                    backgroundColor: '#f8fafc',
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                  }}
+                >
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
+                  {uniqueCaracteristicas.map(c => <MenuItem key={c} value={c} sx={{ fontSize: '0.75rem' }}>{c}</MenuItem>)}
+                </Select>
+              </TableCell>
+              <TableCell sx={{ minWidth: 150 }}>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Tela</Typography>
+                <Select
+                  value={filterTela}
+                  onChange={(e) => { setFilterTela(e.target.value); setPage(0); }}
+                  size="small"
+                  fullWidth
+                  sx={{ 
+                    height: '32px', 
+                    fontSize: '0.75rem', 
+                    backgroundColor: '#f8fafc',
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                  }}
+                >
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
+                  {uniqueTelas.map(t => <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>{t}</MenuItem>)}
+                </Select>
+              </TableCell>
+              <TableCell sx={{ minWidth: 150 }}>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Color</Typography>
+                <Select
+                  value={filterColor}
+                  onChange={(e) => { setFilterColor(e.target.value); setPage(0); }}
+                  size="small"
+                  fullWidth
+                  sx={{ 
+                    height: '32px', 
+                    fontSize: '0.75rem', 
+                    backgroundColor: '#f8fafc',
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                  }}
+                >
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
+                  {uniqueColores.map(c => <MenuItem key={c} value={c} sx={{ fontSize: '0.75rem' }}>{c}</MenuItem>)}
+                </Select>
+              </TableCell>
+              <TableCell sx={{ minWidth: 150 }}>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Detalle</Typography>
+                <Select
+                  value={filterDetalle}
+                  onChange={(e) => { setFilterDetalle(e.target.value); setPage(0); }}
+                  size="small"
+                  fullWidth
+                  sx={{ 
+                    height: '32px', 
+                    fontSize: '0.75rem', 
+                    backgroundColor: '#f8fafc',
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                  }}
+                >
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
+                  {uniqueDetalles.map(t => <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>{t}</MenuItem>)}
+                </Select>
+              </TableCell>
+              <TableCell sx={{ minWidth: 120 }}>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Talla</Typography>
+                <Select
+                  value={filterTalla}
+                  onChange={(e) => { setFilterTalla(e.target.value); setPage(0); }}
+                  size="small"
+                  fullWidth
+                  sx={{ 
+                    height: '32px', 
+                    fontSize: '0.75rem', 
+                    backgroundColor: '#f8fafc',
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                  }}
+                >
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
+                  {uniqueTallas.map(t => <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>{t}</MenuItem>)}
+                </Select>
+              </TableCell>
+              <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Código</TableCell>
+              <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>Precio</TableCell>
+              <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>Stock</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedProducts.map((product) => ( // <-- Changed to paginatedProducts
-              <TableRow
-                key={product.id}
-                hover
-                sx={{ backgroundColor: product.stock <= product.minStock ? 'rgba(255, 0, 0, 0.1)' : 'inherit' }}
-              >
-                <TableCell component="th" scope="row">
+            {paginatedProducts.map((product) => (
+              <TableRow key={product.id} hover>
+                <TableCell component="th" scope="row" sx={{ fontWeight: 600 }}>
                   {product.name}
                 </TableCell>
-                <TableCell>{product.barCode || 'N/A'}</TableCell>
-                <TableCell align="right">
-                  <Typography variant="body1">Bs. {formatPrice(product.price * exchangeRate)}/{getUnitLabel(product.unitType || 'UNIT')}</Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    ${formatPrice(product.price)}/{getUnitLabel(product.unitType || 'UNIT')}
-                  </Typography>
+                <TableCell sx={{ fontSize: '0.85rem', color: '#0255A5', fontWeight: 700 }}>
+                  {product.tipo || '-'}
                 </TableCell>
-                <TableCell align="right">{product.unitType === 'UNIT' ? product.stock : product.stock.toFixed(3)} {getUnitLabel(product.unitType || 'UNIT')}</TableCell>
-                <TableCell align="right">{product.unitType === 'UNIT' ? product.minStock : product.minStock.toFixed(3)} {getUnitLabel(product.unitType || 'UNIT')}</TableCell>
+                <TableCell sx={{ fontSize: '0.85rem', color: '#64748b' }}>
+                  {product.caracteristica || '-'}
+                </TableCell>
+                <TableCell sx={{ fontSize: '0.85rem', color: '#0f172a', fontWeight: 500 }}>
+                  {product.tela || '-'}
+                </TableCell>
+                <TableCell sx={{ fontSize: '0.85rem', color: '#0f172a' }}>
+                  {product.color || '-'}
+                </TableCell>
+                <TableCell sx={{ fontSize: '0.85rem', color: '#64748b' }}>
+                  {product.detalle || '-'}
+                </TableCell>
+                <TableCell sx={{ fontSize: '0.85rem', color: '#0255A5', fontWeight: 700 }}>
+                  {product.talla || '-'}
+                </TableCell>
+                <TableCell sx={{ fontFamily: 'monospace', color: '#475569' }}>{product.barCode || 'N/A'}</TableCell>
+                <TableCell align="right">
+                  <Typography variant="body2" sx={{ fontWeight: 700 }}>Bs. {formatPrice(product.price * exchangeRate)}</Typography>
+                  <Typography variant="caption" color="text.secondary">REF {formatPrice(product.price)}</Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Box 
+                    onClick={() => handleOpenAddStockModal(product)}
+                    sx={{ 
+                      display: 'inline-flex', 
+                      px: 1.5, 
+                      py: 0.5, 
+                      borderRadius: '8px', 
+                      backgroundColor: product.stock > 0 ? 'rgba(22, 163, 74, 0.08)' : 'rgba(220, 38, 38, 0.08)',
+                      color: product.stock > 0 ? '#16a34a' : '#dc2626',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.1)' }
+                    }}
+                  >
+                    {product.stock}
+                  </Box>
+                </TableCell>
                 <TableCell align="center">
-                  <Button size="small" variant="outlined" sx={{ mr: 1 }} onClick={() => handleOpenModal(product)}>
-                    Editar
-                  </Button>
-                  <Button size="small" variant="outlined" color="error" onClick={() => handleDeleteClick(product)}>
-                    Eliminar
-                  </Button>
+                  <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                    <Button size="small" variant="outlined" onClick={() => handleOpenModal(product)} sx={{ borderRadius: '8px', textTransform: 'none' }}>
+                      Editar
+                    </Button>
+                    <Button size="small" variant="outlined" color="error" onClick={() => handleDeleteClick(product)} sx={{ borderRadius: '8px', textTransform: 'none' }}>
+                      Eliminar
+                    </Button>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-        <TablePagination // <-- Added pagination component
-          rowsPerPageOptions={[10, 25, 50]}
-          component="div"
+        <ProfessionalPagination
           count={productsToDisplay.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="Filas por página:"
         />
       </TableContainer>
 
-      <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ backgroundColor: 'primary.main', color: 'white' }}>
-          {isEditing ? 'Editar Producto' : 'Añadir Nuevo Producto'}
+      <Dialog open={openModal} onClose={handleCloseModal} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#0255A5', color: 'white', fontWeight: 700 }}>
+          {isEditing ? 'Editar Prenda / Producto' : 'Añadir Nueva Prenda / Producto'}
         </DialogTitle>
         <DialogContent dividers>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="name"
-            label="Nombre"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={selectedProduct.name || ''}
-            onChange={handleProductChange}
-            sx={{ mb: 2 }}
-          />
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="unit-type-label">Tipo de Unidad</InputLabel>
-            <Select
-              labelId="unit-type-label"
-              name="unitType"
-              value={selectedProduct.unitType || 'UNIT'}
-              label="Tipo de Unidad"
-              onChange={(e) => setSelectedProduct(prev => ({ ...prev, unitType: e.target.value as UnitType }))}
-            >
-              <MenuItem value="UNIT">Unidades</MenuItem>
-              <MenuItem value="KG">Kilogramos (precio por kg)</MenuItem>
-              <MenuItem value="LITER">Litros (precio por litro)</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            margin="dense"
-            name="price"
-            label={getPriceLabel(selectedProduct.unitType || 'UNIT')}
-            type="number"
-            fullWidth
-            variant="outlined"
-            value={selectedProduct.price || ''}
-            onChange={handleProductChange}
-            sx={{ mb: 2 }}
-            inputProps={{ step: '0.01' }}
-          />
-          <TextField
-            margin="dense"
-            name="stock"
-            label={getStockLabel(selectedProduct.unitType || 'UNIT')}
-            type="number"
-            fullWidth
-            variant="outlined"
-            value={selectedProduct.stock || ''}
-            onChange={handleProductChange}
-            sx={{ mb: 2 }}
-            inputProps={{ step: selectedProduct.unitType === 'UNIT' ? '1' : '0.001' }}
-            helperText={selectedProduct.unitType === 'KG' ? 'Ingrese cantidad en kilogramos' : selectedProduct.unitType === 'LITER' ? 'Ingrese cantidad en litros' : ''}
-          />
-          <TextField
-            margin="dense"
-            name="minStock"
-            label={`Stock Mínimo (${getUnitLabel(selectedProduct.unitType || 'UNIT')})`}
-            type="number"
-            fullWidth
-            variant="outlined"
-            value={selectedProduct.minStock || ''}
-            onChange={handleProductChange}
-            sx={{ mb: 2 }}
-            inputProps={{ step: selectedProduct.unitType === 'UNIT' ? '1' : '0.001' }}
-          />
-          <TextField
-            margin="dense"
-            name="barCode"
-            label="Código de Barras"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={selectedProduct.barCode || ''}
-            onChange={handleProductChange}
-          />
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+            <TextField
+              autoFocus
+              name="name"
+              label="Nombre General / Descripción"
+              type="text"
+              fullWidth
+              variant="outlined"
+              value={selectedProduct.name || ''}
+              onChange={handleProductChange}
+            />
+
+            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+              <TextField
+                name="barCode"
+                label="Código de Barras"
+                type="text"
+                variant="outlined"
+                value={selectedProduct.barCode || ''}
+                onChange={handleProductChange}
+                placeholder="Escanear o escribir..."
+              />
+
+              <Autocomplete
+                freeSolo
+                options={uniqueTipos}
+                value={selectedProduct.tipo || ''}
+                onInputChange={(_, newValue) =>
+                  setSelectedProduct(prev => ({ ...prev, tipo: newValue.toUpperCase() }))
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="Tipo de Prenda" variant="outlined" placeholder="Ej. FILIPINA, KIMONO..." />
+                )}
+              />
+
+              <Autocomplete
+                freeSolo
+                options={uniqueCaracteristicas}
+                value={selectedProduct.caracteristica || ''}
+                onInputChange={(_, newValue) =>
+                  setSelectedProduct(prev => ({ ...prev, caracteristica: newValue.toUpperCase() }))
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="Característica" variant="outlined" placeholder="Ej. DAMA, CABALLERO..." />
+                )}
+              />
+
+              <Autocomplete
+                freeSolo
+                options={uniqueTallas}
+                value={selectedProduct.talla || ''}
+                onInputChange={(_, newValue) =>
+                  setSelectedProduct(prev => ({ ...prev, talla: newValue.toUpperCase() }))
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="Talla" variant="outlined" placeholder="Ej. SS, XL, 32..." />
+                )}
+              />
+
+              <TextField
+                name="detalle"
+                label="Detalle"
+                variant="outlined"
+                value={selectedProduct.detalle || ''}
+                onChange={handleProductChange}
+                placeholder="Ej. MANGA CORTA, PECHERA..."
+              />
+
+              <TextField
+                name="tela"
+                label="Tela"
+                variant="outlined"
+                value={selectedProduct.tela || ''}
+                onChange={handleProductChange}
+                placeholder="Ej. DRIL, MICROFIBRA..."
+              />
+
+              <TextField
+                name="color"
+                label="Color"
+                variant="outlined"
+                value={selectedProduct.color || ''}
+                onChange={handleProductChange}
+                placeholder="Ej. BLANCO, AZUL..."
+              />
+            </Box>
+
+            <Typography variant="subtitle2" color="text.secondary" sx={{ mt: 1, fontWeight: 700, letterSpacing: '0.05em' }}>PRECIOS E INVENTARIO</Typography>
+            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+              <TextField
+                name="price"
+                label="Precio (REF)"
+                type="number"
+                variant="outlined"
+                value={selectedProduct.price || ''}
+                onChange={handleProductChange}
+                inputProps={{ step: '0.01', min: 0 }}
+              />
+              <TextField
+                name="stock"
+                label={isEditing ? "Stock Actual" : "Stock Inicial"}
+                type="number"
+                variant="outlined"
+                value={selectedProduct.stock === 0 ? '0' : (selectedProduct.stock || '')}
+                onChange={handleProductChange}
+                inputProps={{ step: '1', min: 0 }}
+                helperText={isEditing ? "Modifique la cantidad total en existencia" : "Cantidad disponible al crear"}
+              />
+            </Box>
+          </Box>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModal} color="secondary">
-            Cancelar
-          </Button>
-          <Button onClick={handleSaveProduct} variant="contained">
-            Guardar
-          </Button>
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button onClick={handleCloseModal} color="inherit">Cancelar</Button>
+          <Button onClick={handleSaveProduct} variant="contained" sx={{ px: 4, borderRadius: '12px', fontWeight: 700 }}>Guardar</Button>
         </DialogActions>
       </Dialog>
 
@@ -462,11 +627,10 @@ const ProductManagementPage = () => {
         product={productForStockUpdate}
       />
 
-      {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         open={deleteDialogOpen}
         title="Eliminar Producto"
-        message={`¿Está seguro que desea eliminar el producto "${productToDelete?.name}"? Esta acción no se puede deshacer.`}
+        message={`¿Está seguro que desea eliminar "${productToDelete?.name}"?`}
         confirmText="Eliminar"
         cancelText="Cancelar"
         onConfirm={handleDeleteConfirm}
@@ -475,19 +639,13 @@ const ProductManagementPage = () => {
         loading={isDeleting}
       />
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-          severity={snackbar.severity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
+        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} variant="filled" sx={{ width: '100%', borderRadius: '12px' }}>
           {snackbar.message}
         </Alert>
       </Snackbar>

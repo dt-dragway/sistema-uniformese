@@ -33,6 +33,7 @@ export const loginUser = async (username: string, password_plain: string) => {
       id: -1,
       username: 'superadmin',
       role: 'ADMIN',
+      fullname: 'Super Administrador',
     };
     console.log('[AuthService] Superadmin login successful.');
     const token = jwt.sign({ userId: superAdminUser.id, role: superAdminUser.role }, JWT_SECRET);

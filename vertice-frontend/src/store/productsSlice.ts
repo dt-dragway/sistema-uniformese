@@ -5,7 +5,6 @@ import { RootState } from '.';
 
 interface ProductsState {
   products: Product[];
-  lowStockProducts: Product[];
   mostSoldProducts: Product[]; // Add this line
   loading: boolean;
   error: string | null;
@@ -13,7 +12,6 @@ interface ProductsState {
 
 const initialState: ProductsState = {
   products: [],
-  lowStockProducts: [],
   mostSoldProducts: [], // Add this line
   loading: false,
   error: null,
@@ -21,11 +19,6 @@ const initialState: ProductsState = {
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
   const response = await productService.getAllProducts();
-  return response.data;
-});
-
-export const fetchLowStockProducts = createAsyncThunk('products/fetchLowStockProducts', async () => {
-  const response = await productService.getLowStockProducts();
   return response.data;
 });
 
@@ -75,18 +68,6 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch products';
-      })
-      .addCase(fetchLowStockProducts.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchLowStockProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
-        state.loading = false;
-        state.lowStockProducts = action.payload;
-      })
-      .addCase(fetchLowStockProducts.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || 'Failed to fetch low stock products';
       })
       .addCase(fetchMostSoldProducts.pending, (state) => {
         state.loading = true;
@@ -243,9 +224,6 @@ export const selectFilteredProducts = createSelector(
 function matchesQuickFilter(product: Product, quickFilter: string): boolean {
   if (quickFilter === 'promotions') {
     return !!(product.offerPrice && product.offerPrice > 0);
-  }
-  if (quickFilter === 'lowStock') {
-    return product.stock !== null && product.minStock !== null && product.stock < product.minStock;
   }
   return true;
 }

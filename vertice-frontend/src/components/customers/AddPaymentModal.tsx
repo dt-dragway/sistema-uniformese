@@ -25,7 +25,7 @@ interface AddPaymentModalProps {
   customer: Customer | undefined;
 }
 
-const paymentMethods = ['Efectivo Bs.', 'Efectivo $', 'Tarjeta', 'Pago Móvil', 'Transferencia', 'Otro'];
+const paymentMethods = ['Efectivo Bs.', 'Efectivo REF', 'Tarjeta', 'Pago Móvil', 'Transferencia', 'Otro'];
 
 const AddPaymentModal = ({ open, onClose, customer }: AddPaymentModalProps) => {
   const { exchangeRate } = useSelector((state: RootState) => state.appConfig);
@@ -78,7 +78,7 @@ const AddPaymentModal = ({ open, onClose, customer }: AddPaymentModalProps) => {
     // Validation: Amount cannot exceed total debt
     // Use a small epsilon for floating point comparison just in case
     if (finalAmountUsd > customer.currentCredit + 0.01) {
-      setError(`El monto del abono ($${finalAmountUsd.toFixed(2)}) no puede ser mayor a la deuda total ($${customer.currentCredit.toFixed(2)}).`);
+      setError(`El monto del abono (REF ${finalAmountUsd.toFixed(2)}) no puede ser mayor a la deuda total (REF ${customer.currentCredit.toFixed(2)}).`);
       setLoading(false);
       return;
     }

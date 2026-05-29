@@ -109,27 +109,29 @@ const MaintenancePage = () => {
 
   return (
     <Box sx={{ p: 3 }} className="animate-snappy gpu-accelerated">
-      <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ mb: 4, fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+      <Typography variant="h4" sx={{ mb: 4, fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
         Mantenimiento del Sistema
       </Typography>
  
       <Grid container spacing={4}>
         {/* Backup Section */}
         <Grid item xs={12} md={6}>
-          <Card sx={{ height: '100%', background: 'rgba(10, 25, 47, 0.65)', backdropFilter: 'blur(20px)', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'var(--institutional-shadow)' }}>
+          <Card sx={{ height: '100%', backgroundColor: '#ffffff', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.05)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05)' }}>
             <CardContent sx={{ p: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <CloudDownloadIcon sx={{ fontSize: 40, color: '#0255A5', mr: 2 }} />
-                <Typography variant="h6" fontWeight="bold" sx={{ fontFamily: '"Kanit", sans-serif' }}>Copia de Seguridad</Typography>
+                <Box sx={{ p: 1.5, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '12px', mr: 2 }}>
+                  <CloudDownloadIcon sx={{ fontSize: 32, color: '#0255A5' }} />
+                </Box>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif' }}>Copia de Seguridad</Typography>
               </Box>
               
-              <Typography variant="body2" paragraph sx={{ color: 'rgba(255,255,255,0.7)' }}>
+              <Typography variant="body2" paragraph sx={{ color: '#64748b', mb: 3, lineHeight: 1.6 }}>
                 Genere un respaldo completo de toda la información del sistema (Productos, Ventas, Clientes, Historial). 
-                Se recomienda realizar esta acción al menos una vez por semana.
+                Se recomienda realizar esta acción al menos una vez por semana para proteger sus datos.
               </Typography>
  
-              <Alert severity="info" variant="outlined" sx={{ mb: 4, borderColor: 'rgba(2, 85, 165, 0.3)', color: 'rgba(255,255,255,0.8)' }}>
-                El archivo se descargará en formato .SQL y puede ser guardado en un pendrive o en la nube.
+              <Alert severity="info" variant="outlined" sx={{ mb: 4, borderRadius: '12px', backgroundColor: 'rgba(2, 85, 165, 0.04)', borderColor: 'rgba(2, 85, 165, 0.15)' }}>
+                El archivo se descargará en formato <strong>.SQL</strong> y puede ser guardado de forma segura en medios externos.
               </Alert>
  
               <Button
@@ -140,29 +142,21 @@ const MaintenancePage = () => {
                 onClick={handleDownloadBackup}
                 disabled={loading}
                 sx={{
-                  py: 1.5,
-                  fontSize: '0.95rem',
-                  letterSpacing: '0.2em', // Municipal Style
-                  fontWeight: 900,
-                  borderRadius: '9999px', // Pill shape
+                  py: 2,
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  borderRadius: '16px',
                   background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
-                  boxShadow: '0 4px 15px rgba(0, 55, 128, 0.3)',
-                  transition: 'all 0.25s ease',
+                  boxShadow: '0 10px 15px -3px rgba(2, 85, 165, 0.3)',
+                  textTransform: 'none',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
                     background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
-                    boxShadow: '0 8px 25px rgba(2, 85, 165, 0.55)',
                     transform: 'translateY(-2px)',
                   },
-                  '&:active': {
-                    transform: 'translateY(1px)',
-                  },
-                  '&:disabled': {
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    color: 'rgba(255, 255, 255, 0.3)',
-                  }
                 }}
               >
-                RESPALDAR TODA LA BASE DE DATOS
+                Generar Respaldo Ahora
               </Button>
             </CardContent>
           </Card>
@@ -170,20 +164,22 @@ const MaintenancePage = () => {
  
         {/* Restore Section */}
         <Grid item xs={12} md={6}>
-          <Card sx={{ height: '100%', background: 'rgba(10, 25, 47, 0.65)', backdropFilter: 'blur(20px)', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'var(--institutional-shadow)' }}>
+          <Card sx={{ height: '100%', backgroundColor: '#ffffff', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.05)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05)' }}>
             <CardContent sx={{ p: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <CloudUploadIcon sx={{ fontSize: 40, color: 'error.main', mr: 2 }} />
-                <Typography variant="h6" fontWeight="bold" sx={{ fontFamily: '"Kanit", sans-serif' }}>Restaurar Sistema</Typography>
+                <Box sx={{ p: 1.5, backgroundColor: 'rgba(220, 38, 38, 0.08)', borderRadius: '12px', mr: 2 }}>
+                  <CloudUploadIcon sx={{ fontSize: 32, color: '#dc2626' }} />
+                </Box>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif' }}>Restaurar Sistema</Typography>
               </Box>
  
-              <Typography variant="body2" paragraph sx={{ color: 'rgba(255,255,255,0.7)' }}>
-                Cargue un archivo de respaldo previo para restaurar el sistema a un punto anterior. 
+              <Typography variant="body2" paragraph sx={{ color: '#64748b', mb: 3, lineHeight: 1.6 }}>
+                Cargue un archivo de respaldo previo para restaurar el sistema a un punto anterior. Útil en casos de migración o recuperación.
               </Typography>
  
-              <Alert severity="warning" variant="filled" sx={{ mb: 4, borderRadius: 4 }}>
-                <AlertTitle sx={{ fontWeight: 'bold' }}>¡ADVERTENCIA CRÍTICA!</AlertTitle>
-                Esta acción borrará <strong>TODOS</strong> los datos actuales y los reemplazará con los del archivo seleccionado. No se puede deshacer.
+              <Alert severity="warning" variant="filled" sx={{ mb: 4, borderRadius: '12px', backgroundColor: '#dc2626' }}>
+                <AlertTitle sx={{ fontWeight: 800 }}>¡ADVERTENCIA CRÍTICA!</AlertTitle>
+                Esta acción borrará <strong>TODOS</strong> los datos actuales. Asegúrese de tener el archivo correcto antes de proceder.
               </Alert>
  
               <Button
@@ -195,24 +191,21 @@ const MaintenancePage = () => {
                 startIcon={<CloudUploadIcon />}
                 disabled={loading}
                 sx={{
-                  py: 1.5,
-                  fontSize: '0.95rem',
-                  letterSpacing: '0.2em',
-                  fontWeight: 900,
-                  borderRadius: '9999px',
+                  py: 2,
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  borderRadius: '16px',
                   borderWidth: '2px',
-                  transition: 'all 0.25s ease',
+                  textTransform: 'none',
+                  transition: 'all 0.3s ease',
                   '&:hover': { 
                     borderWidth: '2px',
                     transform: 'translateY(-2px)',
-                    boxShadow: '0 8px 25px rgba(244, 67, 54, 0.3)',
+                    backgroundColor: 'rgba(220, 38, 38, 0.05)',
                   },
-                  '&:active': {
-                    transform: 'translateY(1px)',
-                  }
                 }}
               >
-                SELECCIONAR ARCHIVO Y RESTAURAR
+                Cargar Archivo SQL
                 <input
                   type="file"
                   hidden
@@ -226,21 +219,22 @@ const MaintenancePage = () => {
  
         {/* Cleanup Section */}
         <Grid item xs={12} md={6}>
-          <Card sx={{ height: '100%', background: 'rgba(10, 25, 47, 0.65)', backdropFilter: 'blur(20px)', borderRadius: 10, border: '1px solid rgba(255, 255, 255, 0.12)', boxShadow: 'var(--institutional-shadow)' }}>
+          <Card sx={{ height: '100%', backgroundColor: '#ffffff', borderRadius: '24px', border: '1px solid rgba(0, 0, 0, 0.05)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05)' }}>
             <CardContent sx={{ p: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <DeleteSweepIcon sx={{ fontSize: 40, color: 'warning.main', mr: 2 }} />
-                <Typography variant="h6" fontWeight="bold" sx={{ fontFamily: '"Kanit", sans-serif' }}>Limpieza de Datos Históricos</Typography>
+                <Box sx={{ p: 1.5, backgroundColor: 'rgba(234, 88, 12, 0.08)', borderRadius: '12px', mr: 2 }}>
+                  <DeleteSweepIcon sx={{ fontSize: 32, color: '#ea580c' }} />
+                </Box>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif' }}>Limpieza de Historial</Typography>
               </Box>
  
-              <Typography variant="body2" paragraph sx={{ color: 'rgba(255,255,255,0.7)' }}>
-                Elimine registros antiguos (ventas, tickets, cierres de caja, movimientos) que tengan más de 1 año de antigüedad.
-                Esta acción ayuda a liberar espacio y mejorar el rendimiento.
+              <Typography variant="body2" paragraph sx={{ color: '#64748b', mb: 3, lineHeight: 1.6 }}>
+                Elimine registros antiguos (ventas, cierres, movimientos) de más de 1 año para optimizar el rendimiento de la base de datos.
               </Typography>
  
-              <Alert severity="warning" variant="filled" sx={{ mb: 4, borderRadius: 4 }}>
-                <AlertTitle sx={{ fontWeight: 'bold' }}>¡ACCIÓN IRREVERSIBLE!</AlertTitle>
-                Se eliminarán permanentemente las ventas y reportes antiguos. Los clientes, usuarios e inventario <strong>NO</strong> se verán afectados.
+              <Alert severity="warning" sx={{ mb: 4, borderRadius: '12px', backgroundColor: '#fff7ed', color: '#9a3412', border: '1px solid #ffedd5' }}>
+                <AlertTitle sx={{ fontWeight: 800 }}>ACCIÓN IRREVERSIBLE</AlertTitle>
+                Solo se eliminan registros históricos. Clientes, productos y usuarios permanecen intactos.
               </Alert>
  
               <Button
@@ -252,22 +246,20 @@ const MaintenancePage = () => {
                 onClick={() => setIsCleanupDialogOpen(true)}
                 disabled={loading}
                 sx={{
-                  py: 1.5,
-                  fontSize: '0.95rem',
-                  letterSpacing: '0.2em',
-                  fontWeight: 900,
-                  borderRadius: '9999px',
-                  transition: 'all 0.25s ease',
+                  py: 2,
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  borderRadius: '16px',
+                  background: 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)',
+                  textTransform: 'none',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
+                    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                     transform: 'translateY(-2px)',
-                    boxShadow: '0 8px 25px rgba(237, 108, 2, 0.3)',
                   },
-                  '&:active': {
-                    transform: 'translateY(1px)',
-                  }
                 }}
               >
-                ELIMINAR DATOS ANTIGUOS (&gt; 1 AÑO)
+                Limpiar Datos de +1 Año
               </Button>
             </CardContent>
           </Card>

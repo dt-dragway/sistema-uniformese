@@ -252,7 +252,7 @@ const RechargePage = () => {
   <div class="row"><span>Comisión ${recharge.commissionPercent}%:</span><span>Bs.${recharge.commissionBs.toFixed(2)}</span></div>
   <div class="divider"></div>
   <div class="row total-row"><span>TOTAL:</span><span>Bs.${recharge.totalChargeBs.toFixed(2)}</span></div>
-  <div class="row"><span></span><span>$${recharge.amountUsd.toFixed(2)}</span></div>
+  <div class="row"><span></span><span>REF ${recharge.amountUsd.toFixed(2)}</span></div>
   <div class="divider"></div>
   <div class="center">¡Gracias!</div>
 </body>

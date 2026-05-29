@@ -12,7 +12,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TablePagination,
   IconButton,
   Tooltip,
   ToggleButton,
@@ -34,6 +33,8 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ClearIcon from '@mui/icons-material/Clear';
+
+import { ProfessionalPagination } from '../components/common/ProfessionalPagination';
 
 const CustomerManagementPage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -78,7 +79,7 @@ const CustomerManagementPage = () => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -231,7 +232,7 @@ const CustomerManagementPage = () => {
                 <TableCell>Nombre</TableCell>
                 <TableCell>Cédula</TableCell>
                 <TableCell>Teléfono</TableCell>
-                <TableCell align="right">Crédito ($)</TableCell>
+                <TableCell align="right">Crédito (REF)</TableCell>
                 <TableCell align="right">Crédito (Bs.)</TableCell>
                 <TableCell align="center">Acciones</TableCell>
               </TableRow>
@@ -271,15 +272,13 @@ const CustomerManagementPage = () => {
         </TableContainer>
       )}
 
-      <TablePagination
-        component="div"
+      <ProfessionalPagination
         count={filteredCustomers.length}
         page={page}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[12, 24, 48]}
-        labelRowsPerPage="Filas:"
       />
 
       <CustomerFormModal

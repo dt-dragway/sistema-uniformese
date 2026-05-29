@@ -242,7 +242,7 @@ pg_dump / pg_restore - Backups de PostgreSQL
 
 6. **Credenciales por defecto:**
    - Usuario: `admin`
-   - Contraseña: `admin123`
+   - Contraseña: `admin2425*`
    
    > ⚠️ **IMPORTANTE:** Cambia la contraseña inmediatamente desde el panel de administración.
 

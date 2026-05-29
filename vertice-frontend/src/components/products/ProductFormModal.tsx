@@ -29,9 +29,9 @@ const getUnitLabel = (unitType: UnitType): string => {
 
 const getPriceLabel = (unitType: UnitType): string => {
   switch (unitType) {
-    case 'KG': return 'Precio por Kg ($)';
-    case 'LITER': return 'Precio por Litro ($)';
-    default: return 'Precio ($)';
+    case 'KG': return 'Precio por Kg (REF)';
+    case 'LITER': return 'Precio por Litro (REF)';
+    default: return 'Precio (REF)';
   }
 };
 
@@ -95,7 +95,11 @@ const ProductFormModal = () => {
     const productData = { ...selectedProduct };
 
     productData.price = parseFloat(String(productData.price)) || 0;
-    productData.stock = parseFloat(String(productData.stock)) || 0;
+    
+    // Ensure stock is treated as a number, allowing 0
+    const stockValue = parseFloat(String(productData.stock));
+    productData.stock = isNaN(stockValue) ? 0 : stockValue;
+    
     productData.minStock = parseFloat(String(productData.minStock)) || 0;
     productData.barCode = productData.barCode ? productData.barCode.trim() : undefined;
     productData.unitType = productData.unitType || 'UNIT';
@@ -113,7 +117,7 @@ const ProductFormModal = () => {
 
   return (
     <Dialog open={isProductModalOpen} onClose={handleCloseModal} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ backgroundColor: 'primary.main', color: 'white' }}>
+      <DialogTitle sx={{ backgroundColor: '#0255A5', color: 'white' }}>
         {isEditing ? 'Editar Producto' : 'Añadir Nuevo Producto'}
       </DialogTitle>
       <DialogContent dividers>
@@ -162,31 +166,89 @@ const ProductFormModal = () => {
           type="number"
           fullWidth
           variant="outlined"
-          value={selectedProduct.stock || ''}
+          helperText="Cantidad actual en inventario"
+          value={selectedProduct.stock === 0 ? '0' : selectedProduct.stock || ''}
           onChange={handleProductChange}
           sx={{ mb: 2 }}
-          inputProps={{ step: currentUnitType === 'UNIT' ? '1' : '0.001' }}
-        />
-        <TextField
-          margin="dense"
-          name="minStock"
-          label={`Stock Mínimo (${getUnitLabel(currentUnitType)})`}
-          type="number"
-          fullWidth
-          variant="outlined"
-          value={selectedProduct.minStock || ''}
-          onChange={handleProductChange}
-          sx={{ mb: 2 }}
-          inputProps={{ step: currentUnitType === 'UNIT' ? '1' : '0.001' }}
+          inputProps={{ 
+            step: currentUnitType === 'UNIT' ? '1' : '0.001',
+            min: '0'
+          }}
         />
         <TextField
           margin="dense"
           name="barCode"
-          label="Código de Barras"
+          label="Código del Producto"
           type="text"
           fullWidth
           variant="outlined"
           value={selectedProduct.barCode || ''}
+          onChange={handleProductChange}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          margin="dense"
+          name="tipo"
+          label="Tipo (Ej. Filipina, Pantalón)"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={selectedProduct.tipo || ''}
+          onChange={handleProductChange}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          margin="dense"
+          name="caracteristica"
+          label="Característica (Ej. Dama, Caballero)"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={selectedProduct.caracteristica || ''}
+          onChange={handleProductChange}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          margin="dense"
+          name="detalle"
+          label="Detalle (Ej. Manga Corta)"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={selectedProduct.detalle || ''}
+          onChange={handleProductChange}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          margin="dense"
+          name="talla"
+          label="Talla (Ej. SS, XL, 32)"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={selectedProduct.talla || ''}
+          onChange={handleProductChange}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          margin="dense"
+          name="tela"
+          label="Tela (Ej. Dril, Microfibra)"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={selectedProduct.tela || ''}
+          onChange={handleProductChange}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          margin="dense"
+          name="color"
+          label="Color"
+          type="text"
+          fullWidth
+          variant="outlined"
+          value={selectedProduct.color || ''}
           onChange={handleProductChange}
         />
       </DialogContent>

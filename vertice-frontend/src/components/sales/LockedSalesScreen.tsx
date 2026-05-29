@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Button, Card, CardContent } from '@mui/material';
+import { Box, Typography, Button, Card, CardContent, Divider, Grid } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -36,47 +36,47 @@ export const LockedSalesScreen: React.FC = () => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: '80vh',
+        minHeight: '85vh',
         width: '100%',
-        p: 2
+        p: 3,
+        backgroundColor: '#f8fafc',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <Card 
-        sx={{ 
-          maxWidth: 500, 
-          width: '100%', 
+      {/* Decorative Background (consistent with login) */}
+      <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+        <Box sx={{ position: 'absolute', top: '-10%', right: '-5%', width: '40%', height: '300px', background: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)', borderRadius: '40px', transform: 'rotate(-15deg)', opacity: 0.5 }} />
+        <Box sx={{ position: 'absolute', bottom: '-10%', left: '-5%', width: '30%', height: '250px', background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)', borderRadius: '40px', transform: 'rotate(15deg)', opacity: 0.5 }} />
+      </Box>
+
+      <Card
+        sx={{
+          maxWidth: 550,
+          width: '100%',
           textAlign: 'center',
-          background: 'rgba(10, 25, 47, 0.65)', // Glassmorphism dark blue
-          backdropFilter: 'blur(20px)',
-          borderRadius: 10, // Curvatura Extrema (40px)
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          boxShadow: 'var(--institutional-shadow)',
+          backgroundColor: '#ffffff',
+          borderRadius: '24px', // Reduced rounding for consistency
+          border: '1px solid rgba(0, 0, 0, 0.05)',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)',
+          zIndex: 1,
+          overflow: 'hidden'
         }}
       >
-        <CardContent sx={{ p: 5 }}>
-          <Box sx={{ position: 'relative', display: 'inline-flex', mb: 3 }}>
-            <Box 
-              sx={{ 
-                position: 'absolute', 
-                top: 0, left: 0, right: 0, bottom: 0, 
-                backgroundColor: '#0255A5', 
-                filter: 'blur(20px)', 
-                opacity: 0.3,
-                borderRadius: '50%'
-              }} 
-            />
-            <LockIcon sx={{ fontSize: 80, color: '#0255A5', position: 'relative', zIndex: 1 }} />
+        <CardContent sx={{ p: { xs: 4, sm: 6 } }}>
+          <Box sx={{ display: 'inline-flex', mb: 4, p: 2, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '20px' }}>
+            <LockIcon sx={{ fontSize: 60, color: '#0255A5' }} />
           </Box>
-          
-          <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 900, color: 'white', letterSpacing: '0.1em', fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase' }}>
+
+          <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 900, color: '#0f172a', letterSpacing: '0.05em', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', mb: 1 }}>
             CAJA CERRADA
           </Typography>
-          
-          <Typography variant="body1" sx={{ mb: 4, color: 'rgba(255, 255, 255, 0.75)', lineHeight: 1.6 }}>
-            El sistema de ventas no está activo. <br/>
+
+          <Typography variant="body1" sx={{ mb: 5, color: '#64748b', lineHeight: 1.6, fontSize: '1.1rem' }}>
+            El sistema de ventas no está activo actualmente. <br/>
             Para comenzar a operar, es necesario realizar la <strong>Apertura de Caja</strong>.
           </Typography>
- 
+
           <Button
             variant="contained"
             size="large"
@@ -84,32 +84,29 @@ export const LockedSalesScreen: React.FC = () => {
             disabled={loading}
             startIcon={<PointOfSaleIcon />}
             sx={{
-              py: 1.5,
-              px: 4,
+              py: 2,
+              px: 6,
               fontSize: '1rem',
-              letterSpacing: '0.2em', // Municipal Style
-              fontWeight: 900,
-              borderRadius: '9999px', // Pill shape
+              fontWeight: 700,
+              borderRadius: '16px',
               background: 'linear-gradient(135deg, #0255A5 0%, #003780 100%)',
               color: 'white',
-              boxShadow: '0 4px 15px rgba(0, 55, 128, 0.3)',
-              transition: 'all 0.25s ease',
+              boxShadow: '0 10px 20px -5px rgba(2, 85, 165, 0.3)',
+              textTransform: 'none',
+              transition: 'all 0.3s ease',
               '&:hover': {
                 background: 'linear-gradient(135deg, #036cd2 0%, #004fb8 100%)',
-                boxShadow: '0 8px 25px rgba(2, 85, 165, 0.55)',
                 transform: 'translateY(-2px)',
+                boxShadow: '0 15px 30px -5px rgba(2, 85, 165, 0.4)',
               },
-              '&:active': {
-                transform: 'translateY(1px)',
-              }
             }}
           >
-            {loading ? 'Iniciando...' : 'ABRIR CAJA'}
+            {loading ? 'Iniciando...' : 'Abrir Caja de Ventas'}
           </Button>
 
           {error && (
-            <Box sx={{ mt: 3, p: 1.5, backgroundColor: 'rgba(244, 67, 54, 0.1)', borderRadius: 2, border: '1px solid rgba(244, 67, 54, 0.3)' }}>
-              <Typography color="error.light" variant="body2">
+            <Box sx={{ mt: 4, p: 2, backgroundColor: '#fef2f2', borderRadius: '12px', border: '1px solid #fee2e2' }}>
+              <Typography color="#b91c1c" variant="body2" sx={{ fontWeight: 500 }}>
                 {error}
               </Typography>
             </Box>

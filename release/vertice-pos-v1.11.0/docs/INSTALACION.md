@@ -203,7 +203,7 @@ http://localhost:3000
 Al iniciar el sistema por primera vez, se crea un usuario administrador:
 
 - **Usuario**: `admin`
-- **Contraseña**: `admin123`
+- **Contraseña**: `admin2425*`
 
 **⚠️ IMPORTANTE**: Cambia esta contraseña inmediatamente después del primer login desde el panel de administración → Usuarios.
 

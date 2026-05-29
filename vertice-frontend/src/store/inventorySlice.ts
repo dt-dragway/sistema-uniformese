@@ -2,8 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axiosInstance from '../api/axiosInstance';
 import { Product } from '../models/Product';
 
-// Define the InventoryMovement interface based on your backend model
-interface InventoryMovement {
+export interface InventoryMovement {
   id: number;
   productId: number;
   product: Product;
@@ -15,12 +14,14 @@ interface InventoryMovement {
 
 interface InventoryState {
   movements: InventoryMovement[];
+  internalWithdrawals: InventoryMovement[];
   loading: boolean;
   error: string | null;
 }
 
 const initialState: InventoryState = {
   movements: [],
+  internalWithdrawals: [],
   loading: false,
   error: null,
 };
@@ -37,11 +38,11 @@ export const fetchAllInventoryMovements = createAsyncThunk(
   }
 );
 
-export const fetchInventoryMovementsByProductId = createAsyncThunk(
-  'inventory/fetchMovementsByProductId',
-  async (productId: number, { rejectWithValue }) => {
+export const fetchInternalWithdrawals = createAsyncThunk(
+  'inventory/fetchInternalWithdrawals',
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get<InventoryMovement[]>(`/inventory/movements/product/${productId}`);
+      const response = await axiosInstance.get<InventoryMovement[]>('/inventory/movements?type=INTERNAL_CONSUMPTION');
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
@@ -68,6 +69,18 @@ export const createMerchandiseEntry = createAsyncThunk(
   }
 );
 
+export const createInternalWithdrawal = createAsyncThunk(
+  'inventory/createInternalWithdrawal',
+  async (data: { productId: number; quantity: number; reason: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post<InventoryMovement>('/inventory/withdrawals', data);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 const inventorySlice = createSlice({
   name: 'inventory',
   initialState,
@@ -86,29 +99,21 @@ const inventorySlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(fetchInventoryMovementsByProductId.pending, (state) => {
+      .addCase(fetchInternalWithdrawals.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
-      .addCase(fetchInventoryMovementsByProductId.fulfilled, (state, action: PayloadAction<InventoryMovement[]>) => {
+      .addCase(fetchInternalWithdrawals.fulfilled, (state, action: PayloadAction<InventoryMovement[]>) => {
         state.loading = false;
-        state.movements = action.payload;
-      })
-      .addCase(fetchInventoryMovementsByProductId.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-      .addCase(createMerchandiseEntry.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.internalWithdrawals = action.payload;
       })
       .addCase(createMerchandiseEntry.fulfilled, (state, action: PayloadAction<InventoryMovement>) => {
         state.loading = false;
-        state.movements.unshift(action.payload); // Add new entry to the beginning
+        state.movements.unshift(action.payload);
       })
-      .addCase(createMerchandiseEntry.rejected, (state, action) => {
+      .addCase(createInternalWithdrawal.fulfilled, (state, action: PayloadAction<InventoryMovement>) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.internalWithdrawals.unshift(action.payload);
+        state.movements.unshift(action.payload);
       });
   },
 });
