@@ -52,6 +52,26 @@ class SaleService {
     });
   }
 
+  async getSalesByUser(userId: number): Promise<SaleWithRelations[]> {
+    return prisma.sale.findMany({
+      where: {
+        cashRegisterSession: {
+          userId: userId
+        }
+      },
+      include: {
+        items: { include: { product: true } },
+        payments: true,
+        customer: true,
+        cashRegisterSession: true,
+        adjustments: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
   async getSaleById(id: number): Promise<SaleWithRelations | null> {
     return prisma.sale.findUnique({
       where: { id: id },

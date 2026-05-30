@@ -1,13 +1,26 @@
 import { Request, Response } from 'express';
 import { saleService } from '../services/SaleService';
 import { transactionAdjustmentService } from '../services/TransactionAdjustmentService';
+import { AuthRequest } from '../utils/utils';
 
 // Note: Most business logic has been moved to the service layer.
 // The controller is responsible for request/response handling and basic validation.
 
 export const getAllSales = async (req: Request, res: Response) => {
   try {
-    const sales = await saleService.getAllSales();
+    const authReq = req as AuthRequest;
+    const userId = authReq.user?.id;
+    const userRole = authReq.user?.role;
+
+    let sales;
+    if (userRole === 'ADMIN') {
+      sales = await saleService.getAllSales();
+    } else if (userId) {
+      sales = await saleService.getSalesByUser(userId);
+    } else {
+      return res.status(401).json({ message: 'Usuario no identificado' });
+    }
+    
     res.json(sales);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching sales', error });
