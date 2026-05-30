@@ -19,6 +19,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { printLabels, LabelItem } from '../api/printService';
+import productService from '../api/productService';
 
 // ─── Tipos ───────────────────────────────────────────────────
 
@@ -151,18 +152,26 @@ const LabelPrintPage: React.FC = () => {
     if (q.trim().length < 2) { setSearchResults([]); return; }
     setSearching(true);
     try {
-      const res = await axios.get(`${apiBase}/api/products`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { search: q, isActive: true, limit: 10 },
-      });
-      const products: Product[] = res.data?.products || res.data || [];
-      setSearchResults(products.filter((p: Product) => p.isActive));
-    } catch {
+      const res = await productService.getAllProducts();
+      const products: Product[] = Array.isArray(res.data) ? res.data : (res.data as any)?.products || [];
+      
+      const searchLower = q.toLowerCase();
+      // El backend devuelve todos los productos, los filtramos aquí
+      const filtered = products.filter(p => 
+        p.isActive && 
+        (p.name.toLowerCase().includes(searchLower) || 
+         (p.barCode && p.barCode.toLowerCase().includes(searchLower)))
+      );
+      
+      // Mostrar máximo 10 resultados para no saturar la vista
+      setSearchResults(filtered.slice(0, 10));
+    } catch (error) {
+      console.error('Error fetching products:', error);
       setSearchResults([]);
     } finally {
       setSearching(false);
     }
-  }, [apiBase, token]);
+  }, []);
 
   useEffect(() => {
     const t = setTimeout(() => handleSearch(searchQuery), 350);
