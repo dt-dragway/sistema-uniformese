@@ -23,6 +23,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Sale, SaleItem, Payment } from '../../models/Sale';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import Barcode from 'react-barcode';
 
 interface ViewTicketModalProps {
   open: boolean;
@@ -439,6 +440,22 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
                       </Typography>
                     </Box>
                   ))}
+                </Box>
+
+                <Divider sx={{ borderStyle: 'dashed', borderColor: '#000 !important', my: 2, opacity: 0.5 }} />
+
+                {/* Footer / Barcode */}
+                <Box sx={{ textAlign: 'center', mt: 2 }}>
+                  <Barcode 
+                    value={sale.ticketNumber} 
+                    format="CODE128" 
+                    width={1.5} 
+                    height={40} 
+                    fontSize={12} 
+                    background="transparent"
+                    displayValue={true}
+                    margin={0}
+                  />
                 </Box>
               </Paper>
             </Box>

@@ -129,13 +129,29 @@ app.post('/print-ticket', async (req, res) => {
   <div class="section-title">Pagos</div>
   ${paymentsHtml}
   <div class="total">Total: Bs. ${sale.totalBs.toFixed(2)}</div>
-  <div class="footer">*** GRACIAS POR SU COMPRA ***</div>
-  ${!returnHtml ? `
+  <div class="footer">
+    <div style="margin-top: 10px;">
+      <svg id="barcode"></svg>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
   <script>
-    window.onload = function() { window.print(); };
+    JsBarcode("#barcode", "${sale.ticketNumber}", {
+      format: "CODE128",
+      width: 1.5,
+      height: 40,
+      displayValue: true,
+      fontSize: 12,
+      margin: 0
+    });
+    ${!returnHtml ? `
+    // Damos un pequeño tiempo para que el barcode termine de renderizar
+    window.setTimeout(function() {
+      window.print();
+    }, 500);
     window.onafterprint = function() { window.close(); };
+    ` : ''}
   </script>
-  ` : ''}
 </body>
 </html>
     `;
