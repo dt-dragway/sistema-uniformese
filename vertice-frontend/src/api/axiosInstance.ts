@@ -24,16 +24,19 @@ syncElectronConfig();
 
 // URL base dinámica - se lee de localStorage o usa default
 const getBaseURL = (): string => {
-  // Primero intentar leer la URL guardada en localStorage (set by Electron)
   const savedUrl = localStorage.getItem('serverUrl');
   if (savedUrl) {
     return `${savedUrl}/api`;
   }
 
-  // Auto-detectar URL basándose en la ubicación actual
-  // Esto permite que funcione desde localhost o desde IP de red (ej. 192.168.0.100)
+  // En producción (VPS), si no hay URL guardada, usamos el origen actual (IP o Dominio)
+  if (import.meta.env.PROD) {
+    return `${window.location.origin}/api`;
+  }
+
+  // Fallback para desarrollo
   const hostname = window.location.hostname;
-  const port = 3000; // Puerto por defecto del API
+  const port = 3000;
   return `http://${hostname}:${port}/api`;
 };
 
