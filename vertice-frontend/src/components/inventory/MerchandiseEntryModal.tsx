@@ -33,11 +33,7 @@ const ENTRY_REASONS = [
   'Ajuste de sistema',
 ];
 
-const MerchandiseEntryModal: React.FC<MerchandiseEntryModalProps> = ({
-  isOpen,
-  onClose,
-  initialProductId,
-}) => {
+const MerchandiseEntryModal: React.FC<MerchandiseEntryModalProps> = ({ isOpen, onClose, initialProductId }) => {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.inventory);
   const { products } = useAppSelector((state) => state.products);
@@ -87,7 +83,9 @@ const MerchandiseEntryModal: React.FC<MerchandiseEntryModalProps> = ({
 
   return (
     <Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ backgroundColor: 'primary.main', color: 'white', fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}>
+      <DialogTitle
+        sx={{ backgroundColor: 'primary.main', color: 'white', fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}
+      >
         Registrar Entrada de Prendas / Mercancía
       </DialogTitle>
       <DialogContent dividers>
@@ -104,12 +102,7 @@ const MerchandiseEntryModal: React.FC<MerchandiseEntryModalProps> = ({
             value={selectedProduct}
             onChange={(_, newValue) => setSelectedProduct(newValue)}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Buscar Prenda / Producto"
-                variant="outlined"
-                autoFocus
-              />
+              <TextField {...params} label="Buscar Prenda / Producto" variant="outlined" autoFocus />
             )}
           />
 
@@ -119,8 +112,15 @@ const MerchandiseEntryModal: React.FC<MerchandiseEntryModalProps> = ({
                 {selectedProduct.name}
               </Typography>
               <Typography variant="caption" sx={{ color: '#4ade80' }}>
-                {[selectedProduct.tipo, selectedProduct.caracteristica, selectedProduct.detalle, selectedProduct.color, selectedProduct.tela]
-                  .filter(Boolean).join(' - ')}
+                {[
+                  selectedProduct.tipo,
+                  selectedProduct.caracteristica,
+                  selectedProduct.detalle,
+                  selectedProduct.color,
+                  selectedProduct.tela,
+                ]
+                  .filter(Boolean)
+                  .join(' - ')}
               </Typography>
               <Typography variant="caption" display="block" sx={{ color: '#64748b', mt: 0.5 }}>
                 Stock actual: <strong>{selectedProduct.stock} unidades</strong>
@@ -149,13 +149,11 @@ const MerchandiseEntryModal: React.FC<MerchandiseEntryModalProps> = ({
 
           <FormControl fullWidth>
             <InputLabel>Motivo de Entrada</InputLabel>
-            <Select
-              value={reason}
-              label="Motivo de Entrada"
-              onChange={(e) => setReason(e.target.value)}
-            >
+            <Select value={reason} label="Motivo de Entrada" onChange={(e) => setReason(e.target.value)}>
               {ENTRY_REASONS.map((r) => (
-                <MenuItem key={r} value={r}>{r}</MenuItem>
+                <MenuItem key={r} value={r}>
+                  {r}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>

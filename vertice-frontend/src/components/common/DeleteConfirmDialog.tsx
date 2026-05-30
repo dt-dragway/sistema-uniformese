@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Typography,
-  Box,
-} from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box } from '@mui/material';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 interface DeleteConfirmDialogProps {
@@ -28,8 +20,8 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
   itemName,
 }) => {
   return (
-    <Dialog 
-      open={open} 
+    <Dialog
+      open={open}
       onClose={onClose}
       maxWidth="xs"
       fullWidth
@@ -39,7 +31,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
           borderRadius: 3,
-        }
+        },
       }}
     >
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
@@ -48,7 +40,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
           {title}
         </Typography>
       </DialogTitle>
-      
+
       <DialogContent>
         <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.8)', mb: 1 }}>
           {message}
@@ -61,23 +53,23 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
           </Box>
         )}
       </DialogContent>
-      
+
       <DialogActions sx={{ p: 2.5, pt: 1 }}>
         <Button onClick={onClose} sx={{ color: 'rgba(255,255,255,0.6)' }}>
           Cancelar
         </Button>
-        <Button 
+        <Button
           onClick={() => {
             onConfirm();
             onClose();
-          }} 
-          variant="contained" 
+          }}
+          variant="contained"
           color="error"
-          sx={{ 
-            px: 3, 
+          sx={{
+            px: 3,
             borderRadius: '20px',
             fontWeight: 'bold',
-            boxShadow: '0 4px 12px rgba(211, 47, 47, 0.3)'
+            boxShadow: '0 4px 12px rgba(211, 47, 47, 0.3)',
           }}
         >
           Eliminar Definitivamente

@@ -4,8 +4,8 @@ import { CashRegisterSession } from '../models/CashRegisterSession';
 
 export const generateSessionReport = (session: CashRegisterSession, exchangeRate: number): string => {
   if (!session.closedAt) {
-    console.error("Cannot generate report for an open session.");
-    return "";
+    console.error('Cannot generate report for an open session.');
+    return '';
   }
 
   const doc = new jsPDF();
@@ -37,7 +37,11 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
   lastY += 6;
 
   const sessionSalesBody = [
-    ['Ventas en Efectivo', `REF ${session.calculatedCashSalesUsd.toFixed(2)}`, `Bs. ${session.calculatedCashSalesBs.toFixed(2)}`],
+    [
+      'Ventas en Efectivo',
+      `REF ${session.calculatedCashSalesUsd.toFixed(2)}`,
+      `Bs. ${session.calculatedCashSalesBs.toFixed(2)}`,
+    ],
     ['Ventas Electrónicas (Pago Móvil, Transferencia)', 'N/A', `Bs. ${session.calculatedElectronicSalesBs.toFixed(2)}`],
   ];
 
@@ -57,7 +61,11 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
   lastY += 6;
 
   const otherIncomeBody = [
-    ['Cobranza de Deudas (Pagos de créditos anteriores)', `REF ${session.calculatedDebtPaymentsUsd.toFixed(2)}`, `Bs. ${session.calculatedDebtPaymentsBs.toFixed(2)}`],
+    [
+      'Cobranza de Deudas (Pagos de créditos anteriores)',
+      `REF ${session.calculatedDebtPaymentsUsd.toFixed(2)}`,
+      `Bs. ${session.calculatedDebtPaymentsBs.toFixed(2)}`,
+    ],
   ];
 
   autoTable(doc, {
@@ -79,7 +87,11 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
     const advancesBody = [
       ['Salida de Efectivo (Entregado)', 'N/A', `Bs. -${(session.totalAvanceSalidaBs || 0).toFixed(2)}`],
       ['Entrada Electrónica (Cobrado + Comisión)', 'N/A', `Bs. ${(session.totalAvanceEntradaBs || 0).toFixed(2)}`],
-      ['Ganancia por Comisiones', 'N/A', `Bs. ${((session.totalAvanceEntradaBs || 0) - (session.totalAvanceSalidaBs || 0)).toFixed(2)}`],
+      [
+        'Ganancia por Comisiones',
+        'N/A',
+        `Bs. ${((session.totalAvanceEntradaBs || 0) - (session.totalAvanceSalidaBs || 0)).toFixed(2)}`,
+      ],
     ];
 
     autoTable(doc, {
@@ -92,10 +104,10 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
     lastY = (doc as any).lastAutoTable.finalY;
   }
 
-
   // --- 3. Final Cash Summary ---
   const totalCashIncomeUsd = session.calculatedCashSalesUsd + session.calculatedDebtPaymentsUsd;
-  const totalCashIncomeBs = session.calculatedCashSalesBs + session.calculatedElectronicSalesBs + session.calculatedDebtPaymentsBs;
+  const totalCashIncomeBs =
+    session.calculatedCashSalesBs + session.calculatedElectronicSalesBs + session.calculatedDebtPaymentsBs;
   const expectedUsd = session.openingAmountUsd + totalCashIncomeUsd;
   const expectedBs = session.openingAmountBs + totalCashIncomeBs;
 
@@ -108,8 +120,26 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
     ['Monto de Apertura', `REF ${session.openingAmountUsd.toFixed(2)}`, `Bs. ${session.openingAmountBs.toFixed(2)}`],
     ['(+) Total de Ingresos', `REF ${totalCashIncomeUsd.toFixed(2)}`, `Bs. ${totalCashIncomeBs.toFixed(2)}`],
     ['(=) Total Esperado en Caja', `REF ${expectedUsd.toFixed(2)}`, `Bs. ${expectedBs.toFixed(2)}`],
-    ['Monto Contado al Cierre', `REF ${(session.closingAmountUsd || 0).toFixed(2)}`, `Bs. ${(session.closingAmountBs || 0).toFixed(2)}`],
-    ['Discrepancia (Sobrante / Faltante)', { content: `REF ${session.discrepancyUsd.toFixed(2)}`, styles: { textColor: session.discrepancyUsd === 0 ? [0, 0, 0] : (session.discrepancyUsd > 0 ? [0, 128, 0] : [255, 0, 0]) } }, { content: `Bs. ${session.discrepancyBs.toFixed(2)}`, styles: { textColor: session.discrepancyBs === 0 ? [0, 0, 0] : (session.discrepancyBs > 0 ? [0, 128, 0] : [255, 0, 0]) } }],
+    [
+      'Monto Contado al Cierre',
+      `REF ${(session.closingAmountUsd || 0).toFixed(2)}`,
+      `Bs. ${(session.closingAmountBs || 0).toFixed(2)}`,
+    ],
+    [
+      'Discrepancia (Sobrante / Faltante)',
+      {
+        content: `REF ${session.discrepancyUsd.toFixed(2)}`,
+        styles: {
+          textColor: session.discrepancyUsd === 0 ? [0, 0, 0] : session.discrepancyUsd > 0 ? [0, 128, 0] : [255, 0, 0],
+        },
+      },
+      {
+        content: `Bs. ${session.discrepancyBs.toFixed(2)}`,
+        styles: {
+          textColor: session.discrepancyBs === 0 ? [0, 0, 0] : session.discrepancyBs > 0 ? [0, 128, 0] : [255, 0, 0],
+        },
+      },
+    ],
   ];
 
   autoTable(doc, {
@@ -122,7 +152,8 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
   lastY = (doc as any).lastAutoTable.finalY;
 
   // --- 4. Non-Cash Operations ---
-  const creditSalesBs = exchangeRate > 0 ? `Bs. ${(session.calculatedCreditSalesUsd * exchangeRate).toFixed(2)}` : 'N/A';
+  const creditSalesBs =
+    exchangeRate > 0 ? `Bs. ${(session.calculatedCreditSalesUsd * exchangeRate).toFixed(2)}` : 'N/A';
 
   lastY += 8;
   doc.setFontSize(12).setFont('helvetica', 'bold');
@@ -130,7 +161,11 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
   lastY += 6;
 
   const nonCashBody = [
-    ['Ventas a Crédito (Generan Cuentas por Cobrar)', `REF ${session.calculatedCreditSalesUsd.toFixed(2)}`, creditSalesBs],
+    [
+      'Ventas a Crédito (Generan Cuentas por Cobrar)',
+      `REF ${session.calculatedCreditSalesUsd.toFixed(2)}`,
+      creditSalesBs,
+    ],
   ];
 
   autoTable(doc, {
@@ -141,7 +176,6 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
     headStyles: { fillColor: [142, 68, 173], textColor: 255, fontStyle: 'bold' },
   });
   lastY = (doc as any).lastAutoTable.finalY;
-
 
   // --- Footer ---
   const pageCount = (doc as any).internal.pages.length - 1;
@@ -154,4 +188,3 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
 
   return doc.output('datauristring');
 };
-

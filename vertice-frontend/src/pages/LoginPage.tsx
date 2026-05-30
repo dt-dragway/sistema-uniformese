@@ -153,7 +153,7 @@ const LoginPage = () => {
               border: '1px solid #e2e8f0',
               borderRadius: '12px',
               p: 1.5,
-              '&:hover': { 
+              '&:hover': {
                 backgroundColor: '#e2e8f0',
                 transform: 'rotate(45deg)',
               },
@@ -174,12 +174,12 @@ const LoginPage = () => {
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 2,
-          py: 4
+          py: 4,
         }}
       >
-        <Box 
-          sx={{ 
-            width: '100%', 
+        <Box
+          sx={{
+            width: '100%',
             maxWidth: '1000px',
             display: 'flex',
             flexDirection: { xs: 'column', md: 'row' },
@@ -190,8 +190,8 @@ const LoginPage = () => {
           {/* Left Side - Brand & Branding */}
           <Fade in={mounted} timeout={1000}>
             <Box sx={{ flex: 1, color: '#000000', textAlign: { xs: 'center', md: 'left' } }}>
-              <Box 
-                sx={{ 
+              <Box
+                sx={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -210,22 +210,32 @@ const LoginPage = () => {
                 </Typography>
               </Box>
 
-              <Typography 
-                variant="h1" 
-                sx={{ 
-                  fontWeight: 900, 
+              <Typography
+                variant="h1"
+                sx={{
+                  fontWeight: 900,
                   fontFamily: '"Outfit", sans-serif',
                   fontSize: { xs: '3.5rem', md: '5.5rem' },
                   letterSpacing: '-0.02em',
                   lineHeight: 1,
                   mb: 2,
-                  color: '#2a6c8d'
+                  color: '#2a6c8d',
                 }}
               >
                 Uniformese
               </Typography>
 
-              <Typography variant="body1" sx={{ color: '#475569', maxWidth: '450px', mx: { xs: 'auto', md: 0 }, fontSize: '1.2rem', lineHeight: 1.6, fontWeight: 500 }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: '#475569',
+                  maxWidth: '450px',
+                  mx: { xs: 'auto', md: 0 },
+                  fontSize: '1.2rem',
+                  lineHeight: 1.6,
+                  fontWeight: 500,
+                }}
+              >
                 Gestione sus ventas e inventario de forma clara, rápida y segura.
               </Typography>
             </Box>
@@ -234,8 +244,8 @@ const LoginPage = () => {
           {/* Right Side - Login Form */}
           <Slide direction="up" in={mounted} timeout={800}>
             <Box sx={{ flex: 1, w: '100%', maxWidth: '480px' }}>
-              <Box 
-                sx={{ 
+              <Box
+                sx={{
                   backgroundColor: '#ffffff',
                   borderRadius: '24px',
                   p: { xs: 4, sm: 6 },
@@ -252,7 +262,12 @@ const LoginPage = () => {
 
                 <Box component="form" onSubmit={handleLogin}>
                   <Box sx={{ mb: 3 }}>
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#2a6c8d', mb: 1, display: 'block', textTransform: 'uppercase' }}>Usuario</Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{ fontWeight: 700, color: '#2a6c8d', mb: 1, display: 'block', textTransform: 'uppercase' }}
+                    >
+                      Usuario
+                    </Typography>
                     <TextField
                       fullWidth
                       id="username"
@@ -267,13 +282,18 @@ const LoginPage = () => {
                             <PersonOutline sx={{ color: '#2a6c8d' }} />
                           </InputAdornment>
                         ),
-                        sx: { borderRadius: '12px', bgcolor: '#f8fafc' }
+                        sx: { borderRadius: '12px', bgcolor: '#f8fafc' },
                       }}
                     />
                   </Box>
 
                   <Box sx={{ mb: 4 }}>
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#2a6c8d', mb: 1, display: 'block', textTransform: 'uppercase' }}>Contraseña</Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{ fontWeight: 700, color: '#2a6c8d', mb: 1, display: 'block', textTransform: 'uppercase' }}
+                    >
+                      Contraseña
+                    </Typography>
                     <TextField
                       fullWidth
                       name="password"
@@ -295,7 +315,7 @@ const LoginPage = () => {
                             </IconButton>
                           </InputAdornment>
                         ),
-                        sx: { borderRadius: '12px', bgcolor: '#f8fafc' }
+                        sx: { borderRadius: '12px', bgcolor: '#f8fafc' },
                       }}
                     />
                   </Box>
@@ -314,7 +334,7 @@ const LoginPage = () => {
                       '&:hover': {
                         backgroundColor: '#014484',
                         boxShadow: '0 10px 15px -3px rgba(2, 85, 165, 0.4)',
-                      }
+                      },
                     }}
                     disabled={loading}
                   >
@@ -323,13 +343,13 @@ const LoginPage = () => {
 
                   {error && (
                     <Fade in={!!error}>
-                      <Alert 
-                        severity="error" 
-                        sx={{ 
-                          mt: 3, 
-                          borderRadius: '12px', 
+                      <Alert
+                        severity="error"
+                        sx={{
+                          mt: 3,
+                          borderRadius: '12px',
                           fontWeight: 600,
-                          border: '1px solid #fee2e2'
+                          border: '1px solid #fee2e2',
                         }}
                       >
                         {error}
@@ -357,9 +377,7 @@ const LoginPage = () => {
         fullWidth
         PaperProps={{ sx: { borderRadius: '24px' } }}
       >
-        <DialogTitle sx={{ fontWeight: 900, color: '#2a6c8d' }}>
-          Configuración de Servidor
-        </DialogTitle>
+        <DialogTitle sx={{ fontWeight: 900, color: '#2a6c8d' }}>Configuración de Servidor</DialogTitle>
         <DialogContent dividers>
           <Box sx={{ pt: 1 }}>
             <Typography variant="body2" sx={{ mb: 3, color: '#475569', fontWeight: 500 }}>
@@ -380,9 +398,20 @@ const LoginPage = () => {
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 3 }}>
-          <Button onClick={() => setShowServerConfig(false)} sx={{ color: '#64748b' }}>Cerrar</Button>
-          <Button onClick={handleTestConnection} variant="outlined" sx={{ borderRadius: '10px' }}>Probar</Button>
-          <Button onClick={handleSaveServerConfig} disabled={connectionStatus !== 'success'} variant="contained" sx={{ borderRadius: '10px' }}>Guardar</Button>
+          <Button onClick={() => setShowServerConfig(false)} sx={{ color: '#64748b' }}>
+            Cerrar
+          </Button>
+          <Button onClick={handleTestConnection} variant="outlined" sx={{ borderRadius: '10px' }}>
+            Probar
+          </Button>
+          <Button
+            onClick={handleSaveServerConfig}
+            disabled={connectionStatus !== 'success'}
+            variant="contained"
+            sx={{ borderRadius: '10px' }}
+          >
+            Guardar
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

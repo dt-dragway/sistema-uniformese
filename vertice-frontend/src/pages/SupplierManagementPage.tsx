@@ -100,11 +100,12 @@ const SupplierManagementPage = () => {
           backgroundColor: 'rgba(2, 136, 209, 0.1)',
           borderColor: 'rgba(2, 136, 209, 0.5)',
           color: 'white',
-          borderRadius: 2
+          borderRadius: 2,
         }}
       >
         <AlertTitle sx={{ fontWeight: 'bold' }}>SECCIÓN EN DESARROLLO</AlertTitle>
-        Estamos trabajando para mejorar la gestión de proveedores. Próxima actualización disponible pronto con historial de pedidos y pagos.
+        Estamos trabajando para mejorar la gestión de proveedores. Próxima actualización disponible pronto con historial
+        de pedidos y pagos.
       </Alert>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>

@@ -1,4 +1,21 @@
-import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  CircularProgress,
+  Button,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -35,9 +52,9 @@ const CustomerCreditDetailsPage = () => {
 
   const customer = customers.find((c) => c.id === customerId);
   // No need to filter again on client side if API filters, but keeping it doesn't hurt or we can use the result directly
-  // The API now returns only this customer's movements, so we can use creditMovements directly if we want, 
+  // The API now returns only this customer's movements, so we can use creditMovements directly if we want,
   // but to be safe and consistent with previous behavior (incase store has other data), we can keep filter or trust API.
-  // Since the store replaces `creditMovements` with the result, it should be just fine. 
+  // Since the store replaces `creditMovements` with the result, it should be just fine.
   // However, `fetchCreditMovements` replaces the WHOLE state array. So `creditMovements` now ONLY contains this customer's data.
   const customerCreditMovements = creditMovements;
 
@@ -76,16 +93,13 @@ const CustomerCreditDetailsPage = () => {
         <Typography variant="h4" gutterBottom>
           Crédito de {customer.name}
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpenAddPaymentModal}
-        >
+        <Button variant="contained" color="primary" onClick={handleOpenAddPaymentModal}>
           Añadir Abono
         </Button>
       </Box>
       <Typography variant="h6" gutterBottom>
-        Deuda Total: ${Math.abs(customer.currentCredit) < 0.005 ? '0.00' : customer.currentCredit.toFixed(2)} / Bs. {Math.abs(totalDebtBs) < 0.005 ? '0.00' : totalDebtBs.toFixed(2)}
+        Deuda Total: ${Math.abs(customer.currentCredit) < 0.005 ? '0.00' : customer.currentCredit.toFixed(2)} / Bs.{' '}
+        {Math.abs(totalDebtBs) < 0.005 ? '0.00' : totalDebtBs.toFixed(2)}
       </Typography>
       <TableContainer component={Paper}>
         <Table stickyHeader aria-label="sticky table">
@@ -96,7 +110,7 @@ const CustomerCreditDetailsPage = () => {
               <TableCell>Descripción</TableCell>
               <TableCell align="right">Monto (REF)</TableCell>
               <TableCell align="right">Monto (Bs.)</TableCell>
-              <TableCell align="center">Autorizado por</TableCell>
+              <TableCell align="center">Generado por</TableCell>
               <TableCell align="center">Factura</TableCell>
               <TableCell align="center">Estado</TableCell>
             </TableRow>
@@ -105,10 +119,17 @@ const CustomerCreditDetailsPage = () => {
             {customerCreditMovements.map((movement) => {
               const isSale = movement.description?.startsWith('Venta #');
               const ticketNumber = isSale ? movement.description?.split('#')[1] : null;
-              const authorizer = movement.user ? (movement.user.fullname || movement.user.username) : '-';
+              const authorizer = movement.user ? movement.user.fullname || movement.user.username : '-';
 
               return (
-                <TableRow key={movement.id} hover sx={{ backgroundColor: movement.amount > 0 && movement.status === 'Pagado' ? 'rgba(76, 175, 80, 0.25)' : 'inherit' }}>
+                <TableRow
+                  key={movement.id}
+                  hover
+                  sx={{
+                    backgroundColor:
+                      movement.amount > 0 && movement.status === 'Pagado' ? 'rgba(76, 175, 80, 0.25)' : 'inherit',
+                  }}
+                >
                   <TableCell>{new Date(movement.paymentDate).toLocaleDateString()}</TableCell>
                   <TableCell>{movement.amount > 0 ? 'Cargo' : 'Abono'}</TableCell>
                   <TableCell>{movement.description}</TableCell>
@@ -129,17 +150,9 @@ const CustomerCreditDetailsPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <AddPaymentModal
-        open={isAddPaymentModalOpen}
-        onClose={handleCloseAddPaymentModal}
-        customer={customer}
-      />
+      <AddPaymentModal open={isAddPaymentModalOpen} onClose={handleCloseAddPaymentModal} customer={customer} />
       {selectedSale && (
-        <ViewTicketModal
-          open={isTicketModalOpen}
-          onClose={() => setIsTicketModalOpen(false)}
-          sale={selectedSale}
-        />
+        <ViewTicketModal open={isTicketModalOpen} onClose={() => setIsTicketModalOpen(false)} sale={selectedSale} />
       )}
 
       {/* Styled Notification Dialog */}
@@ -152,16 +165,18 @@ const CustomerCreditDetailsPage = () => {
             color: '#fff',
             borderRadius: '12px',
             border: '1px solid #ff9f43',
-            minWidth: '300px'
+            minWidth: '300px',
           },
         }}
       >
-        <DialogTitle sx={{
-          backgroundColor: 'rgba(255, 159, 67, 0.15)',
-          color: '#ff9f43',
-          fontWeight: 'bold',
-          borderBottom: '1px solid rgba(255, 159, 67, 0.3)'
-        }}>
+        <DialogTitle
+          sx={{
+            backgroundColor: 'rgba(255, 159, 67, 0.15)',
+            color: '#ff9f43',
+            fontWeight: 'bold',
+            borderBottom: '1px solid rgba(255, 159, 67, 0.3)',
+          }}
+        >
           Información
         </DialogTitle>
         <DialogContent sx={{ mt: 2 }}>
@@ -178,8 +193,8 @@ const CustomerCreditDetailsPage = () => {
               color: '#fff',
               fontWeight: 'bold',
               '&:hover': {
-                backgroundColor: '#e68a00'
-              }
+                backgroundColor: '#e68a00',
+              },
             }}
           >
             Aceptar

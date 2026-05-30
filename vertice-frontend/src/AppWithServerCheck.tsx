@@ -8,22 +8,22 @@ import App from './App';
  * before rendering the main application
  */
 const AppWithServerCheck: React.FC = () => {
-    const { status, serverUrl, error, retry, isReady } = useServerConnection();
+  const { status, serverUrl, error, retry, isReady } = useServerConnection();
 
-    // Show loading screen while not ready
-    if (!isReady) {
-        return (
-            <LoadingScreen
-                status={status}
-                serverUrl={serverUrl}
-                error={error || undefined}
-                onRetry={status === 'error' ? retry : undefined}
-            />
-        );
-    }
+  // Show loading screen while not ready
+  if (!isReady) {
+    return (
+      <LoadingScreen
+        status={status}
+        serverUrl={serverUrl}
+        error={error || undefined}
+        onRetry={status === 'error' ? retry : undefined}
+      />
+    );
+  }
 
-    // Server is ready, render main app
-    return <App />;
+  // Server is ready, render main app
+  return <App />;
 };
 
 export default AppWithServerCheck;

@@ -50,12 +50,26 @@ export const getSaleByTicketNumber = async (req: Request, res: Response) => {
 
 export const createSale = async (req: Request, res: Response) => {
   try {
-    const { items, payments, totalUsd, totalBs, customerId, cashRegisterSessionId, discount, discountType, discountValue, pendingRecharges, pendingCashAdvances } = req.body;
+    const {
+      items,
+      payments,
+      totalUsd,
+      totalBs,
+      customerId,
+      cashRegisterSessionId,
+      discount,
+      discountType,
+      discountValue,
+      pendingRecharges,
+      pendingCashAdvances,
+    } = req.body;
 
     // Permitir ventas sin items si hay recargas o avances pendientes
-    if ((!items || !Array.isArray(items) || items.length === 0) &&
+    if (
+      (!items || !Array.isArray(items) || items.length === 0) &&
       (!pendingRecharges || pendingRecharges.length === 0) &&
-      (!pendingCashAdvances || pendingCashAdvances.length === 0)) {
+      (!pendingCashAdvances || pendingCashAdvances.length === 0)
+    ) {
       return res.status(400).send('Invalid sale data: items, recharges or cash advances are required.');
     }
     if (!payments || !Array.isArray(payments) || payments.length === 0) {

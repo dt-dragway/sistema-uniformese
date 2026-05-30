@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-  Box,
-} from '@mui/material';
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Typography, Box } from '@mui/material';
 import { useAppDispatch } from '../../store/hooks';
 import { updateProduct } from '../../store/productsSlice';
 import { Product } from '../../models/Product';
@@ -61,10 +52,10 @@ const AddStockModal: React.FC<AddStockModalProps> = ({ isOpen, onClose, product 
       <DialogTitle>Añadir Stock</DialogTitle>
       <DialogContent>
         <Box sx={{ mb: 2 }}>
-            <Typography variant="h6">{product.name}</Typography>
-            <Typography variant="body1" color="text.secondary">
-                Stock Actual: {product.stock}
-            </Typography>
+          <Typography variant="h6">{product.name}</Typography>
+          <Typography variant="body1" color="text.secondary">
+            Stock Actual: {product.stock}
+          </Typography>
         </Box>
         <TextField
           autoFocus

@@ -1,4 +1,3 @@
-
 import {
   Dialog,
   DialogTitle,
@@ -84,12 +83,7 @@ const UserFormModal = ({ open, onClose, onSave, userToEdit }: UserFormModalProps
         />
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Rol</InputLabel>
-          <Select
-            name="role"
-            value={user.role || 'CASHIER'}
-            onChange={handleChange}
-            label="Rol"
-          >
+          <Select name="role" value={user.role || 'CASHIER'} onChange={handleChange} label="Rol">
             <MenuItem value="ADMIN">ADMINISTRADOR</MenuItem>
             <MenuItem value="CASHIER">CAJERO</MenuItem>
           </Select>

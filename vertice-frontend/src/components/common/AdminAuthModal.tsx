@@ -48,9 +48,7 @@ const AdminAuthModal: React.FC<AdminAuthModalProps> = ({ open, onClose, onSucces
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ backgroundColor: '#d32f2f', color: 'white' }}>
-        Autorización de Administrador
-      </DialogTitle>
+      <DialogTitle sx={{ backgroundColor: '#d32f2f', color: 'white' }}>Autorización de Administrador</DialogTitle>
       <DialogContent sx={{ pt: 3 }}>
         <Typography variant="body1" gutterBottom sx={{ mt: 2 }}>
           Ingrese una contraseña de Administrador para: <strong>{actionName}</strong>.

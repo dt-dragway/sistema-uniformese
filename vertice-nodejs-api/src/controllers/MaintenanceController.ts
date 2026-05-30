@@ -17,9 +17,9 @@ export const cleanupOldRecords = async (req: Request, res: Response) => {
       // We first identify the sales to be deleted to target the items
       const oldSales = await tx.sale.findMany({
         where: { createdAt: { lt: cutoffDate } },
-        select: { id: true }
+        select: { id: true },
       });
-      const oldSaleIds = oldSales.map(s => s.id);
+      const oldSaleIds = oldSales.map((s) => s.id);
 
       const deletedSaleItems = await tx.saleItem.deleteMany({
         where: { saleId: { in: oldSaleIds } },
@@ -39,25 +39,20 @@ export const cleanupOldRecords = async (req: Request, res: Response) => {
       // First identify old sessions
       const oldSessions = await tx.cashRegisterSession.findMany({
         where: { openedAt: { lt: cutoffDate } },
-        select: { id: true }
+        select: { id: true },
       });
-      const oldSessionIds = oldSessions.map(s => s.id);
+      const oldSessionIds = oldSessions.map((s) => s.id);
 
       const deletedCashMovements = await tx.cashMovement.deleteMany({
         where: { cashRegisterSessionId: { in: oldSessionIds } },
       });
 
-      // 5. Delete Recharges (linked to old sessions)
-      const deletedRecharges = await tx.recharge.deleteMany({
-        where: { cashRegisterSessionId: { in: oldSessionIds } },
-      });
-
-      // 6. Delete Sales (now that children are gone)
+      // 5. Delete Sales (now that children are gone)
       const deletedSales = await tx.sale.deleteMany({
         where: { id: { in: oldSaleIds } },
       });
 
-      // 7. Delete Cash Register Sessions
+      // 6. Delete Cash Register Sessions
       const deletedSessions = await tx.cashRegisterSession.deleteMany({
         where: { id: { in: oldSessionIds } },
       });
@@ -67,9 +62,8 @@ export const cleanupOldRecords = async (req: Request, res: Response) => {
         payments: deletedPayments.count,
         adjustments: deletedAdjustments.count,
         cashMovements: deletedCashMovements.count,
-        recharges: deletedRecharges.count,
         sales: deletedSales.count,
-        sessions: deletedSessions.count
+        sessions: deletedSessions.count,
       };
     });
 

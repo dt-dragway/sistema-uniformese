@@ -19,7 +19,13 @@ import {
   getProductByBarcode,
   getMostSoldProducts,
 } from './controllers/ProductController';
-import { getAllInventoryMovements, getInventoryMovementsByProductId, createMerchandiseEntry, createInternalWithdrawal } from './controllers/InventoryController'; // Add this import
+import {
+  getAllInventoryMovements,
+  getInventoryMovementsByProductId,
+  createMerchandiseEntry,
+  createInternalWithdrawal,
+  getHistoricalStock,
+} from './controllers/InventoryController'; // Add this import
 import {
   open,
   close,
@@ -30,11 +36,11 @@ import {
   getActiveSessions,
   getAllSessions,
   getAllCashMovements,
-  advance,
   getCorteX,
   getCorteXByAdmin,
   processCorteZ,
   processCorteZByAdmin,
+  createServiceIncome,
 } from './controllers/CashRegisterController';
 import { authMiddleware } from './middleware/authMiddleware';
 import { getCurrentExchangeRate, updateExchangeRate } from './controllers/ExchangeRateController';
@@ -57,16 +63,24 @@ import {
   deleteCustomer,
 } from './controllers/CustomerController';
 import { addCredit, getAllCreditPayments } from './controllers/CreditController';
-import { getAllSuppliers, getSupplierById, createSupplier, updateSupplier, deleteSupplier } from './controllers/SupplierController';
-import { exportSalesCsv, exportSalesExcel } from './controllers/ReportController'; // Import the new report controller
+import {
+  getAllSuppliers,
+  getSupplierById,
+  createSupplier,
+  updateSupplier,
+  deleteSupplier,
+} from './controllers/SupplierController';
+import { exportSalesCsv, exportSalesExcel, exportCashRegisterExcel, exportInventoryMovementsExcel, exportConnectionsExcel } from './controllers/ReportController'; // Import the new report controller
+
+// Removed duplicated routes block
 import * as InternalReportController from './controllers/InternalReportController';
 import { register, login, getProfile, verifyAdmin } from './controllers/AuthController'; // Import AuthController
 import { getUsers, getUser, createUser, updateUser, deleteUser } from './controllers/UserController'; // Import UserController
+import { getUserConnections } from './controllers/ConnectionController'; // Import ConnectionController
 import { SettingController } from './controllers/SettingController'; // Import SettingController
 import { PrintController } from './controllers/PrintController'; // Import PrintController
 import * as BackupController from './controllers/BackupController';
 import * as MaintenanceController from './controllers/MaintenanceController';
-import * as RechargeController from './controllers/RechargeController';
 import multer from 'multer';
 import path from 'path';
 
@@ -99,16 +113,18 @@ const getCorsOrigins = () => {
   const origins = process.env.CORS_ORIGINS;
   if (!origins) return ['http://localhost:5173'];
   if (origins === '*') return true; // Allow all origins
-  return origins.split(',').map(o => o.trim());
+  return origins.split(',').map((o) => o.trim());
 };
 
-app.use(cors({
-  origin: getCorsOrigins(),
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-})); // Use cors middleware with options
+app.use(
+  cors({
+    origin: getCorsOrigins(),
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  })
+); // Use cors middleware with options
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -169,7 +185,6 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
-
 // Serve frontend static files in production
 // Check multiple possible frontend locations
 const possiblePaths = [
@@ -210,6 +225,7 @@ app.get('/api/users/:id', getUser);
 app.post('/api/users', validate(createUserSchema), createUser);
 app.put('/api/users/:id', validate(updateUserSchema), updateUser);
 app.delete('/api/users/:id', deleteUser);
+app.get('/api/connections', authMiddleware, getUserConnections);
 
 // Auth Routes
 app.post('/api/auth/register', validate(createUserSchema), register);
@@ -231,6 +247,7 @@ app.get('/api/inventory/movements', getAllInventoryMovements);
 app.get('/api/inventory/movements/product/:productId', getInventoryMovementsByProductId);
 app.post('/api/inventory/entries', createMerchandiseEntry);
 app.post('/api/inventory/withdrawals', createInternalWithdrawal);
+app.get('/api/inventory/historical-stock', authMiddleware, getHistoricalStock);
 
 // Cash Register Routes
 app.post('/api/cash-register/open', authMiddleware, open);
@@ -241,7 +258,6 @@ app.get('/api/cash-register/preview/:userId', authMiddleware, getClosingPreviewB
 app.get('/api/cash-register/status', authMiddleware, getActiveSession);
 app.get('/api/cash-register/active-sessions', authMiddleware, getActiveSessions);
 app.get('/api/cash-register/sessions', authMiddleware, getAllSessions);
-app.post('/api/cash-register/advance', authMiddleware, advance);
 // Corte X (Lectura Parcial)
 app.get('/api/cash-register/corte-x', authMiddleware, getCorteX);
 app.get('/api/cash-register/corte-x/:userId', authMiddleware, getCorteXByAdmin);
@@ -249,6 +265,7 @@ app.get('/api/cash-register/corte-x/:userId', authMiddleware, getCorteXByAdmin);
 app.post('/api/cash-register/corte-z', authMiddleware, processCorteZ);
 app.post('/api/cash-register/corte-z-admin', authMiddleware, processCorteZByAdmin);
 app.get('/api/cash-movements', authMiddleware, getAllCashMovements);
+app.post('/api/cash-register/service-income', authMiddleware, createServiceIncome);
 
 // Exchange Rate Routes
 app.get('/api/exchange-rate', getCurrentExchangeRate);
@@ -288,15 +305,10 @@ const printController = new PrintController();
 // Report Routes
 app.get('/api/reports/sales/export-csv', exportSalesCsv); // New report export route
 app.get('/api/reports/sales/export-excel', exportSalesExcel);
+app.get('/api/reports/cash-register/export-excel', authMiddleware, exportCashRegisterExcel);
+app.get('/api/reports/inventory/export-excel', authMiddleware, exportInventoryMovementsExcel);
+app.get('/api/reports/connections/export-excel', authMiddleware, exportConnectionsExcel);
 app.get('/api/reports/internal-dispatch', authMiddleware, InternalReportController.getInternalDispatchStats);
-
-// Recharge Routes
-app.get('/api/recharge-services', authMiddleware, RechargeController.getServices);
-app.get('/api/recharges', authMiddleware, RechargeController.getRecharges);
-app.get('/api/recharges/session/:sessionId', authMiddleware, RechargeController.getRechargesBySession);
-app.post('/api/recharges', authMiddleware, RechargeController.createRecharge);
-app.patch('/api/recharges/:id/status', authMiddleware, RechargeController.updateStatus);
-app.post('/api/recharge-services/seed', authMiddleware, RechargeController.seedServices);
 
 // Maintenance Routes
 app.get('/api/maintenance/backup', authMiddleware, BackupController.downloadBackup);
@@ -306,8 +318,6 @@ app.post('/api/maintenance/cleanup', authMiddleware, MaintenanceController.clean
 // Settings Routes
 app.get('/api/settings/printer', (req, res) => settingController.getPrinter(req, res));
 app.post('/api/settings/printer', (req, res) => settingController.savePrinter(req, res));
-app.get('/api/settings/commissions', (req, res) => settingController.getCommissions(req, res));
-app.post('/api/settings/commissions', (req, res) => settingController.saveCommissions(req, res));
 
 // Print Routes
 app.post('/api/print-ticket', (req, res) => printController.printTicket(req, res));

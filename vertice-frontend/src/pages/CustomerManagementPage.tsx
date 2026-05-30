@@ -18,6 +18,7 @@ import {
   ToggleButtonGroup,
   Alert,
   InputAdornment,
+  Chip,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useState, useEffect } from 'react';
@@ -34,6 +35,8 @@ import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import FacebookIcon from '@mui/icons-material/Facebook';
 
 import { ProfessionalPagination } from '../components/common/ProfessionalPagination';
 
@@ -97,17 +100,24 @@ const CustomerManagementPage = () => {
       customer.cedula.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const paginatedCustomers = filteredCustomers.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+  const paginatedCustomers = filteredCustomers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   if (loading && customers.length === 0) return <Typography sx={{ p: 3 }}>Cargando clientes...</Typography>;
 
   return (
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" gutterBottom sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{
+            fontWeight: 900,
+            color: '#0f172a',
+            fontFamily: '"Outfit", sans-serif',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+          }}
+        >
           Gestión de Clientes (CRM)
         </Typography>
         {!isCashier && (
@@ -115,17 +125,17 @@ const CustomerManagementPage = () => {
             variant="contained"
             startIcon={<AddIcon />}
             onClick={handleOpenCreateCustomer}
-            sx={{ 
-              height: '56px', 
-              px: 4, 
-              borderRadius: '16px', 
-              fontWeight: 700, 
+            sx={{
+              height: '56px',
+              px: 4,
+              borderRadius: '16px',
+              fontWeight: 700,
               textTransform: 'none',
               backgroundColor: '#2a6c8d',
               boxShadow: '0 4px 6px -1px rgba(2, 85, 165, 0.3)',
               '&:hover': {
                 backgroundColor: '#014484',
-              }
+              },
             }}
           >
             Nuevo Cliente
@@ -139,7 +149,9 @@ const CustomerManagementPage = () => {
         </Alert>
       )}
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+      <Box
+        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}
+      >
         <TextField
           label="Buscar por Cédula o Nombre"
           variant="outlined"
@@ -149,9 +161,9 @@ const CustomerManagementPage = () => {
             setSearchTerm(e.target.value);
             setPage(0);
           }}
-          sx={{ 
+          sx={{
             width: { xs: '100%', sm: '450px' },
-            '& .MuiOutlinedInput-root': { borderRadius: '16px', backgroundColor: '#ffffff' }
+            '& .MuiOutlinedInput-root': { borderRadius: '16px', backgroundColor: '#ffffff' },
           }}
           InputProps={{
             startAdornment: (
@@ -174,20 +186,20 @@ const CustomerManagementPage = () => {
           exclusive
           onChange={handleViewModeChange}
           aria-label="view mode"
-          sx={{ 
-            bgcolor: '#ffffff', 
-            borderRadius: '16px', 
+          sx={{
+            bgcolor: '#ffffff',
+            borderRadius: '16px',
             p: 0.5,
             border: '1px solid #e2e8f0',
-            '& .MuiToggleButton-root': { 
+            '& .MuiToggleButton-root': {
               borderRadius: '12px !important',
               border: 'none',
               mx: 0.5,
               '&.Mui-selected': {
                 bgcolor: 'rgba(2, 85, 165, 0.08)',
-                color: '#2a6c8d'
-              }
-            }
+                color: '#2a6c8d',
+              },
+            },
           }}
         >
           <ToggleButton value="grid" aria-label="grid view">
@@ -218,42 +230,84 @@ const CustomerManagementPage = () => {
                     '&:hover': {
                       transform: 'translateY(-6px)',
                       boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                      borderColor: '#2a6c8d'
-                    }
+                      borderColor: '#2a6c8d',
+                    },
                   }}
                 >
                   <CardContent sx={{ p: 3, flexGrow: 1 }}>
                     <Box sx={{ mb: 2 }}>
-                      <Typography variant="h6" component="div" sx={{ fontWeight: 800, color: '#0f172a', lineHeight: 1.2, mb: 0.5 }}>
-                        {customer.name}
-                      </Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <Typography
+                          variant="h6"
+                          component="div"
+                          sx={{ fontWeight: 800, color: '#0f172a', lineHeight: 1.2, mb: 0.5 }}
+                        >
+                          {customer.name}
+                        </Typography>
+                        <Chip
+                          label={customer.category || 'GENERAL'}
+                          size="small"
+                          sx={{
+                            fontSize: '0.65rem',
+                            fontWeight: 800,
+                            bgcolor: '#f1f5f9',
+                            color: '#0255A5',
+                            height: 20,
+                          }}
+                        />
+                      </Box>
                       <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600 }}>
                         C.I./RIF: {customer.cedula}
                       </Typography>
+                      <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+                        {customer.instagram && (
+                          <Tooltip title={customer.instagram}>
+                            <InstagramIcon sx={{ fontSize: 16, color: '#E1306C' }} />
+                          </Tooltip>
+                        )}
+                        {customer.facebook && (
+                          <Tooltip title={customer.facebook}>
+                            <FacebookIcon sx={{ fontSize: 16, color: '#1877F2' }} />
+                          </Tooltip>
+                        )}
+                      </Box>
                     </Box>
-                    
+
                     <Box sx={{ p: 2, bgcolor: '#f8fafc', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
-                      <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                      >
                         Saldo Deudor:
                       </Typography>
                       <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 900 }}>
                         ${Math.abs(customer.currentCredit) < 0.005 ? '0.00' : customer.currentCredit.toFixed(2)}
                       </Typography>
                       <Typography variant="caption" sx={{ color: '#94a3b8', fontWeight: 600 }}>
-                        ≈ Bs. {Math.abs(customer.currentCredit * exchangeRate) < 0.005 ? '0.00' : (customer.currentCredit * exchangeRate).toFixed(2)}
+                        ≈ Bs.{' '}
+                        {Math.abs(customer.currentCredit * exchangeRate) < 0.005
+                          ? '0.00'
+                          : (customer.currentCredit * exchangeRate).toFixed(2)}
                       </Typography>
                     </Box>
-                    
+
                     <Box sx={{ mt: 2.5, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                       <Tooltip title="Ver Estado de Cuenta">
-                        <IconButton size="small" sx={{ color: '#2a6c8d', bgcolor: 'rgba(2, 85, 165, 0.08)', '&:hover': { bgcolor: 'rgba(2, 85, 165, 0.15)' } }}>
+                        <IconButton
+                          size="small"
+                          sx={{
+                            color: '#2a6c8d',
+                            bgcolor: 'rgba(2, 85, 165, 0.08)',
+                            '&:hover': { bgcolor: 'rgba(2, 85, 165, 0.15)' },
+                          }}
+                        >
                           <VisibilityIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
                       {!isCashier && (
                         <Tooltip title="Editar Datos">
-                          <IconButton 
-                            size="small" 
+                          <IconButton
+                            size="small"
                             onClick={(e) => handleEditCustomer(e, customer)}
                             sx={{ color: '#64748b', bgcolor: '#f1f5f9', '&:hover': { bgcolor: '#e2e8f0' } }}
                           >
@@ -269,16 +323,30 @@ const CustomerManagementPage = () => {
           ))}
         </Grid>
       ) : (
-        <TableContainer component={Paper} sx={{ borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            borderRadius: '24px',
+            overflow: 'hidden',
+            border: '1px solid rgba(0,0,0,0.05)',
+            boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
+          }}
+        >
           <Table stickyHeader>
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Nombre / Razón Social</TableCell>
                 <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Cédula / RIF</TableCell>
                 <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Teléfono</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>Crédito (REF)</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>Crédito (Bs.)</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>Acciones</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>
+                  Crédito (REF)
+                </TableCell>
+                <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>
+                  Crédito (Bs.)
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>
+                  Acciones
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -291,7 +359,10 @@ const CustomerManagementPage = () => {
                     ${Math.abs(customer.currentCredit) < 0.005 ? '0.00' : customer.currentCredit.toFixed(2)}
                   </TableCell>
                   <TableCell align="right" sx={{ color: '#94a3b8', fontWeight: 600 }}>
-                    Bs. {Math.abs(customer.currentCredit * exchangeRate) < 0.005 ? '0.00' : (customer.currentCredit * exchangeRate).toFixed(2)}
+                    Bs.{' '}
+                    {Math.abs(customer.currentCredit * exchangeRate) < 0.005
+                      ? '0.00'
+                      : (customer.currentCredit * exchangeRate).toFixed(2)}
                   </TableCell>
                   <TableCell align="center">
                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
@@ -304,8 +375,8 @@ const CustomerManagementPage = () => {
                       </Tooltip>
                       {!isCashier && (
                         <Tooltip title="Editar">
-                          <IconButton 
-                            size="small" 
+                          <IconButton
+                            size="small"
                             onClick={(e) => handleEditCustomer(e, customer)}
                             sx={{ color: '#64748b', bgcolor: '#f1f5f9' }}
                           >

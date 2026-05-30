@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  IconButton,
-  Tooltip,
-  Select,
-  MenuItem,
-  Pagination,
-  styled,
-} from '@mui/material';
+import { Box, Typography, IconButton, Tooltip, Select, MenuItem, Pagination, styled } from '@mui/material';
 import {
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
@@ -93,7 +84,11 @@ export const ProfessionalPagination: React.FC<ProfessionalPaginationProps> = ({
 
       {/* Page information */}
       <Typography variant="body2" sx={{ color: '#0f172a', fontWeight: 600 }}>
-        Mostrando <span style={{ color: '#2a6c8d' }}>{from}-{to}</span> de <span style={{ color: '#2a6c8d' }}>{count}</span>
+        Mostrando{' '}
+        <span style={{ color: '#2a6c8d' }}>
+          {from}-{to}
+        </span>{' '}
+        de <span style={{ color: '#2a6c8d' }}>{count}</span>
       </Typography>
 
       {/* Pagination controls */}

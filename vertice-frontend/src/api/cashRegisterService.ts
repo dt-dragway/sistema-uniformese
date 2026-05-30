@@ -115,8 +115,13 @@ const getClosingPreviewByAdmin = (userId: number) => {
   return axiosInstance.get<CashRegisterSession>(`/cash-register/preview/${userId}`);
 };
 
-const processCashAdvance = (amountToGive: number, percentage: number, paymentMethod: string) => {
-  return axiosInstance.post('/cash-register/advance', { amountToGive, percentage, paymentMethod });
+const recordServiceIncome = (data: {
+  amountUsd: number;
+  amountBs: number;
+  description: string;
+  paymentMethod: string;
+}) => {
+  return axiosInstance.post('/cash-register/service-income', data);
 };
 
 // ============= CORTE X (Lectura Parcial) =============
@@ -149,7 +154,7 @@ export default {
   getAllSessions,
   getClosingPreview,
   getClosingPreviewByAdmin,
-  processCashAdvance,
+  recordServiceIncome,
   getCorteX,
   getCorteXByAdmin,
   processCorteZ,

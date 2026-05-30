@@ -43,7 +43,7 @@ const SalesChart = ({ sales }: SalesChartProps) => {
         const date = new Date(sale.createdAt).toLocaleDateString('es-ES', {
           day: '2-digit',
           month: '2-digit',
-          year: 'numeric'
+          year: 'numeric',
         });
         salesByDay[date] = (salesByDay[date] || 0) + sale.totalUsd;
       }
@@ -60,7 +60,7 @@ const SalesChart = ({ sales }: SalesChartProps) => {
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400 }}>
         <Typography color="text.secondary">No hay datos de ventas para mostrar</Typography>
       </Box>
-    )
+    );
   }
 
   return (
@@ -73,18 +73,8 @@ const SalesChart = ({ sales }: SalesChartProps) => {
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-        <XAxis
-          dataKey="date"
-          stroke="#808e9b"
-          tick={{ fill: '#808e9b' }}
-          tickLine={false}
-        />
-        <YAxis
-          stroke="#808e9b"
-          tick={{ fill: '#808e9b' }}
-          tickLine={false}
-          tickFormatter={(value) => `REF ${value}`}
-        />
+        <XAxis dataKey="date" stroke="#808e9b" tick={{ fill: '#808e9b' }} tickLine={false} />
+        <YAxis stroke="#808e9b" tick={{ fill: '#808e9b' }} tickLine={false} tickFormatter={(value) => `REF ${value}`} />
         <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
         <Legend wrapperStyle={{ paddingTop: '20px' }} />
         <Bar

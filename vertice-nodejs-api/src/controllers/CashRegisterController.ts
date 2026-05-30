@@ -178,9 +178,7 @@ export const getAllSessions = async (req: Request, res: Response) => {
     const userIsAdmin = isAdmin(adminRequest);
 
     // Si es admin, ve todas las sesiones. Si es cajero, solo ve las suyas
-    const sessions = await cashRegisterService.getAllSessions(
-      userIsAdmin ? undefined : userId ?? undefined
-    );
+    const sessions = await cashRegisterService.getAllSessions(userIsAdmin ? undefined : userId ?? undefined);
     res.json(sessions);
   } catch (error: any) {
     res.status(500).json({ message: 'Error fetching cash register sessions', error: error.message });
@@ -196,13 +194,40 @@ export const advance = async (req: Request, res: Response) => {
     const { amountToGive, percentage, paymentMethod } = req.body;
 
     if (typeof amountToGive !== 'number' || typeof percentage !== 'number' || !paymentMethod) {
-      return res.status(400).json({ message: 'Datos inválidos. Se requiere amountToGive (número), percentage (número) y paymentMethod (string).' });
+      return res.status(400).json({
+        message: 'Datos inválidos. Se requiere amountToGive (número), percentage (número) y paymentMethod (string).',
+      });
     }
 
     const result = await cashRegisterService.processCashAdvance(userId, amountToGive, percentage, paymentMethod);
     res.status(200).json(result);
   } catch (error: any) {
     res.status(500).json({ message: 'Error al procesar avance de efectivo', error: error.message });
+  }
+};
+
+export const createServiceIncome = async (req: Request, res: Response) => {
+  try {
+    const userId = getUserIdFromRequest(req);
+    if (!userId) {
+      return res.status(401).json({ message: 'Usuario no autenticado' });
+    }
+    const { amountUsd, amountBs, description, paymentMethod } = req.body;
+
+    if (!description || !paymentMethod || (amountUsd === undefined && amountBs === undefined)) {
+      return res.status(400).json({ message: 'Datos incompletos para registrar el ingreso.' });
+    }
+
+    const result = await cashRegisterService.recordServiceIncome(
+      userId,
+      amountUsd || 0,
+      amountBs || 0,
+      description,
+      paymentMethod
+    );
+    res.status(201).json(result);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error al registrar ingreso por servicio', error: error.message });
   }
 };
 
@@ -264,7 +289,7 @@ export const processCorteZ = async (req: Request, res: Response) => {
     const { conteoReal } = req.body;
     if (!conteoReal || typeof conteoReal.efectivoUsd !== 'number' || typeof conteoReal.efectivoBs !== 'number') {
       return res.status(400).json({
-        message: 'Datos inválidos. Se requiere conteoReal con efectivoUsd y efectivoBs.'
+        message: 'Datos inválidos. Se requiere conteoReal con efectivoUsd y efectivoBs.',
       });
     }
 
@@ -295,7 +320,7 @@ export const processCorteZByAdmin = async (req: Request, res: Response) => {
     }
     if (!conteoReal || typeof conteoReal.efectivoUsd !== 'number' || typeof conteoReal.efectivoBs !== 'number') {
       return res.status(400).json({
-        message: 'Datos inválidos. Se requiere conteoReal con efectivoUsd y efectivoBs.'
+        message: 'Datos inválidos. Se requiere conteoReal con efectivoUsd y efectivoBs.',
       });
     }
 

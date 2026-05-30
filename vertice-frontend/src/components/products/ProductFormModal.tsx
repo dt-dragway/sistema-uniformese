@@ -21,25 +21,34 @@ import productService from '../../api/productService';
 // Helper functions for unit type labels
 const getUnitLabel = (unitType: UnitType): string => {
   switch (unitType) {
-    case 'KG': return 'kg';
-    case 'LITER': return 'L';
-    default: return 'und';
+    case 'KG':
+      return 'kg';
+    case 'LITER':
+      return 'L';
+    default:
+      return 'und';
   }
 };
 
 const getPriceLabel = (unitType: UnitType): string => {
   switch (unitType) {
-    case 'KG': return 'Precio por Kg (REF)';
-    case 'LITER': return 'Precio por Litro (REF)';
-    default: return 'Precio (REF)';
+    case 'KG':
+      return 'Precio por Kg (REF)';
+    case 'LITER':
+      return 'Precio por Litro (REF)';
+    default:
+      return 'Precio (REF)';
   }
 };
 
 const getStockLabel = (unitType: UnitType): string => {
   switch (unitType) {
-    case 'KG': return 'Stock (Kg)';
-    case 'LITER': return 'Stock (Litros)';
-    default: return 'Stock (Unidades)';
+    case 'KG':
+      return 'Stock (Kg)';
+    case 'LITER':
+      return 'Stock (Litros)';
+    default:
+      return 'Stock (Unidades)';
   }
 };
 
@@ -95,11 +104,11 @@ const ProductFormModal = () => {
     const productData = { ...selectedProduct };
 
     productData.price = parseFloat(String(productData.price)) || 0;
-    
+
     // Ensure stock is treated as a number, allowing 0
     const stockValue = parseFloat(String(productData.stock));
     productData.stock = isNaN(stockValue) ? 0 : stockValue;
-    
+
     productData.minStock = parseFloat(String(productData.minStock)) || 0;
     productData.barCode = productData.barCode ? productData.barCode.trim() : undefined;
     productData.unitType = productData.unitType || 'UNIT';
@@ -140,7 +149,7 @@ const ProductFormModal = () => {
             name="unitType"
             value={selectedProduct.unitType || 'UNIT'}
             label="Tipo de Unidad"
-            onChange={(e) => setSelectedProduct(prev => ({ ...prev, unitType: e.target.value as UnitType }))}
+            onChange={(e) => setSelectedProduct((prev) => ({ ...prev, unitType: e.target.value as UnitType }))}
           >
             <MenuItem value="UNIT">Unidades</MenuItem>
             <MenuItem value="KG">Kilogramos (precio por kg)</MenuItem>
@@ -170,9 +179,9 @@ const ProductFormModal = () => {
           value={selectedProduct.stock === 0 ? '0' : selectedProduct.stock || ''}
           onChange={handleProductChange}
           sx={{ mb: 2 }}
-          inputProps={{ 
+          inputProps={{
             step: currentUnitType === 'UNIT' ? '1' : '0.001',
-            min: '0'
+            min: '0',
           }}
         />
         <TextField

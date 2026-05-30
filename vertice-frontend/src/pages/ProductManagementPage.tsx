@@ -27,11 +27,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import {
-  Add as AddIcon,
-  Search as SearchIcon,
-  Clear as ClearIcon,
-} from '@mui/icons-material';
+import { Add as AddIcon, Search as SearchIcon, Clear as ClearIcon, Edit as EditIcon, Delete as DeleteIcon, AddCircle as AddCircleIcon } from '@mui/icons-material';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
@@ -99,28 +95,30 @@ const ProductManagementPage = () => {
   }, [dispatch]);
 
   // Filter logic including clothing attributes
-  const filteredProducts = products.filter(
-    (product) => {
-      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            (product.barCode && product.barCode.toLowerCase().includes(searchTerm.toLowerCase()));
-      
-      const productTipo = (product.tipo || '').trim().toUpperCase();
-      const productCaract = (product.caracteristica || '').trim().toUpperCase();
-      const productTela = (product.tela || '').trim().toUpperCase();
-      const productColor = (product.color || '').trim().toUpperCase();
-      const productDetalle = (product.detalle || '').trim().toUpperCase();
-      const productTalla = (product.talla || '').trim().toUpperCase();
-      
-      const matchesTipo = filterTipo === 'TODOS' || productTipo === filterTipo.trim().toUpperCase();
-      const matchesCaract = filterCaracteristica === 'TODOS' || productCaract === filterCaracteristica.trim().toUpperCase();
-      const matchesTela = filterTela === 'TODOS' || productTela === filterTela.trim().toUpperCase();
-      const matchesColor = filterColor === 'TODOS' || productColor === filterColor.trim().toUpperCase();
-      const matchesDetalle = filterDetalle === 'TODOS' || productDetalle === filterDetalle.trim().toUpperCase();
-      const matchesTalla = filterTalla === 'TODOS' || productTalla === filterTalla.trim().toUpperCase();
-      
-      return matchesSearch && matchesTipo && matchesCaract && matchesTela && matchesColor && matchesDetalle && matchesTalla;
-    }
-  );
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (product.barCode && product.barCode.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    const productTipo = (product.tipo || '').trim().toUpperCase();
+    const productCaract = (product.caracteristica || '').trim().toUpperCase();
+    const productTela = (product.tela || '').trim().toUpperCase();
+    const productColor = (product.color || '').trim().toUpperCase();
+    const productDetalle = (product.detalle || '').trim().toUpperCase();
+    const productTalla = (product.talla || '').trim().toUpperCase();
+
+    const matchesTipo = filterTipo === 'TODOS' || productTipo === filterTipo.trim().toUpperCase();
+    const matchesCaract =
+      filterCaracteristica === 'TODOS' || productCaract === filterCaracteristica.trim().toUpperCase();
+    const matchesTela = filterTela === 'TODOS' || productTela === filterTela.trim().toUpperCase();
+    const matchesColor = filterColor === 'TODOS' || productColor === filterColor.trim().toUpperCase();
+    const matchesDetalle = filterDetalle === 'TODOS' || productDetalle === filterDetalle.trim().toUpperCase();
+    const matchesTalla = filterTalla === 'TODOS' || productTalla === filterTalla.trim().toUpperCase();
+
+    return (
+      matchesSearch && matchesTipo && matchesCaract && matchesTela && matchesColor && matchesDetalle && matchesTalla
+    );
+  });
 
   const productsWithCode = filteredProducts.filter((product) => product.barCode);
   const productsWithoutCode = filteredProducts.filter((product) => !product.barCode);
@@ -128,12 +126,24 @@ const ProductManagementPage = () => {
   const productsToDisplay = selectedTab === 0 ? productsWithCode : productsWithoutCode;
 
   // Extract unique values for filters (Normalized and Trimmed)
-  const uniqueTipos = Array.from(new Set(products.map(p => (p.tipo || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
-  const uniqueCaracteristicas = Array.from(new Set(products.map(p => (p.caracteristica || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
-  const uniqueTelas = Array.from(new Set(products.map(p => (p.tela || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
-  const uniqueColores = Array.from(new Set(products.map(p => (p.color || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
-  const uniqueDetalles = Array.from(new Set(products.map(p => (p.detalle || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
-  const uniqueTallas = Array.from(new Set(products.map(p => (p.talla || '').trim().toUpperCase()).filter(Boolean))).sort() as string[];
+  const uniqueTipos = Array.from(
+    new Set(products.map((p) => (p.tipo || '').trim().toUpperCase()).filter(Boolean))
+  ).sort() as string[];
+  const uniqueCaracteristicas = Array.from(
+    new Set(products.map((p) => (p.caracteristica || '').trim().toUpperCase()).filter(Boolean))
+  ).sort() as string[];
+  const uniqueTelas = Array.from(
+    new Set(products.map((p) => (p.tela || '').trim().toUpperCase()).filter(Boolean))
+  ).sort() as string[];
+  const uniqueColores = Array.from(
+    new Set(products.map((p) => (p.color || '').trim().toUpperCase()).filter(Boolean))
+  ).sort() as string[];
+  const uniqueDetalles = Array.from(
+    new Set(products.map((p) => (p.detalle || '').trim().toUpperCase()).filter(Boolean))
+  ).sort() as string[];
+  const uniqueTallas = Array.from(
+    new Set(products.map((p) => (p.talla || '').trim().toUpperCase()).filter(Boolean))
+  ).sort() as string[];
 
   const paginatedProducts = productsToDisplay.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -207,7 +217,7 @@ const ProductManagementPage = () => {
 
   const handleProductChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const transformedValue = (name === 'name' || name === 'barCode') ? value.toUpperCase() : value;
+    const transformedValue = name === 'name' || name === 'barCode' ? value.toUpperCase() : value;
     setSelectedProduct((prev) => ({ ...prev, [name]: transformedValue }));
   };
 
@@ -273,7 +283,17 @@ const ProductManagementPage = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{
+          fontWeight: 900,
+          color: '#0f172a',
+          fontFamily: '"Outfit", sans-serif',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+        }}
+      >
         Gestión de Inventario
       </Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3, alignItems: 'center' }}>
@@ -283,7 +303,11 @@ const ProductManagementPage = () => {
           placeholder="Escanee o escriba aquí..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ minWidth: '350px', flexGrow: 1, '& .MuiOutlinedInput-root': { borderRadius: '16px', backgroundColor: '#ffffff' } }}
+          sx={{
+            minWidth: '350px',
+            flexGrow: 1,
+            '& .MuiOutlinedInput-root': { borderRadius: '16px', backgroundColor: '#ffffff' },
+          }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -300,7 +324,13 @@ const ProductManagementPage = () => {
           }}
         />
 
-        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => handleOpenModal()} sx={{ height: '56px', px: 4, borderRadius: '16px', fontWeight: 700, textTransform: 'none' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpenModal()}
+          sx={{ height: '56px', px: 4, borderRadius: '16px', fontWeight: 700, textTransform: 'none' }}
+        >
           Nuevo Producto
         </Button>
       </Box>
@@ -310,123 +340,203 @@ const ProductManagementPage = () => {
         <Tab label="Sin Código de Barras" sx={{ fontWeight: 700 }} />
       </Tabs>
 
-      <TableContainer component={Paper} sx={{ borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          borderRadius: '24px',
+          overflow: 'hidden',
+          border: '1px solid rgba(0,0,0,0.05)',
+          boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
+        }}
+      >
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Nombre</TableCell>
               <TableCell sx={{ minWidth: 160 }}>
-                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Tipo de Prenda</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>
+                  Tipo de Prenda
+                </Typography>
                 <Select
                   value={filterTipo}
-                  onChange={(e) => { setFilterTipo(e.target.value); setPage(0); }}
+                  onChange={(e) => {
+                    setFilterTipo(e.target.value);
+                    setPage(0);
+                  }}
                   size="small"
                   fullWidth
-                  sx={{ 
-                    height: '32px', 
-                    fontSize: '0.75rem', 
+                  sx={{
+                    height: '32px',
+                    fontSize: '0.75rem',
                     backgroundColor: '#f8fafc',
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' },
                   }}
                 >
-                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
-                  {uniqueTipos.map(t => <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>{t}</MenuItem>)}
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>
+                    TODOS
+                  </MenuItem>
+                  {uniqueTipos.map((t) => (
+                    <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>
+                      {t}
+                    </MenuItem>
+                  ))}
                 </Select>
               </TableCell>
               <TableCell sx={{ minWidth: 160 }}>
-                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Característica</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>
+                  Característica
+                </Typography>
                 <Select
                   value={filterCaracteristica}
-                  onChange={(e) => { setFilterCaracteristica(e.target.value); setPage(0); }}
+                  onChange={(e) => {
+                    setFilterCaracteristica(e.target.value);
+                    setPage(0);
+                  }}
                   size="small"
                   fullWidth
-                  sx={{ 
-                    height: '32px', 
-                    fontSize: '0.75rem', 
+                  sx={{
+                    height: '32px',
+                    fontSize: '0.75rem',
                     backgroundColor: '#f8fafc',
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' },
                   }}
                 >
-                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
-                  {uniqueCaracteristicas.map(c => <MenuItem key={c} value={c} sx={{ fontSize: '0.75rem' }}>{c}</MenuItem>)}
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>
+                    TODOS
+                  </MenuItem>
+                  {uniqueCaracteristicas.map((c) => (
+                    <MenuItem key={c} value={c} sx={{ fontSize: '0.75rem' }}>
+                      {c}
+                    </MenuItem>
+                  ))}
                 </Select>
               </TableCell>
               <TableCell sx={{ minWidth: 150 }}>
-                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Tela</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>
+                  Tela
+                </Typography>
                 <Select
                   value={filterTela}
-                  onChange={(e) => { setFilterTela(e.target.value); setPage(0); }}
+                  onChange={(e) => {
+                    setFilterTela(e.target.value);
+                    setPage(0);
+                  }}
                   size="small"
                   fullWidth
-                  sx={{ 
-                    height: '32px', 
-                    fontSize: '0.75rem', 
+                  sx={{
+                    height: '32px',
+                    fontSize: '0.75rem',
                     backgroundColor: '#f8fafc',
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' },
                   }}
                 >
-                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
-                  {uniqueTelas.map(t => <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>{t}</MenuItem>)}
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>
+                    TODOS
+                  </MenuItem>
+                  {uniqueTelas.map((t) => (
+                    <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>
+                      {t}
+                    </MenuItem>
+                  ))}
                 </Select>
               </TableCell>
               <TableCell sx={{ minWidth: 150 }}>
-                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Color</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>
+                  Color
+                </Typography>
                 <Select
                   value={filterColor}
-                  onChange={(e) => { setFilterColor(e.target.value); setPage(0); }}
+                  onChange={(e) => {
+                    setFilterColor(e.target.value);
+                    setPage(0);
+                  }}
                   size="small"
                   fullWidth
-                  sx={{ 
-                    height: '32px', 
-                    fontSize: '0.75rem', 
+                  sx={{
+                    height: '32px',
+                    fontSize: '0.75rem',
                     backgroundColor: '#f8fafc',
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' },
                   }}
                 >
-                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
-                  {uniqueColores.map(c => <MenuItem key={c} value={c} sx={{ fontSize: '0.75rem' }}>{c}</MenuItem>)}
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>
+                    TODOS
+                  </MenuItem>
+                  {uniqueColores.map((c) => (
+                    <MenuItem key={c} value={c} sx={{ fontSize: '0.75rem' }}>
+                      {c}
+                    </MenuItem>
+                  ))}
                 </Select>
               </TableCell>
               <TableCell sx={{ minWidth: 150 }}>
-                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Detalle</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>
+                  Detalle
+                </Typography>
                 <Select
                   value={filterDetalle}
-                  onChange={(e) => { setFilterDetalle(e.target.value); setPage(0); }}
+                  onChange={(e) => {
+                    setFilterDetalle(e.target.value);
+                    setPage(0);
+                  }}
                   size="small"
                   fullWidth
-                  sx={{ 
-                    height: '32px', 
-                    fontSize: '0.75rem', 
+                  sx={{
+                    height: '32px',
+                    fontSize: '0.75rem',
                     backgroundColor: '#f8fafc',
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' },
                   }}
                 >
-                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
-                  {uniqueDetalles.map(t => <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>{t}</MenuItem>)}
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>
+                    TODOS
+                  </MenuItem>
+                  {uniqueDetalles.map((t) => (
+                    <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>
+                      {t}
+                    </MenuItem>
+                  ))}
                 </Select>
               </TableCell>
               <TableCell sx={{ minWidth: 120 }}>
-                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>Talla</Typography>
+                <Typography variant="caption" sx={{ fontWeight: 800, color: '#475569', display: 'block', mb: 0.5 }}>
+                  Talla
+                </Typography>
                 <Select
                   value={filterTalla}
-                  onChange={(e) => { setFilterTalla(e.target.value); setPage(0); }}
+                  onChange={(e) => {
+                    setFilterTalla(e.target.value);
+                    setPage(0);
+                  }}
                   size="small"
                   fullWidth
-                  sx={{ 
-                    height: '32px', 
-                    fontSize: '0.75rem', 
+                  sx={{
+                    height: '32px',
+                    fontSize: '0.75rem',
                     backgroundColor: '#f8fafc',
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' }
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0,0,0,0.1)' },
                   }}
                 >
-                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>TODOS</MenuItem>
-                  {uniqueTallas.map(t => <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>{t}</MenuItem>)}
+                  <MenuItem value="TODOS" sx={{ fontSize: '0.75rem' }}>
+                    TODOS
+                  </MenuItem>
+                  {uniqueTallas.map((t) => (
+                    <MenuItem key={t} value={t} sx={{ fontSize: '0.75rem' }}>
+                      {t}
+                    </MenuItem>
+                  ))}
                 </Select>
               </TableCell>
               <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Código</TableCell>
-              <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>Precio</TableCell>
-              <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>Stock</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>Acciones</TableCell>
+              <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>
+                Precio
+              </TableCell>
+              <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>
+                Stock
+              </TableCell>
+              <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>
+                Acciones
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -438,39 +548,37 @@ const ProductManagementPage = () => {
                 <TableCell sx={{ fontSize: '0.85rem', color: '#2a6c8d', fontWeight: 700 }}>
                   {product.tipo || '-'}
                 </TableCell>
-                <TableCell sx={{ fontSize: '0.85rem', color: '#64748b' }}>
-                  {product.caracteristica || '-'}
-                </TableCell>
+                <TableCell sx={{ fontSize: '0.85rem', color: '#64748b' }}>{product.caracteristica || '-'}</TableCell>
                 <TableCell sx={{ fontSize: '0.85rem', color: '#0f172a', fontWeight: 500 }}>
                   {product.tela || '-'}
                 </TableCell>
-                <TableCell sx={{ fontSize: '0.85rem', color: '#0f172a' }}>
-                  {product.color || '-'}
-                </TableCell>
-                <TableCell sx={{ fontSize: '0.85rem', color: '#64748b' }}>
-                  {product.detalle || '-'}
-                </TableCell>
+                <TableCell sx={{ fontSize: '0.85rem', color: '#0f172a' }}>{product.color || '-'}</TableCell>
+                <TableCell sx={{ fontSize: '0.85rem', color: '#64748b' }}>{product.detalle || '-'}</TableCell>
                 <TableCell sx={{ fontSize: '0.85rem', color: '#2a6c8d', fontWeight: 700 }}>
                   {product.talla || '-'}
                 </TableCell>
                 <TableCell sx={{ fontFamily: 'monospace', color: '#475569' }}>{product.barCode || 'N/A'}</TableCell>
                 <TableCell align="right">
-                  <Typography variant="body2" sx={{ fontWeight: 700 }}>Bs. {formatPrice(product.price * exchangeRate)}</Typography>
-                  <Typography variant="caption" color="text.secondary">REF {formatPrice(product.price)}</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                    Bs. {formatPrice(product.price * exchangeRate)}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    REF {formatPrice(product.price)}
+                  </Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Box 
+                  <Box
                     onClick={() => handleOpenAddStockModal(product)}
-                    sx={{ 
-                      display: 'inline-flex', 
-                      px: 1.5, 
-                      py: 0.5, 
-                      borderRadius: '8px', 
+                    sx={{
+                      display: 'inline-flex',
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: '8px',
                       backgroundColor: product.stock > 0 ? 'rgba(22, 163, 74, 0.08)' : 'rgba(220, 38, 38, 0.08)',
                       color: product.stock > 0 ? '#16a34a' : '#dc2626',
                       fontWeight: 800,
                       cursor: 'pointer',
-                      '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.1)' }
+                      '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.1)' },
                     }}
                   >
                     {product.stock}
@@ -478,12 +586,34 @@ const ProductManagementPage = () => {
                 </TableCell>
                 <TableCell align="center">
                   <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                    <Button size="small" variant="outlined" onClick={() => handleOpenModal(product)} sx={{ borderRadius: '8px', textTransform: 'none' }}>
-                      Editar
-                    </Button>
-                    <Button size="small" variant="outlined" color="error" onClick={() => handleDeleteClick(product)} sx={{ borderRadius: '8px', textTransform: 'none' }}>
-                      Eliminar
-                    </Button>
+                    <Tooltip title="Añadir Stock (Entrada)">
+                      <IconButton
+                        size="small"
+                        onClick={() => handleOpenAddStockModal(product)}
+                        sx={{ color: '#16a34a', bgcolor: 'rgba(22, 163, 74, 0.08)', '&:hover': { bgcolor: 'rgba(22, 163, 74, 0.15)' } }}
+                      >
+                        <AddCircleIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Editar">
+                      <IconButton
+                        size="small"
+                        onClick={() => handleOpenModal(product)}
+                        sx={{ color: '#2a6c8d', bgcolor: 'rgba(2, 85, 165, 0.08)', '&:hover': { bgcolor: 'rgba(2, 85, 165, 0.15)' } }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Eliminar">
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => handleDeleteClick(product)}
+                        sx={{ bgcolor: 'rgba(220, 38, 38, 0.08)', '&:hover': { bgcolor: 'rgba(220, 38, 38, 0.15)' } }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </Box>
                 </TableCell>
               </TableRow>
@@ -529,103 +659,151 @@ const ProductManagementPage = () => {
 
               <Autocomplete
                 freeSolo
+                forcePopupIcon
                 options={uniqueTipos}
                 value={selectedProduct.tipo || ''}
                 onInputChange={(_, newValue) =>
-                  setSelectedProduct(prev => ({ ...prev, tipo: newValue.toUpperCase() }))
+                  setSelectedProduct((prev) => ({ ...prev, tipo: newValue.toUpperCase() }))
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label="Tipo de Prenda" variant="outlined" placeholder="Ej. FILIPINA, KIMONO..." />
+                  <TextField
+                    {...params}
+                    label="Tipo de Prenda"
+                    variant="outlined"
+                    placeholder="Ej. FILIPINA, KIMONO..."
+                  />
                 )}
               />
 
               <Autocomplete
                 freeSolo
+                forcePopupIcon
                 options={uniqueCaracteristicas}
                 value={selectedProduct.caracteristica || ''}
                 onInputChange={(_, newValue) =>
-                  setSelectedProduct(prev => ({ ...prev, caracteristica: newValue.toUpperCase() }))
+                  setSelectedProduct((prev) => ({ ...prev, caracteristica: newValue.toUpperCase() }))
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label="Característica" variant="outlined" placeholder="Ej. DAMA, CABALLERO..." />
+                  <TextField
+                    {...params}
+                    label="Característica"
+                    variant="outlined"
+                    placeholder="Ej. DAMA, CABALLERO..."
+                  />
                 )}
               />
 
               <Autocomplete
                 freeSolo
+                forcePopupIcon
                 options={uniqueTallas}
                 value={selectedProduct.talla || ''}
                 onInputChange={(_, newValue) =>
-                  setSelectedProduct(prev => ({ ...prev, talla: newValue.toUpperCase() }))
+                  setSelectedProduct((prev) => ({ ...prev, talla: newValue.toUpperCase() }))
                 }
                 renderInput={(params) => (
                   <TextField {...params} label="Talla" variant="outlined" placeholder="Ej. SS, XL, 32..." />
                 )}
               />
 
-              <TextField
-                name="detalle"
-                label="Detalle"
-                variant="outlined"
+              <Autocomplete
+                freeSolo
+                forcePopupIcon
+                options={uniqueDetalles}
                 value={selectedProduct.detalle || ''}
-                onChange={handleProductChange}
-                placeholder="Ej. MANGA CORTA, PECHERA..."
+                onInputChange={(_, newValue) =>
+                  setSelectedProduct((prev) => ({ ...prev, detalle: newValue.toUpperCase() }))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Detalle"
+                    variant="outlined"
+                    placeholder="Ej. MANGA CORTA, PECHERA..."
+                  />
+                )}
               />
 
-              <TextField
-                name="tela"
-                label="Tela"
-                variant="outlined"
+              <Autocomplete
+                freeSolo
+                forcePopupIcon
+                options={uniqueTelas}
                 value={selectedProduct.tela || ''}
-                onChange={handleProductChange}
-                placeholder="Ej. DRIL, MICROFIBRA..."
+                onInputChange={(_, newValue) =>
+                  setSelectedProduct((prev) => ({ ...prev, tela: newValue.toUpperCase() }))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Tela"
+                    variant="outlined"
+                    placeholder="Ej. DRIL, MICROFIBRA..."
+                  />
+                )}
               />
 
-              <TextField
-                name="color"
-                label="Color"
-                variant="outlined"
+              <Autocomplete
+                freeSolo
+                forcePopupIcon
+                options={uniqueColores}
                 value={selectedProduct.color || ''}
-                onChange={handleProductChange}
-                placeholder="Ej. BLANCO, AZUL..."
+                onInputChange={(_, newValue) =>
+                  setSelectedProduct((prev) => ({ ...prev, color: newValue.toUpperCase() }))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Color"
+                    variant="outlined"
+                    placeholder="Ej. BLANCO, AZUL..."
+                  />
+                )}
               />
             </Box>
 
-            <Typography variant="subtitle2" color="text.secondary" sx={{ mt: 1, fontWeight: 700, letterSpacing: '0.05em' }}>PRECIOS E INVENTARIO</Typography>
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              sx={{ mt: 1, fontWeight: 700, letterSpacing: '0.05em' }}
+            >
+              PRECIOS E INVENTARIO
+            </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
               <TextField
                 name="price"
                 label="Precio (REF)"
                 type="number"
                 variant="outlined"
-                value={selectedProduct.price || ''}
+                value={selectedProduct.price === 0 ? '' : selectedProduct.price || ''}
+                placeholder="0.00"
                 onChange={handleProductChange}
                 inputProps={{ step: '0.01', min: 0 }}
               />
               <TextField
                 name="stock"
-                label={isEditing ? "Stock Actual" : "Stock Inicial"}
+                label={isEditing ? 'Stock Actual' : 'Stock Inicial'}
                 type="number"
                 variant="outlined"
-                value={selectedProduct.stock === 0 ? '0' : (selectedProduct.stock || '')}
+                value={selectedProduct.stock === 0 || selectedProduct.stock === '0' ? '' : selectedProduct.stock || ''}
+                placeholder="0"
                 onChange={handleProductChange}
                 inputProps={{ step: '1', min: 0 }}
-                helperText={isEditing ? "Modifique la cantidad total en existencia" : "Cantidad disponible al crear"}
+                helperText={isEditing ? 'Modifique la cantidad total en existencia' : 'Cantidad disponible al crear'}
               />
             </Box>
           </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 2 }}>
-          <Button onClick={handleCloseModal} color="inherit">Cancelar</Button>
-          <Button onClick={handleSaveProduct} variant="contained" sx={{ px: 4, borderRadius: '12px', fontWeight: 700 }}>Guardar</Button>
+          <Button onClick={handleCloseModal} color="inherit">
+            Cancelar
+          </Button>
+          <Button onClick={handleSaveProduct} variant="contained" sx={{ px: 4, borderRadius: '12px', fontWeight: 700 }}>
+            Guardar
+          </Button>
         </DialogActions>
       </Dialog>
 
-      <AddStockModal
-        isOpen={addStockModalOpen}
-        onClose={handleCloseAddStockModal}
-        product={productForStockUpdate}
-      />
+      <AddStockModal isOpen={addStockModalOpen} onClose={handleCloseAddStockModal} product={productForStockUpdate} />
 
       <ConfirmDialog
         open={deleteDialogOpen}
@@ -645,7 +823,12 @@ const ProductManagementPage = () => {
         onClose={() => setSnackbar({ ...snackbar, open: false })}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} variant="filled" sx={{ width: '100%', borderRadius: '12px' }}>
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: '100%', borderRadius: '12px' }}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>

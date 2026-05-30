@@ -1,5 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Box, TextField, InputAdornment, IconButton, Button, Tooltip, Typography, Paper, Divider, Dialog, DialogTitle, DialogContent, DialogActions, Grid } from '@mui/material';
+import {
+  Box,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Button,
+  Tooltip,
+  Typography,
+  Paper,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Grid,
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import InventoryIcon from '@mui/icons-material/Inventory'; // Low Stock
@@ -139,7 +154,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
         quantity,
         grams,
         bs: bsValue,
-        usd: bsValue / exchangeRate
+        usd: bsValue / exchangeRate,
       };
     } else {
       const { bs, usd } = getBsFromQuantity();
@@ -148,7 +163,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
         quantity: qty,
         grams: qty * 1000,
         bs,
-        usd
+        usd,
       };
     }
   };
@@ -184,7 +199,6 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
     // Price in USD
     return bsAmount / exchangeRate;
   };
-
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -249,7 +263,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
               '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.25)' },
               width: 56,
               height: 56,
-              borderRadius: 2
+              borderRadius: 2,
             }}
             onClick={() => dispatch(addVenta())}
           >
@@ -281,7 +295,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
               backgroundColor: 'background.paper',
               textTransform: 'uppercase',
               color: 'text.primary',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+              boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
             },
           }}
         />
@@ -292,7 +306,11 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
         <Tooltip title="Calculadora">
           <IconButton
             onClick={() => dispatch(toggleCalculatorModal())}
-            sx={{ backgroundColor: 'rgba(0,0,0,0.05)', color: 'text.secondary', '&:hover': { backgroundColor: 'rgba(0,0,0,0.1)' } }}
+            sx={{
+              backgroundColor: 'rgba(0,0,0,0.05)',
+              color: 'text.secondary',
+              '&:hover': { backgroundColor: 'rgba(0,0,0,0.1)' },
+            }}
           >
             <CalculateIcon />
           </IconButton>
@@ -302,20 +320,18 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
       </Box>
 
       {/* Product Grid */}
-      <Box sx={{ 
-        flexGrow: 1, 
-        overflowY: 'auto', 
-        pr: 1, 
-        '&::-webkit-scrollbar': { width: '6px' }, 
-        '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: '10px' } 
-      }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflowY: 'auto',
+          pr: 1,
+          '&::-webkit-scrollbar': { width: '6px' },
+          '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: '10px' },
+        }}
+      >
         <Grid container spacing={1.5}>
           {filteredProducts.map((product) => (
-            <Grid 
-              item 
-              key={product.id} 
-              xs={12}
-            >
+            <Grid item key={product.id} xs={12}>
               <ProductCard
                 product={product}
                 isInCart={cartItems.some((item) => item.id === product.id)}
@@ -328,13 +344,10 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
       </Box>
 
       {/* Weight/Volume Input Dialog */}
-      <Dialog
-        open={weightDialogOpen}
-        onClose={() => setWeightDialogOpen(false)}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle sx={{ backgroundColor: 'primary.main', color: 'white', display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Dialog open={weightDialogOpen} onClose={() => setWeightDialogOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle
+          sx={{ backgroundColor: 'primary.main', color: 'white', display: 'flex', alignItems: 'center', gap: 1 }}
+        >
           <ScaleIcon />
           {selectedProductForWeight?.unitType === 'KG' ? 'Ingresar Peso' : 'Ingresar Volumen'}
         </DialogTitle>
@@ -345,10 +358,12 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
                 {selectedProductForWeight.name}
               </Typography>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Precio: ${selectedProductForWeight.price.toFixed(2)} / {selectedProductForWeight.unitType === 'KG' ? 'kg' : 'L'}
+                Precio: ${selectedProductForWeight.price.toFixed(2)} /{' '}
+                {selectedProductForWeight.unitType === 'KG' ? 'kg' : 'L'}
               </Typography>
               <Typography variant="body2" color="text.secondary" gutterBottom sx={{ mb: 2 }}>
-                Bs. {(selectedProductForWeight.price * exchangeRate).toFixed(2)} / {selectedProductForWeight.unitType === 'KG' ? 'kg' : 'L'}
+                Bs. {(selectedProductForWeight.price * exchangeRate).toFixed(2)} /{' '}
+                {selectedProductForWeight.unitType === 'KG' ? 'kg' : 'L'}
               </Typography>
 
               {/* Toggle Tabs for Input Mode */}
@@ -413,7 +428,11 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
                   inputProps={{ min: 0, step: 0.01 }}
                   sx={{ mb: 2 }}
                   InputProps={{
-                    endAdornment: <Typography sx={{ ml: 1, color: 'text.secondary' }}>{selectedProductForWeight.unitType === 'KG' ? 'Kg' : 'Lts'}</Typography>,
+                    endAdornment: (
+                      <Typography sx={{ ml: 1, color: 'text.secondary' }}>
+                        {selectedProductForWeight.unitType === 'KG' ? 'Kg' : 'Lts'}
+                      </Typography>
+                    ),
                   }}
                 />
               )}
@@ -443,11 +462,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ cartItems, exchangeRate
           <Button onClick={() => setWeightDialogOpen(false)} color="inherit">
             Cancelar
           </Button>
-          <Button
-            onClick={handleConfirmWeight}
-            variant="contained"
-            disabled={!isInputValid()}
-          >
+          <Button onClick={handleConfirmWeight} variant="contained" disabled={!isInputValid()}>
             Agregar al Carrito
           </Button>
         </DialogActions>

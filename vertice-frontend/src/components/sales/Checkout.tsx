@@ -38,30 +38,30 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totals }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
       {/* Customer Selection Area */}
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
           p: 1.5,
           bgcolor: '#ffffff',
           borderRadius: '16px',
           border: '1px solid #e2e8f0',
-          mb: 1
+          mb: 1,
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexGrow: 1, minWidth: 0 }}>
           {selectedCustomer ? (
-            <Chip 
-              label={selectedCustomer.name} 
-              color="primary" 
-              onDelete={handleClearCustomer} 
-              sx={{ 
-                fontWeight: 700, 
+            <Chip
+              label={selectedCustomer.name}
+              color="primary"
+              onDelete={handleClearCustomer}
+              sx={{
+                fontWeight: 700,
                 maxWidth: '100%',
                 bgcolor: '#0255A5',
-                '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' }
-              }} 
+                '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' },
+              }}
             />
           ) : (
             <Typography variant="body2" fontWeight={700} sx={{ fontStyle: 'italic', color: '#dc2626' }}>
@@ -69,16 +69,16 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totals }) => {
             </Typography>
           )}
         </Box>
-        <Button 
-          variant="text" 
-          startIcon={<PersonAddIcon />} 
+        <Button
+          variant="text"
+          startIcon={<PersonAddIcon />}
           onClick={() => setCustomerModalOpen(true)}
-          sx={{ 
-            textTransform: 'none', 
-            fontWeight: 700, 
+          sx={{
+            textTransform: 'none',
+            fontWeight: 700,
             color: '#0255A5',
             minWidth: 'fit-content',
-            ml: 1
+            ml: 1,
           }}
         >
           Cliente
@@ -108,9 +108,9 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totals }) => {
           },
           '&.Mui-disabled': {
             backgroundColor: '#e2e8f0',
-            color: '#94a3b8'
+            color: '#94a3b8',
           },
-          transition: 'all 0.2s ease-in-out'
+          transition: 'all 0.2s ease-in-out',
         }}
       >
         COBRAR

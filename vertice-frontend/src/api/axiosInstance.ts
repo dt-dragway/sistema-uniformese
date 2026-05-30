@@ -99,13 +99,13 @@ export const fetchWithAuth = async (url: string, options?: RequestInit) => {
   const token = localStorage.getItem('token');
   const baseUrl = getBaseURL();
 
-  const headers: any = {
-    ...options?.headers,
+  const headers: HeadersInit = {
+    ...(options?.headers ?? {}),
     'Content-Type': 'application/json',
   };
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
   }
 
   const response = await fetch(`${baseUrl}${url}`, {

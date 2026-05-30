@@ -3,7 +3,14 @@ import { exchangeRateService } from './ExchangeRateService';
 
 const prisma = new PrismaClient();
 
-export const addCreditPayment = async (customerId: number, amount: number, description: string, paymentMethod: string, reference?: string, userId?: number) => {
+export const addCreditPayment = async (
+  customerId: number,
+  amount: number,
+  description: string,
+  paymentMethod: string,
+  reference?: string,
+  userId?: number
+) => {
   const customer = await prisma.customer.findUnique({ where: { id: customerId } });
   if (!customer) {
     throw new Error('Customer not found');
@@ -14,12 +21,22 @@ export const addCreditPayment = async (customerId: number, amount: number, descr
     throw new Error('Exchange rate not found');
   }
 
+  // AUDIT: Link to active cash register session
+  let activeSessionId: number | undefined;
+  if (userId) {
+    const activeSession = await prisma.cashRegisterSession.findFirst({
+      where: { userId, status: 'OPEN' },
+    });
+    activeSessionId = activeSession?.id;
+  }
+
   const amountBs = amount * exchangeRate.rate;
 
   const newCreditPayment = await prisma.creditPayment.create({
     data: {
       customerId,
       userId,
+      cashRegisterSessionId: activeSessionId,
       amount,
       amountBs,
       exchangeRate: exchangeRate.rate,
@@ -41,8 +58,10 @@ export const addCreditPayment = async (customerId: number, amount: number, descr
   return { newCreditPayment, updatedCustomer };
 };
 
-export const getAllCreditPayments = async (customerId?: number) => {
-  const whereClause = customerId ? { customerId } : {};
+export const getAllCreditPayments = async (customerId?: number, sessionId?: number) => {
+  const whereClause: any = {};
+  if (customerId) whereClause.customerId = customerId;
+  if (sessionId) whereClause.cashRegisterSessionId = sessionId;
 
   const allMovements = await prisma.creditPayment.findMany({
     where: whereClause,
@@ -54,14 +73,16 @@ export const getAllCreditPayments = async (customerId?: number) => {
         select: {
           id: true,
           username: true,
-          fullname: true
-        }
-      }
-    }
+          fullname: true,
+        },
+      },
+    },
   });
 
-  const charges = allMovements.filter((m) => m.amount > 0).map(m => ({ ...m, remaining: m.amount, status: 'Pendiente' }));
-  const payments = allMovements.filter((m) => m.amount < 0).map(p => ({ ...p, available: -p.amount }));
+  const charges = allMovements
+    .filter((m) => m.amount > 0)
+    .map((m) => ({ ...m, remaining: m.amount, status: 'Pendiente' }));
+  const payments = allMovements.filter((m) => m.amount < 0).map((p) => ({ ...p, available: -p.amount }));
 
   for (const charge of charges) {
     for (const payment of payments) {
@@ -77,7 +98,8 @@ export const getAllCreditPayments = async (customerId?: number) => {
           charge.remaining = 0;
         }
 
-        if (charge.remaining <= 0) { // Use <= instead of === for floating point comparison
+        if (charge.remaining <= 0) {
+          // Use <= instead of === for floating point comparison
           charge.status = 'Pagado';
           break;
         } else {
@@ -87,9 +109,10 @@ export const getAllCreditPayments = async (customerId?: number) => {
     }
   }
 
-  const movementsWithStatus = allMovements.map(movement => {
-    if (movement.amount > 0) { // Only charges (positive amounts) get a status
-      const chargeWithStatus = charges.find(c => c.id === movement.id);
+  const movementsWithStatus = allMovements.map((movement) => {
+    if (movement.amount > 0) {
+      // Only charges (positive amounts) get a status
+      const chargeWithStatus = charges.find((c) => c.id === movement.id);
       return { ...movement, status: chargeWithStatus?.status, remaining: chargeWithStatus?.remaining };
     }
     return movement; // Payments (negative amounts) don't get a status

@@ -85,7 +85,12 @@ const SalesReportPage = () => {
     if (dateFilter === 'week') return 'Esta Semana';
     if (dateFilter === 'month') return 'Este Mes';
     if (dateFilter === 'selected_date' && selectedDate) {
-      return selectedDate.toLocaleDateString('es-VE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      return selectedDate.toLocaleDateString('es-VE', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
     }
     if (dateFilter === 'all') return 'Todas las fechas';
     return '';
@@ -206,15 +211,8 @@ const SalesReportPage = () => {
         <>
           <Box sx={{ mb: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-              <Typography variant="h6">
-                Resumen de Ventas
-              </Typography>
-              <Chip
-                label={getFilterDescription()}
-                size="small"
-                variant="outlined"
-                color="primary"
-              />
+              <Typography variant="h6">Resumen de Ventas</Typography>
+              <Chip label={getFilterDescription()} size="small" variant="outlined" color="primary" />
             </Box>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={4}>

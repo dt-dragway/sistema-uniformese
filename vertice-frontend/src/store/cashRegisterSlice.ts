@@ -51,7 +51,10 @@ export const fetchActiveSession = createAsyncThunk(
 
 export const openCashRegister = createAsyncThunk(
   'cashRegister/openCashRegister',
-  async ({ openingAmountUsd, openingAmountBs }: { openingAmountUsd: number; openingAmountBs: number }, { rejectWithValue }) => {
+  async (
+    { openingAmountUsd, openingAmountBs }: { openingAmountUsd: number; openingAmountBs: number },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await cashRegisterService.openSession(openingAmountUsd, openingAmountBs);
       return response.data;
@@ -63,7 +66,10 @@ export const openCashRegister = createAsyncThunk(
 
 export const closeCashRegister = createAsyncThunk(
   'cashRegister/closeCashRegister',
-  async ({ closingAmountUsd, closingAmountBs }: { closingAmountUsd: number; closingAmountBs: number }, { rejectWithValue }) => {
+  async (
+    { closingAmountUsd, closingAmountBs }: { closingAmountUsd: number; closingAmountBs: number },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await cashRegisterService.closeSession(closingAmountUsd, closingAmountBs);
       return response.data;
@@ -75,7 +81,10 @@ export const closeCashRegister = createAsyncThunk(
 
 export const fetchCashMovements = createAsyncThunk(
   'cashRegister/fetchCashMovements',
-  async (filters: { startDate?: string; endDate?: string; type?: string; ticketNumber?: string }, { rejectWithValue }) => {
+  async (
+    filters: { startDate?: string; endDate?: string; type?: string; ticketNumber?: string },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await cashRegisterService.getAllCashMovements(filters);
       return response.data;
@@ -94,6 +103,20 @@ export const fetchSessions = createAsyncThunk('cashRegister/fetchSessions', asyn
   }
 });
 
+export const recordServiceIncome = createAsyncThunk(
+  'cashRegister/recordServiceIncome',
+  async (
+    data: { amountUsd: number; amountBs: number; description: string; paymentMethod: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await cashRegisterService.recordServiceIncome(data);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
 
 const cashRegisterSlice = createSlice({
   name: 'cashRegister',

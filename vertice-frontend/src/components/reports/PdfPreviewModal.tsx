@@ -9,7 +9,7 @@ interface PdfPreviewModalProps {
 }
 
 const style = {
-  position: 'absolute' as 'absolute',
+  position: 'absolute' as const,
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
@@ -23,16 +23,14 @@ const style = {
 };
 
 const PdfPreviewModal = ({ open, onClose, pdfDataUri, title }: PdfPreviewModalProps) => {
-  console.log("PdfPreviewModal rendered. Props:", { open, pdfDataUri: pdfDataUri.substring(0, 50) });
+  console.log('PdfPreviewModal rendered. Props:', { open, pdfDataUri: pdfDataUri.substring(0, 50) });
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      aria-labelledby="pdf-preview-title"
-    >
+    <Modal open={open} onClose={onClose} aria-labelledby="pdf-preview-title">
       <Box sx={style}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, pb: 1, mb: 2 }}>
+        <Box
+          sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, pb: 1, mb: 2 }}
+        >
           <Typography id="pdf-preview-title" variant="h6" component="h2">
             {title}
           </Typography>
@@ -40,13 +38,7 @@ const PdfPreviewModal = ({ open, onClose, pdfDataUri, title }: PdfPreviewModalPr
             <CloseIcon />
           </IconButton>
         </Box>
-        <iframe
-          src={pdfDataUri}
-          title={title}
-          width="100%"
-          height="100%"
-          style={{ border: 'none' }}
-        />
+        <iframe src={pdfDataUri} title={title} width="100%" height="100%" style={{ border: 'none' }} />
       </Box>
     </Modal>
   );

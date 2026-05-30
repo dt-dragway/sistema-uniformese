@@ -13,16 +13,15 @@ import ExchangeRateSettingsPage from './pages/ExchangeRateSettingsPage';
 import CustomerCreditDetailsPage from './pages/CustomerCreditDetailsPage';
 import PrivateRoute from './components/PrivateRoute';
 import UserManagementPage from './pages/UserManagementPage';
+import UserConnectionsPage from './pages/UserConnectionsPage';
 import InventoryMovementsPage from './pages/InventoryMovementsPage';
-import HistorialCajaPage from './pages/HistorialCajaPage'; // Importación nueva
-import CashAdvancePage from './pages/CashAdvancePage'; // Importación nueva
-import InternalWithdrawalPage from './pages/InternalWithdrawalPage'; // Importación nueva
-import MaintenancePage from './pages/MaintenancePage'; // Importación nueva
-import PrinterSettingsPage from './pages/PrinterSettingsPage'; // Importar la nueva página
-import ServerConfigPage from './pages/ServerConfigPage'; // Configuración de servidor
-import SystemInfoPage from './pages/SystemInfoPage'; // Información del sistema
-import RechargePage from './pages/RechargePage'; // Punto de Recarga
-import AdminCajaPage from './pages/AdminCajaPage'; // Admin gestión de cajas
+import HistorialCajaPage from './pages/HistorialCajaPage';
+import InternalWithdrawalPage from './pages/InternalWithdrawalPage';
+import MaintenancePage from './pages/MaintenancePage';
+import PrinterSettingsPage from './pages/PrinterSettingsPage';
+import ServerConfigPage from './pages/ServerConfigPage';
+import SystemInfoPage from './pages/SystemInfoPage';
+import AdminCajaPage from './pages/AdminCajaPage';
 import { fetchExchangeRateAsync } from './store/appConfigSlice';
 import { fetchSavedPrinterAsync } from './store/printerSlice'; // Import the new action
 import { AppDispatch, RootState } from './store';
@@ -125,17 +124,6 @@ function App() {
           </PrivateRoute>
         }
       />
-      {/* Cash Advance Route */}
-      <Route
-        path="/cash-advance"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <CashAdvancePage />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
       {/* Internal Withdrawal Route */}
       <Route
         path="/internal-withdrawal"
@@ -143,17 +131,6 @@ function App() {
           <PrivateRoute>
             <MainLayout>
               <InternalWithdrawalPage />
-            </MainLayout>
-          </PrivateRoute>
-        }
-      />
-      {/* Recharge Point Route */}
-      <Route
-        path="/recharges"
-        element={
-          <PrivateRoute>
-            <MainLayout>
-              <RechargePage />
             </MainLayout>
           </PrivateRoute>
         }
@@ -209,6 +186,17 @@ function App() {
           <PrivateRoute>
             <MainLayout>
               <UserManagementPage />
+            </MainLayout>
+          </PrivateRoute>
+        }
+      />
+      {/* User Connections Route */}
+      <Route
+        path="/admin/connections"
+        element={
+          <PrivateRoute>
+            <MainLayout>
+              <UserConnectionsPage />
             </MainLayout>
           </PrivateRoute>
         }

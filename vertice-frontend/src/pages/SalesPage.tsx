@@ -27,18 +27,29 @@ export const SalesPage = () => {
     error: cashRegisterError,
   } = useAppSelector((state) => state.cashRegister);
 
-  const [stockNotification, setStockNotification] = useState({ open: false, message: '', severity: 'error' as 'error' | 'warning' | 'info' | 'success' });
+  const [stockNotification, setStockNotification] = useState({
+    open: false,
+    message: '',
+    severity: 'error' as 'error' | 'warning' | 'info' | 'success',
+  });
 
   const activeVenta = ventas.find((t) => t.id === activeVentaId);
   const cartItems = activeVenta?.items || [];
 
-  const addProductToCart = useCallback((product: Product, quantity: number = 1) => {
-    if (product.stock <= 0) {
-      setStockNotification({ open: true, message: 'No se puede agregar el producto. No hay existencias disponibles.', severity: 'error' });
-      return;
-    }
-    dispatch(addProductToCartAction({ product, quantity }));
-  }, [dispatch]);
+  const addProductToCart = useCallback(
+    (product: Product, quantity: number = 1) => {
+      if (product.stock <= 0) {
+        setStockNotification({
+          open: true,
+          message: 'No se puede agregar el producto. No hay existencias disponibles.',
+          severity: 'error',
+        });
+        return;
+      }
+      dispatch(addProductToCartAction({ product, quantity }));
+    },
+    [dispatch]
+  );
 
   const [efectivo] = useState<number>(0); // This will be moved later
   const [barcode, setBarcode] = useState('');
@@ -152,26 +163,30 @@ export const SalesPage = () => {
   }
 
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      flexDirection: { xs: 'column', md: 'row' }, 
-      flexGrow: 1, 
-      gap: 2, 
-      minHeight: 0, 
-      height: 'calc(100vh - 100px)', // Occupy full height minus header/footer
-      overflow: 'hidden',
-      bgcolor: '#ffffff', // Explicit solid white
-      p: 2
-    }}>
-      {/* Columna Izquierda: Catálogo de Productos */}
-      <Box sx={{ 
-        flex: { md: '1 1 65%' }, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        minWidth: 0, 
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        flexGrow: 1,
+        gap: 2,
         minHeight: 0,
-        height: '100%'
-      }}>
+        height: 'calc(100vh - 100px)', // Occupy full height minus header/footer
+        overflow: 'hidden',
+        bgcolor: '#ffffff', // Explicit solid white
+        p: 2,
+      }}
+    >
+      {/* Columna Izquierda: Catálogo de Productos */}
+      <Box
+        sx={{
+          flex: { md: '1 1 65%' },
+          display: 'flex',
+          flexDirection: 'column',
+          minWidth: 0,
+          minHeight: 0,
+          height: '100%',
+        }}
+      >
         <ProductCatalog cartItems={cartItems} exchangeRate={exchangeRate} onProductSelect={addProductToCart} />
       </Box>
 
@@ -187,7 +202,7 @@ export const SalesPage = () => {
           height: '100%',
           borderRadius: '20px',
           overflow: 'hidden',
-          border: '1px solid rgba(0,0,0,0.05)'
+          border: '1px solid rgba(0,0,0,0.05)',
         }}
       >
         <Venta exchangeRate={exchangeRate} totals={totals} />

@@ -34,12 +34,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, exchangeRa
         '&:hover': {
           backgroundColor: isInCart ? '#e3f0f7' : '#f5f5f5',
           transform: 'translateY(-2px)',
-          boxShadow: theme.shadows[3]
+          boxShadow: theme.shadows[3],
         },
       }}
       onClick={() => onProductSelect(product)}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 48, height: 48, bgcolor: '#f0f0f0', borderRadius: 2, mr: 2, position: 'relative' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 48,
+          height: 48,
+          bgcolor: '#f0f0f0',
+          borderRadius: 2,
+          mr: 2,
+          position: 'relative',
+        }}
+      >
         <Inventory2Icon sx={{ color: '#666666' }} />
         {isInCart && (
           <Box
@@ -54,7 +66,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, exchangeRa
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+              boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
             }}
           >
             <ShoppingCartIcon sx={{ fontSize: 12, color: 'white' }} />
@@ -63,7 +75,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, exchangeRa
       </Box>
 
       <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography variant="body1" fontWeight="bold" sx={{ color: '#000000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <Typography
+          variant="body1"
+          fontWeight="bold"
+          sx={{ color: '#000000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+        >
           {truncatedName.toUpperCase()}
         </Typography>
         <Typography variant="caption" sx={{ color: '#475569', display: 'block', mt: 0.5, fontWeight: 700 }}>

@@ -108,20 +108,32 @@ const cartSlice = createSlice({
         activeVenta.items.push({ ...product, quantity });
       }
     },
-    addRechargeToCart: (state, action: PayloadAction<{
-      serviceName: string;
-      serviceId: number;
-      phoneNumber: string;
-      amountBs: number;
-      commissionPercent: number;
-      commissionBs: number;
-      totalChargeBs: number;
-      priceUsd: number; // Total en USD (incluyendo comisión)
-    }>) => {
+    addRechargeToCart: (
+      state,
+      action: PayloadAction<{
+        serviceName: string;
+        serviceId: number;
+        phoneNumber: string;
+        amountBs: number;
+        commissionPercent: number;
+        commissionBs: number;
+        totalChargeBs: number;
+        priceUsd: number; // Total en USD (incluyendo comisión)
+      }>
+    ) => {
       const activeVenta = state.ventas.find((venta) => venta.id === state.activeVentaId);
       if (!activeVenta) return;
 
-      const { serviceName, serviceId, phoneNumber, amountBs, commissionPercent, commissionBs, totalChargeBs, priceUsd } = action.payload;
+      const {
+        serviceName,
+        serviceId,
+        phoneNumber,
+        amountBs,
+        commissionPercent,
+        commissionBs,
+        totalChargeBs,
+        priceUsd,
+      } = action.payload;
 
       // Crear item de recarga con ID negativo
       const rechargeItem: CartItem = {
@@ -184,14 +196,17 @@ const cartSlice = createSlice({
         itemToUpdate.price = newPrice;
       }
     },
-    addCashAdvanceToCart: (state, action: PayloadAction<{
-      amountToGive: number;
-      commissionPercent: number;
-      commissionBs: number;
-      totalChargeBs: number;
-      paymentMethod: string;
-      priceUsd: number; // Total en USD
-    }>) => {
+    addCashAdvanceToCart: (
+      state,
+      action: PayloadAction<{
+        amountToGive: number;
+        commissionPercent: number;
+        commissionBs: number;
+        totalChargeBs: number;
+        paymentMethod: string;
+        priceUsd: number; // Total en USD
+      }>
+    ) => {
       const activeVenta = state.ventas.find((venta) => venta.id === state.activeVentaId);
       if (!activeVenta) return;
 

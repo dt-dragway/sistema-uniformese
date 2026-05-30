@@ -144,8 +144,8 @@ const UserManagementPage = () => {
                   transition: 'transform 0.2s',
                   '&:hover': {
                     transform: 'translateY(-4px)',
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.4)'
-                  }
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                  },
                 }}
               >
                 <CardContent sx={{ flexGrow: 1, textAlign: 'center', pt: 4 }}>
@@ -155,10 +155,14 @@ const UserManagementPage = () => {
                       height: 80,
                       margin: '0 auto 16px',
                       bgcolor: user.role === 'ADMIN' ? 'error.main' : 'primary.main',
-                      boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
+                      boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
                     }}
                   >
-                    {user.role === 'ADMIN' ? <AdminPanelSettingsIcon sx={{ fontSize: 40 }} /> : <PointOfSaleIcon sx={{ fontSize: 40 }} />}
+                    {user.role === 'ADMIN' ? (
+                      <AdminPanelSettingsIcon sx={{ fontSize: 40 }} />
+                    ) : (
+                      <PointOfSaleIcon sx={{ fontSize: 40 }} />
+                    )}
                   </Avatar>
                   <Typography variant="h6" fontWeight="bold" sx={{ mb: 0.5 }}>
                     {user.fullname || user.username}
@@ -213,7 +217,9 @@ const UserManagementPage = () => {
                 <TableRow key={user.id} hover>
                   <TableCell>{user.id}</TableCell>
                   <TableCell sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Avatar sx={{ width: 30, height: 30, bgcolor: user.role === 'ADMIN' ? 'error.main' : 'primary.main' }}>
+                    <Avatar
+                      sx={{ width: 30, height: 30, bgcolor: user.role === 'ADMIN' ? 'error.main' : 'primary.main' }}
+                    >
                       {(user.fullname || user.username).charAt(0).toUpperCase()}
                     </Avatar>
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -264,12 +270,7 @@ const UserManagementPage = () => {
         labelRowsPerPage="Usuarios por página:"
       />
 
-      <UserFormModal
-        open={isModalOpen}
-        onClose={handleCloseModal}
-        onSave={handleSaveUser}
-        userToEdit={userToEdit}
-      />
+      <UserFormModal open={isModalOpen} onClose={handleCloseModal} onSave={handleSaveUser} userToEdit={userToEdit} />
     </Box>
   );
 };

@@ -33,28 +33,31 @@ export const login = createAsyncThunk(
         message: err.message,
         code: err.code,
         response: err.response?.data,
-        status: err.response?.status
+        status: err.response?.status,
       });
       return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
 
-export const fetchUserFromToken = createAsyncThunk('auth/fetchUserFromToken', async (_, { getState, rejectWithValue }) => {
-  try {
-    const token = (getState() as { auth: AuthState }).auth.token;
-    if (!token) {
-      return rejectWithValue('No token found');
+export const fetchUserFromToken = createAsyncThunk(
+  'auth/fetchUserFromToken',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = (getState() as { auth: AuthState }).auth.token;
+      if (!token) {
+        return rejectWithValue('No token found');
+      }
+      const response = await axios.get(`${getApiUrl()}/auth/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error: unknown) {
+      const err = error as AxiosError<{ message: string }>;
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
-    const response = await axios.get(`${getApiUrl()}/auth/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error: unknown) {
-    const err = error as AxiosError<{ message: string }>;
-    return rejectWithValue(err.response?.data?.message || err.message);
   }
-});
+);
 
 const authSlice = createSlice({
   name: 'auth',
@@ -76,7 +79,13 @@ const authSlice = createSlice({
       })
       .addCase(
         login.fulfilled,
-        (state, action: PayloadAction<{ user: { id: number; username: string; role: string; fullname?: string | null }; token: string }>) => {
+        (
+          state,
+          action: PayloadAction<{
+            user: { id: number; username: string; role: string; fullname?: string | null };
+            token: string;
+          }>
+        ) => {
           state.loading = false;
           state.isAuthenticated = true;
           state.user = action.payload.user;
@@ -96,7 +105,10 @@ const authSlice = createSlice({
       })
       .addCase(
         fetchUserFromToken.fulfilled,
-        (state, action: PayloadAction<{ user: { id: number; username: string; role: string; fullname?: string | null } }>) => {
+        (
+          state,
+          action: PayloadAction<{ user: { id: number; username: string; role: string; fullname?: string | null } }>
+        ) => {
           state.loading = false;
           state.isAuthenticated = true;
           state.user = action.payload.user;

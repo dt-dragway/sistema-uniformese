@@ -37,19 +37,16 @@ export const updateProduct = createAsyncThunk('products/updateProduct', async (p
   return response.data;
 });
 
-export const deleteProduct = createAsyncThunk(
-  'products/deleteProduct',
-  async (id: number, { rejectWithValue }) => {
-    try {
-      await productService.deleteProduct(id);
-      return id;
-    } catch (error: any) {
-      // Extract error message from server response
-      const message = error.response?.data?.message || 'Error al eliminar el producto';
-      return rejectWithValue(message);
-    }
+export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id: number, { rejectWithValue }) => {
+  try {
+    await productService.deleteProduct(id);
+    return id;
+  } catch (error: any) {
+    // Extract error message from server response
+    const message = error.response?.data?.message || 'Error al eliminar el producto';
+    return rejectWithValue(message);
   }
-);
+});
 
 const productsSlice = createSlice({
   name: 'products',
@@ -103,7 +100,7 @@ const productsSlice = createSlice({
         state.error = null;
       })
       .addCase(deleteProduct.rejected, (state, action) => {
-        state.error = action.payload as string || 'Error al eliminar el producto';
+        state.error = (action.payload as string) || 'Error al eliminar el producto';
       });
   },
 });
@@ -115,32 +112,29 @@ const selectAllProducts = (state: RootState) => state.products.products;
 const selectSalesFilters = (state: RootState) => state.sales;
 
 // Crear un índice en memoria para búsqueda rápida O(1)
-const selectProductSearchIndex = createSelector(
-  [selectAllProducts],
-  (products) => {
-    const nameIndex = new Map<string, Product[]>();
-    const barcodeIndex = new Map<string, Product>();
+const selectProductSearchIndex = createSelector([selectAllProducts], (products) => {
+  const nameIndex = new Map<string, Product[]>();
+  const barcodeIndex = new Map<string, Product>();
 
-    products.forEach((product) => {
-      // Indexar por palabras del nombre (para búsqueda parcial rápida)
-      const words = product.name.toLowerCase().split(/\s+/);
-      words.forEach((word) => {
-        if (word.length >= 2) {
-          const existing = nameIndex.get(word) || [];
-          existing.push(product);
-          nameIndex.set(word, existing);
-        }
-      });
-
-      // Indexar por código de barras (búsqueda exacta)
-      if (product.barCode) {
-        barcodeIndex.set(product.barCode, product);
+  products.forEach((product) => {
+    // Indexar por palabras del nombre (para búsqueda parcial rápida)
+    const words = product.name.toLowerCase().split(/\s+/);
+    words.forEach((word) => {
+      if (word.length >= 2) {
+        const existing = nameIndex.get(word) || [];
+        existing.push(product);
+        nameIndex.set(word, existing);
       }
     });
 
-    return { nameIndex, barcodeIndex, products };
-  }
-);
+    // Indexar por código de barras (búsqueda exacta)
+    if (product.barCode) {
+      barcodeIndex.set(product.barCode, product);
+    }
+  });
+
+  return { nameIndex, barcodeIndex, products };
+});
 
 // Memoized selector for filtered products - OPTIMIZADO para respuesta instantánea
 export const selectFilteredProducts = createSelector(
@@ -170,21 +164,21 @@ export const selectFilteredProducts = createSelector(
 
     if (normalizedSearch.length >= 2) {
       // Buscar en el índice de palabras
-      const words = normalizedSearch.split(/\s+/).filter(w => w.length >= 2);
+      const words = normalizedSearch.split(/\s+/).filter((w) => w.length >= 2);
       if (words.length > 0) {
         // Intersección de resultados para múltiples palabras
-        let matchSets = words.map(word => {
+        const matchSets = words.map((word) => {
           const matches = new Set<Product>();
           nameIndex.forEach((prods, key) => {
             if (key.includes(word)) {
-              prods.forEach(p => matches.add(p));
+              prods.forEach((p) => matches.add(p));
             }
           });
           return matches;
         });
 
         // También incluir matches por barcode parcial
-        products.forEach(p => {
+        products.forEach((p) => {
           if (p.barCode?.includes(searchTerm.trim())) {
             matchSets[0]?.add(p);
           }
@@ -194,18 +188,15 @@ export const selectFilteredProducts = createSelector(
           candidateProducts = Array.from(matchSets[0]);
         } else {
           // Intersección de todos los sets
-          candidateProducts = Array.from(matchSets[0]).filter(p =>
-            matchSets.slice(1).every(set => set.has(p))
-          );
+          candidateProducts = Array.from(matchSets[0]).filter((p) => matchSets.slice(1).every((set) => set.has(p)));
         }
       } else {
         candidateProducts = products;
       }
     } else if (normalizedSearch.length > 0) {
       // Búsqueda corta: filtro lineal pero rápido
-      candidateProducts = products.filter(p =>
-        p.name.toLowerCase().includes(normalizedSearch) ||
-        p.barCode?.includes(searchTerm.trim())
+      candidateProducts = products.filter(
+        (p) => p.name.toLowerCase().includes(normalizedSearch) || p.barCode?.includes(searchTerm.trim())
       );
     } else {
       candidateProducts = products;
@@ -213,7 +204,7 @@ export const selectFilteredProducts = createSelector(
 
     // Aplicar quick filter si existe
     if (quickFilter) {
-      return candidateProducts.filter(p => matchesQuickFilter(p, quickFilter));
+      return candidateProducts.filter((p) => matchesQuickFilter(p, quickFilter));
     }
 
     return candidateProducts;

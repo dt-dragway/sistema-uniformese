@@ -1,0 +1,36 @@
+services:
+  # Base de Datos PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: vertice-db
+    restart: always
+    environment:
+      POSTGRES_USER: user_admin
+      POSTGRES_PASSWORD: password_segura_123
+      POSTGRES_DB: vertice_pos_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - vertice_db_data:/var/lib/postgresql/data
+
+  # Servidor API + Frontend (Vértice POS)
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vertice-api
+    restart: always
+    depends_on:
+      - db
+    environment:
+      # URL de conexión para Prisma (usa el nombre del servicio 'db')
+      DATABASE_URL: "postgresql://user_admin:password_segura_123@db:5432/vertice_pos_db?schema=public"
+      PORT: 3000
+      JWT_SECRET: "cambiar_esto_por_una_clave_larga_y_segura"
+      FRONTEND_PATH: "./vertice-frontend/dist"
+      CORS_ORIGINS: "*"
+    ports:
+      - "3000:3000"
+
+volumes:
+  vertice_db_data:

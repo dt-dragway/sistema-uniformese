@@ -113,7 +113,7 @@ class ProductService {
     });
 
     // Return products in the order of most sold
-    return productIds.map(productId => products.find(p => p.id === productId)).filter((p): p is Product => !!p);
+    return productIds.map((productId) => products.find((p) => p.id === productId)).filter((p): p is Product => !!p);
   }
 }
 

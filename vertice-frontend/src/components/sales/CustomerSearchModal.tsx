@@ -57,14 +57,14 @@ const CustomerSearchModal: React.FC<CustomerSearchModalProps> = ({ open, onClose
   };
 
   const filteredCustomers = customers.filter(
-    (c) => 
-      c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    (c) =>
+      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (c.cedula && c.cedula.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
-    <Dialog 
-      open={open} 
+    <Dialog
+      open={open}
       onClose={onClose}
       maxWidth="sm"
       fullWidth
@@ -72,21 +72,27 @@ const CustomerSearchModal: React.FC<CustomerSearchModalProps> = ({ open, onClose
         sx: {
           borderRadius: '24px',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-          overflow: 'hidden'
-        }
+          overflow: 'hidden',
+        },
       }}
     >
-      <DialogTitle sx={{ 
-        backgroundColor: '#2a6c8d', 
-        color: 'white', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        p: 3
-      }}>
+      <DialogTitle
+        sx={{
+          backgroundColor: '#2a6c8d',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          p: 3,
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <SearchIcon />
-          <Typography variant="h6" fontWeight={800} sx={{ fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <Typography
+            variant="h6"
+            fontWeight={800}
+            sx={{ fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}
+          >
             Buscar Cliente
           </Typography>
         </Box>
@@ -110,10 +116,10 @@ const CustomerSearchModal: React.FC<CustomerSearchModalProps> = ({ open, onClose
                   <SearchIcon color="primary" />
                 </InputAdornment>
               ),
-              sx: { 
+              sx: {
                 borderRadius: '16px',
-                bgcolor: '#ffffff'
-              }
+                bgcolor: '#ffffff',
+              },
             }}
           />
           <Button
@@ -128,7 +134,7 @@ const CustomerSearchModal: React.FC<CustomerSearchModalProps> = ({ open, onClose
               textTransform: 'none',
               minWidth: 'fit-content',
               boxShadow: '0 4px 6px -1px rgba(2, 85, 165, 0.3)',
-              '&:hover': { backgroundColor: '#014484' }
+              '&:hover': { backgroundColor: '#014484' },
             }}
           >
             Nuevo
@@ -155,12 +161,8 @@ const CustomerSearchModal: React.FC<CustomerSearchModalProps> = ({ open, onClose
           ) : (
             <List disablePadding>
               {filteredCustomers.map((customer) => (
-                <ListItem 
-                  key={customer.id} 
-                  disablePadding 
-                  sx={{ mb: 1 }}
-                >
-                  <ListItemButton 
+                <ListItem key={customer.id} disablePadding sx={{ mb: 1 }}>
+                  <ListItemButton
                     onClick={() => handleSelectCustomer(customer)}
                     sx={{
                       borderRadius: '16px',
@@ -171,18 +173,20 @@ const CustomerSearchModal: React.FC<CustomerSearchModalProps> = ({ open, onClose
                       '&:hover': {
                         bgcolor: 'rgba(2, 85, 165, 0.04)',
                         borderColor: '#2a6c8d',
-                        transform: 'translateX(4px)'
-                      }
+                        transform: 'translateX(4px)',
+                      },
                     }}
                   >
                     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                      <Box sx={{ 
-                        p: 1.2, 
-                        bgcolor: 'rgba(2, 85, 165, 0.08)', 
-                        borderRadius: '12px', 
-                        mr: 2,
-                        display: 'flex'
-                      }}>
+                      <Box
+                        sx={{
+                          p: 1.2,
+                          bgcolor: 'rgba(2, 85, 165, 0.08)',
+                          borderRadius: '12px',
+                          mr: 2,
+                          display: 'flex',
+                        }}
+                      >
                         <PersonIcon sx={{ color: '#2a6c8d' }} />
                       </Box>
                       <Box sx={{ flexGrow: 1 }}>
@@ -205,7 +209,7 @@ const CustomerSearchModal: React.FC<CustomerSearchModalProps> = ({ open, onClose
           )}
         </Box>
       </DialogContent>
-      
+
       <CustomerFormModal open={isCustomerFormModalOpen} onClose={() => setIsCustomerFormModalOpen(false)} />
     </Dialog>
   );

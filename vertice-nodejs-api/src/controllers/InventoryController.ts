@@ -31,12 +31,7 @@ export const createMerchandiseEntry = async (req: Request, res: Response) => {
     if (!productId || !quantity || !cost) {
       return res.status(400).send('Missing required fields: productId, quantity, cost');
     }
-    const entry = await inventoryService.createMerchandiseEntry(
-      productId,
-      quantity,
-      cost,
-      supplier
-    );
+    const entry = await inventoryService.createMerchandiseEntry(productId, quantity, cost, supplier);
     res.status(201).json(entry);
   } catch (error) {
     console.error('Error creating merchandise entry:', error);
@@ -45,15 +40,25 @@ export const createMerchandiseEntry = async (req: Request, res: Response) => {
 };
 
 export const createInternalWithdrawal = async (req: Request, res: Response) => {
+  // ... existing logic ...
+};
+
+export const getHistoricalStock = async (req: Request, res: Response) => {
   try {
-    const { items, reason } = req.body;
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return res.status(400).send('Invalid items data');
+    const { date } = req.query;
+    if (!date) {
+      return res.status(400).send('Date parameter is required');
     }
-    const result = await inventoryService.createInternalWithdrawal(items, reason || 'Consumo personal');
-    res.status(201).json(result);
+
+    const targetDate = new Date(date as string);
+    if (isNaN(targetDate.getTime())) {
+      return res.status(400).send('Invalid date format');
+    }
+
+    const report = await inventoryService.getStockAtDate(targetDate);
+    res.json(report);
   } catch (error) {
-    console.error('Error creating internal withdrawal:', error);
-    res.status(500).send('Error creating internal withdrawal');
+    console.error('Error fetching historical stock:', error);
+    res.status(500).send('Error fetching historical stock');
   }
 };

@@ -17,11 +17,11 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
 
   const openingAmountUsd = closingPreviewData?.openingAmountUsd || 0;
   const openingAmountBs = closingPreviewData?.openingAmountBs || 0;
-  
+
   const calculatedCashSalesUsd = closingPreviewData?.calculatedCashSalesUsd || 0;
   const calculatedCashSalesBs = closingPreviewData?.calculatedCashSalesBs || 0;
   const calculatedElectronicSalesBs = closingPreviewData?.calculatedElectronicSalesBs || 0;
-  
+
   const calculatedCreditSalesUsd = closingPreviewData?.calculatedCreditSalesUsd || 0;
   const calculatedDebtPaymentsUsd = closingPreviewData?.calculatedDebtPaymentsUsd || 0;
   const calculatedDebtPaymentsBs = closingPreviewData?.calculatedDebtPaymentsBs || 0;
@@ -67,21 +67,50 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
     }
 
     if (!closingPreviewData) {
-      return <Typography variant="body2" color="error">No hay información de sesión para mostrar.</Typography>;
+      return (
+        <Typography variant="body2" color="error">
+          No hay información de sesión para mostrar.
+        </Typography>
+      );
     }
-    
+
     return (
       <>
         <Box mb={2} textAlign="left">
-          <Typography variant="subtitle2" sx={{ color: '#2a6c8d', fontWeight: 'bold', mb: 1, fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>RESUMEN DE EFECTIVO (EN GAVETA)</Typography>
-          <Typography variant="body2" sx={{ color: '#475569' }}>Apertura: ${openingAmountUsd.toFixed(2)} / Bs. {openingAmountBs.toFixed(2)}</Typography>
-          <Typography variant="body2" sx={{ color: '#475569' }}>Ventas Efectivo: ${calculatedCashSalesUsd.toFixed(2)} / Bs. {calculatedCashSalesBs.toFixed(2)}</Typography>
-          <Typography variant="body2" sx={{ color: '#475569' }}>Cobranza Efectivo: ${calculatedDebtPaymentsUsd.toFixed(2)} / Bs. {calculatedDebtPaymentsBs.toFixed(2)}</Typography>
-          
+          <Typography
+            variant="subtitle2"
+            sx={{
+              color: '#2a6c8d',
+              fontWeight: 'bold',
+              mb: 1,
+              fontFamily: '"Outfit", sans-serif',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
+            RESUMEN DE EFECTIVO (EN GAVETA)
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#475569' }}>
+            Apertura: ${openingAmountUsd.toFixed(2)} / Bs. {openingAmountBs.toFixed(2)}
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#475569' }}>
+            Ventas Efectivo: ${calculatedCashSalesUsd.toFixed(2)} / Bs. {calculatedCashSalesBs.toFixed(2)}
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#475569' }}>
+            Cobranza Efectivo: ${calculatedDebtPaymentsUsd.toFixed(2)} / Bs. {calculatedDebtPaymentsBs.toFixed(2)}
+          </Typography>
+
           <Divider sx={{ my: 2, borderColor: 'rgba(0,0,0,0.08)' }} />
-          
-          <Typography variant="subtitle2" sx={{ color: '#16a34a', fontWeight: 'bold', mt: 2, mb: 1, fontFamily: '"Outfit", sans-serif' }}>RESUMEN ELECTRÓNICO (EN BANCO)</Typography>
-          <Typography variant="body2" sx={{ color: '#475569' }}>Ventas / Abonos Electrónicos: Bs. {calculatedElectronicSalesBs.toFixed(2)}</Typography>
+
+          <Typography
+            variant="subtitle2"
+            sx={{ color: '#16a34a', fontWeight: 'bold', mt: 2, mb: 1, fontFamily: '"Outfit", sans-serif' }}
+          >
+            RESUMEN ELECTRÓNICO (EN BANCO)
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#475569' }}>
+            Ventas / Abonos Electrónicos: Bs. {calculatedElectronicSalesBs.toFixed(2)}
+          </Typography>
 
           <Box sx={{ mt: 3, p: 2.5, bgcolor: '#f8fafc', borderRadius: '16px', border: '1px solid #edf2f7' }}>
             <Typography variant="body1" sx={{ color: '#0f172a', fontWeight: 800 }}>
@@ -109,7 +138,7 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
               '& fieldset': { borderColor: '#e2e8f0' },
               '&:hover fieldset': { borderColor: '#cbd5e1' },
               '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
-            }
+            },
           }}
         />
         <TextField
@@ -128,19 +157,19 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
               '& fieldset': { borderColor: '#e2e8f0' },
               '&:hover fieldset': { borderColor: '#cbd5e1' },
               '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
-            }
+            },
           }}
         />
 
         {error && (
-          <Alert 
-            severity="error" 
-            sx={{ 
-              mt: 2, 
+          <Alert
+            severity="error"
+            sx={{
+              mt: 2,
               borderRadius: '12px',
               backgroundColor: '#fef2f2',
               color: '#b91c1c',
-              border: '1px solid #fee2e2'
+              border: '1px solid #fee2e2',
             }}
           >
             {error}
@@ -167,23 +196,34 @@ export const CloseCashRegisterModal: React.FC<CloseCashRegisterModalProps> = ({ 
           border: '1px solid rgba(0, 0, 0, 0.05)',
         }}
       >
-        <Typography variant="h5" component="h2" mb={3} sx={{ fontFamily: '"Outfit", sans-serif', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <Typography
+          variant="h5"
+          component="h2"
+          mb={3}
+          sx={{
+            fontFamily: '"Outfit", sans-serif',
+            fontWeight: 900,
+            color: '#0f172a',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+          }}
+        >
           Cerrar Caja
         </Typography>
         {renderContent()}
         <Box mt={4} display="flex" gap={2}>
-          <Button 
+          <Button
             fullWidth
-            variant="outlined" 
-            onClick={onClose} 
+            variant="outlined"
+            onClick={onClose}
             disabled={loading}
-            sx={{ 
-              borderRadius: '12px', 
-              py: 1.5, 
-              textTransform: 'none', 
+            sx={{
+              borderRadius: '12px',
+              py: 1.5,
+              textTransform: 'none',
               fontWeight: 600,
               color: '#64748b',
-              borderColor: '#e2e8f0'
+              borderColor: '#e2e8f0',
             }}
           >
             Cancelar

@@ -1,5 +1,4 @@
-
-import { User } from "./User";
+import { User } from './User';
 
 export interface CashRegisterSession {
   id: number;

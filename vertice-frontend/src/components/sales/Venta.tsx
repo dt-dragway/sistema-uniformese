@@ -1,5 +1,21 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Box, Typography, List, ListItem, IconButton, Tabs, Tab, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, InputAdornment, Chip } from '@mui/material';
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  IconButton,
+  Tabs,
+  Tab,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  InputAdornment,
+  Chip,
+} from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -10,7 +26,14 @@ import PriceChangeIcon from '@mui/icons-material/PriceChange';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
-import { switchVenta, clearVenta, removeVenta, updateCartItemQuantity, removeProductFromCart, updateCartItemPrice } from '../../store/cartSlice';
+import {
+  switchVenta,
+  clearVenta,
+  removeVenta,
+  updateCartItemQuantity,
+  removeProductFromCart,
+  updateCartItemPrice,
+} from '../../store/cartSlice';
 import { UnitType } from '../../models/Product';
 import Checkout from './Checkout';
 
@@ -136,12 +159,12 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
               color: '#64748b',
               '&.Mui-selected': {
                 color: '#2a6c8d',
-              }
+              },
             },
             '& .MuiTabs-indicator': {
               backgroundColor: '#2a6c8d',
               height: 3,
-            }
+            },
           }}
         >
           {ventas.map((venta) => (
@@ -155,10 +178,10 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                     size="small"
                     component="div"
                     onClick={(e) => handleCloseVenta(e, venta.id)}
-                    sx={{ 
-                      ml: 1, 
+                    sx={{
+                      ml: 1,
                       p: 0.2,
-                      '&:hover': { color: '#dc2626', bgcolor: 'rgba(220, 38, 38, 0.08)' } 
+                      '&:hover': { color: '#dc2626', bgcolor: 'rgba(220, 38, 38, 0.08)' },
                     }}
                   >
                     <CloseIcon sx={{ fontSize: 16 }} />
@@ -171,14 +194,27 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
       </Box>
 
       {/* Cart Summary Header */}
-      <Box sx={{ p: 2, borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#ffffff' }}>
-        <Typography variant="subtitle1" fontWeight={800} sx={{ color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+      <Box
+        sx={{
+          p: 2,
+          borderBottom: '1px solid #f1f5f9',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          bgcolor: '#ffffff',
+        }}
+      >
+        <Typography
+          variant="subtitle1"
+          fontWeight={800}
+          sx={{ color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}
+        >
           Carrito
         </Typography>
-        <Chip 
-          label={`${cartItems.length} items`} 
-          size="small" 
-          sx={{ fontWeight: 700, bgcolor: 'rgba(2, 85, 165, 0.08)', color: '#2a6c8d' }} 
+        <Chip
+          label={`${cartItems.length} items`}
+          size="small"
+          sx={{ fontWeight: 700, bgcolor: 'rgba(2, 85, 165, 0.08)', color: '#2a6c8d' }}
         />
       </Box>
 
@@ -218,7 +254,7 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
           cartItems.map((item) => {
             const lineTotalBs = item.price * item.quantity * exchangeRate;
             const lineTotalUsd = item.price * item.quantity;
-            
+
             // RECHARGE RENDER
             if (item.isRecharge && item.rechargeData) {
               return (
@@ -233,11 +269,13 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                     border: '1px solid rgba(255, 152, 0, 0.15)',
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'stretch'
+                    alignItems: 'stretch',
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 1 }}>
-                    <Box sx={{ p: 1, bgcolor: 'rgba(255, 152, 0, 0.1)', borderRadius: '12px', mr: 1.5, display: 'flex' }}>
+                    <Box
+                      sx={{ p: 1, bgcolor: 'rgba(255, 152, 0, 0.1)', borderRadius: '12px', mr: 1.5, display: 'flex' }}
+                    >
                       <PhoneAndroidIcon sx={{ color: '#ff9800', fontSize: 20 }} />
                     </Box>
                     <Box sx={{ flexGrow: 1 }}>
@@ -245,7 +283,11 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                         <Typography variant="body2" fontWeight={700} sx={{ color: '#ff9800' }}>
                           {item.rechargeData.serviceName}
                         </Typography>
-                        <Chip label="Recarga" size="small" sx={{ bgcolor: '#ff9800', color: 'white', height: 18, fontSize: '0.6rem', fontWeight: 800 }} />
+                        <Chip
+                          label="Recarga"
+                          size="small"
+                          sx={{ bgcolor: '#ff9800', color: 'white', height: 18, fontSize: '0.6rem', fontWeight: 800 }}
+                        />
                       </Box>
                       <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600 }}>
                         {item.rechargeData.phoneNumber}
@@ -290,11 +332,13 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                     border: '1px solid rgba(76, 175, 80, 0.15)',
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'stretch'
+                    alignItems: 'stretch',
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 1 }}>
-                    <Box sx={{ p: 1, bgcolor: 'rgba(76, 175, 80, 0.1)', borderRadius: '12px', mr: 1.5, display: 'flex' }}>
+                    <Box
+                      sx={{ p: 1, bgcolor: 'rgba(76, 175, 80, 0.1)', borderRadius: '12px', mr: 1.5, display: 'flex' }}
+                    >
                       <PriceChangeIcon sx={{ color: '#4caf50', fontSize: 20 }} />
                     </Box>
                     <Box sx={{ flexGrow: 1 }}>
@@ -302,7 +346,11 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                         <Typography variant="body2" fontWeight={700} sx={{ color: '#4caf50' }}>
                           Avance Efectivo
                         </Typography>
-                        <Chip label="Avance" size="small" sx={{ bgcolor: '#4caf50', color: 'white', height: 18, fontSize: '0.6rem', fontWeight: 800 }} />
+                        <Chip
+                          label="Avance"
+                          size="small"
+                          sx={{ bgcolor: '#4caf50', color: 'white', height: 18, fontSize: '0.6rem', fontWeight: 800 }}
+                        />
                       </Box>
                       <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600 }}>
                         {item.cashAdvanceData.paymentMethod}
@@ -318,7 +366,8 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 6 }}>
                     <Typography variant="caption" color="text.secondary">
-                      Entregado: Bs. {item.cashAdvanceData.amountToGive.toFixed(2)} + {item.cashAdvanceData.commissionPercent}% com.
+                      Entregado: Bs. {item.cashAdvanceData.amountToGive.toFixed(2)} +{' '}
+                      {item.cashAdvanceData.commissionPercent}% com.
                     </Typography>
                     <Box sx={{ textAlign: 'right' }}>
                       <Typography variant="body2" fontWeight={800} sx={{ color: '#4caf50' }}>
@@ -336,18 +385,18 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
             // NORMAL ITEM RENDER (Updated styling)
             if (!item.isRecharge && !item.isCashAdvance) {
               return (
-                <ListItem 
-                  key={item.id} 
-                  disablePadding 
-                  sx={{ 
-                    mb: 1.5, 
-                    p: 1.5, 
-                    borderRadius: '16px', 
+                <ListItem
+                  key={item.id}
+                  disablePadding
+                  sx={{
+                    mb: 1.5,
+                    p: 1.5,
+                    borderRadius: '16px',
                     bgcolor: '#f8fafc',
                     border: '1px solid #f1f5f9',
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'stretch'
+                    alignItems: 'stretch',
                   }}
                 >
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
@@ -362,22 +411,37 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                   </Box>
-                  
+
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: '#ffffff', borderRadius: '12px', border: '1px solid #e2e8f0', p: 0.5 }}>
-                      {(!item.unitType || item.unitType === 'UNIT') ? (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        bgcolor: '#ffffff',
+                        borderRadius: '12px',
+                        border: '1px solid #e2e8f0',
+                        p: 0.5,
+                      }}
+                    >
+                      {!item.unitType || item.unitType === 'UNIT' ? (
                         <>
                           <IconButton
                             size="small"
-                            onClick={() => dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity - 1 }))}
+                            onClick={() =>
+                              dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity - 1 }))
+                            }
                             sx={{ color: '#2a6c8d' }}
                           >
                             <RemoveCircleOutlineIcon fontSize="small" />
                           </IconButton>
-                          <Typography fontWeight={700} sx={{ mx: 1.5, minWidth: '20px', textAlign: 'center' }}>{item.quantity}</Typography>
+                          <Typography fontWeight={700} sx={{ mx: 1.5, minWidth: '20px', textAlign: 'center' }}>
+                            {item.quantity}
+                          </Typography>
                           <IconButton
                             size="small"
-                            onClick={() => dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity + 1 }))}
+                            onClick={() =>
+                              dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity + 1 }))
+                            }
                             sx={{ color: '#2a6c8d' }}
                           >
                             <AddCircleOutlineIcon fontSize="small" />
@@ -413,7 +477,7 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                 </ListItem>
               );
             }
-            
+
             // (Keep recharge/advance renders but styled similar to above if possible)
             return null; // Simplified for the tool call, but I will include them in a full replace if needed.
           })
@@ -425,12 +489,20 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
       <Box sx={{ p: 2, bgcolor: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
         <Box sx={{ px: 1, mb: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-            <Typography variant="body2" fontWeight={600} color="text.secondary">Subtotal</Typography>
-            <Typography variant="body2" fontWeight={700}>Bs. {totals.bs.toFixed(2)}</Typography>
+            <Typography variant="body2" fontWeight={600} color="text.secondary">
+              Subtotal
+            </Typography>
+            <Typography variant="body2" fontWeight={700}>
+              Bs. {totals.bs.toFixed(2)}
+            </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="body2" fontWeight={600} color="text.secondary">Ref. Total</Typography>
-            <Typography variant="body2" fontWeight={700}>${totals.usd.toFixed(2)}</Typography>
+            <Typography variant="body2" fontWeight={600} color="text.secondary">
+              Ref. Total
+            </Typography>
+            <Typography variant="body2" fontWeight={700}>
+              ${totals.usd.toFixed(2)}
+            </Typography>
           </Box>
         </Box>
         <Checkout cartItems={cartItems} totals={totals} />

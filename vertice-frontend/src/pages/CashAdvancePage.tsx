@@ -119,7 +119,6 @@ const CashAdvancePage = () => {
     }
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (amountVal <= 0) {
@@ -162,14 +161,16 @@ const CashAdvancePage = () => {
 
     const totalChargeUsd = exchangeRate ? totalToCharge / exchangeRate : 0;
 
-    dispatch(addCashAdvanceToCart({
-      amountToGive: amountVal,
-      commissionPercent: percentageVal,
-      commissionBs: profit,
-      totalChargeBs: totalToCharge,
-      paymentMethod,
-      priceUsd: totalChargeUsd,
-    }));
+    dispatch(
+      addCashAdvanceToCart({
+        amountToGive: amountVal,
+        commissionPercent: percentageVal,
+        commissionBs: profit,
+        totalChargeBs: totalToCharge,
+        paymentMethod,
+        priceUsd: totalChargeUsd,
+      })
+    );
 
     // Limpiar formulario
     setAmountToGive('');
@@ -227,12 +228,23 @@ const CashAdvancePage = () => {
         }}
       >
         <CardContent sx={{ p: { xs: 3, sm: 5 } }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, borderBottom: '1px solid rgba(0,0,0,0.06)', pb: 2.5 }}>
+          <Box
+            sx={{ display: 'flex', alignItems: 'center', mb: 4, borderBottom: '1px solid rgba(0,0,0,0.06)', pb: 2.5 }}
+          >
             <Box sx={{ p: 1.5, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '16px', mr: 2.5 }}>
               <PriceChangeIcon sx={{ fontSize: 40, color: '#2a6c8d' }} />
             </Box>
             <Box>
-              <Typography variant="h5" sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 900,
+                  color: '#0f172a',
+                  fontFamily: '"Outfit", sans-serif',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                }}
+              >
                 Avance de Efectivo
               </Typography>
               <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 500 }}>
@@ -240,7 +252,7 @@ const CashAdvancePage = () => {
               </Typography>
             </Box>
           </Box>
- 
+
           <form onSubmit={handleSubmit}>
             <Grid container spacing={4}>
               <Grid item xs={12} md={7}>
@@ -269,11 +281,11 @@ const CashAdvancePage = () => {
                           '& fieldset': { borderColor: '#e2e8f0' },
                           '&:hover fieldset': { borderColor: '#cbd5e1' },
                           '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
-                        }
+                        },
                       }}
                     />
                   </Grid>
- 
+
                   <Grid item xs={12}>
                     <TextField
                       label="Porcentaje de Comisión"
@@ -297,13 +309,13 @@ const CashAdvancePage = () => {
                           '& fieldset': { borderColor: '#e2e8f0' },
                           '&:hover fieldset': { borderColor: '#cbd5e1' },
                           '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
-                        }
+                        },
                       }}
                     />
                   </Grid>
                 </Grid>
               </Grid>
- 
+
               <Grid item xs={12} md={5}>
                 <Box
                   sx={{
@@ -314,7 +326,7 @@ const CashAdvancePage = () => {
                     border: '1px solid #e2e8f0',
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2.5 }}>
@@ -323,34 +335,51 @@ const CashAdvancePage = () => {
                       Resumen del Movimiento
                     </Typography>
                   </Box>
- 
+
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
-                    <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>Entregar:</Typography>
+                    <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>
+                      Entregar:
+                    </Typography>
                     <Typography variant="body1" sx={{ color: '#dc2626', fontWeight: 800 }}>
                       - Bs {amountVal.toFixed(2)}
                     </Typography>
                   </Box>
- 
+
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2.5 }}>
-                    <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>Comisión ({percentageVal}%):</Typography>
+                    <Typography variant="body2" sx={{ color: '#475569', fontWeight: 500 }}>
+                      Comisión ({percentageVal}%):
+                    </Typography>
                     <Typography variant="body1" sx={{ color: '#059669', fontWeight: 800 }}>
                       + Bs {profit.toFixed(2)}
                     </Typography>
                   </Box>
- 
+
                   <Divider sx={{ my: 1.5, borderColor: 'rgba(0,0,0,0.06)' }} />
- 
+
                   <Box sx={{ mt: 1 }}>
-                    <Typography variant="caption" sx={{ color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', mb: 0.5 }}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: '#94a3b8',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        display: 'block',
+                        mb: 0.5,
+                      }}
+                    >
                       TOTAL A COBRAR
                     </Typography>
-                    <Typography variant="h4" sx={{ color: '#2a6c8d', fontWeight: 900, fontFamily: '"Outfit", sans-serif' }}>
+                    <Typography
+                      variant="h4"
+                      sx={{ color: '#2a6c8d', fontWeight: 900, fontFamily: '"Outfit", sans-serif' }}
+                    >
                       Bs {totalToCharge.toFixed(2)}
                     </Typography>
                   </Box>
                 </Box>
               </Grid>
- 
+
               <Grid item xs={12} sm={6}>
                 <Button
                   type="submit"
@@ -414,7 +443,14 @@ const CashAdvancePage = () => {
         </CardContent>
       </Card>
 
-      <Paper sx={{ p: 4, borderRadius: '24px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+      <Paper
+        sx={{
+          p: 4,
+          borderRadius: '24px',
+          border: '1px solid rgba(0,0,0,0.05)',
+          boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
+        }}
+      >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
             <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a' }}>
@@ -424,21 +460,26 @@ const CashAdvancePage = () => {
               label="Filtrar por fecha"
               value={selectedDate}
               onChange={(newValue) => setSelectedDate(newValue)}
-              slotProps={{ 
-                textField: { 
-                  size: 'small', 
-                  sx: { 
+              slotProps={{
+                textField: {
+                  size: 'small',
+                  sx: {
                     width: 200,
-                    '& .MuiOutlinedInput-root': { borderRadius: '12px' }
-                  } 
-                } 
+                    '& .MuiOutlinedInput-root': { borderRadius: '12px' },
+                  },
+                },
               }}
             />
           </Box>
           <Box sx={{ textAlign: 'right' }}>
-            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block', mb: 0.5 }}>RESUMEN DEL DÍA</Typography>
+            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600, display: 'block', mb: 0.5 }}>
+              RESUMEN DEL DÍA
+            </Typography>
             <Typography variant="h6" sx={{ color: '#0f172a', fontWeight: 800 }}>
-              Bs. {totalAdvancesBs.toFixed(2)} <span style={{ color: '#94a3b8', fontSize: '1rem', fontWeight: 500 }}>/ REF {totalAdvancesUsd.toFixed(2)}</span>
+              Bs. {totalAdvancesBs.toFixed(2)}{' '}
+              <span style={{ color: '#94a3b8', fontSize: '1rem', fontWeight: 500 }}>
+                / REF {totalAdvancesUsd.toFixed(2)}
+              </span>
             </Typography>
           </Box>
         </Box>
@@ -448,8 +489,12 @@ const CashAdvancePage = () => {
             <TableHead>
               <TableRow sx={{ backgroundColor: '#f8fafc' }}>
                 <TableCell sx={{ fontWeight: 700, color: '#475569', py: 2 }}>HORA</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700, color: '#475569' }}>ENTREGADO (EFECTIVO)</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700, color: '#475569' }}>COBRADO (ELECTRÓNICO)</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700, color: '#475569' }}>
+                  ENTREGADO (EFECTIVO)
+                </TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700, color: '#475569' }}>
+                  COBRADO (ELECTRÓNICO)
+                </TableCell>
                 <TableCell sx={{ fontWeight: 700, color: '#475569' }}>DESCRIPCIÓN</TableCell>
               </TableRow>
             </TableHead>
@@ -457,7 +502,9 @@ const CashAdvancePage = () => {
               {paginatedAdvances.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} align="center" sx={{ py: 6 }}>
-                    <Typography sx={{ color: '#94a3b8', fontStyle: 'italic' }}>No hay avances registrados para esta fecha</Typography>
+                    <Typography sx={{ color: '#94a3b8', fontStyle: 'italic' }}>
+                      No hay avances registrados para esta fecha
+                    </Typography>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -467,8 +514,16 @@ const CashAdvancePage = () => {
                   const entregado = advance.amountBs - commissionBs;
 
                   return (
-                    <TableRow key={advance.id} sx={{ '&:hover': { backgroundColor: '#f1f5f9' }, transition: 'background-color 0.2s' }}>
-                      <TableCell sx={{ py: 2, color: '#64748b', fontWeight: 500 }}>{new Date(advance.timestamp).toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' })}</TableCell>
+                    <TableRow
+                      key={advance.id}
+                      sx={{ '&:hover': { backgroundColor: '#f1f5f9' }, transition: 'background-color 0.2s' }}
+                    >
+                      <TableCell sx={{ py: 2, color: '#64748b', fontWeight: 500 }}>
+                        {new Date(advance.timestamp).toLocaleTimeString('es-VE', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </TableCell>
                       <TableCell align="right" sx={{ color: '#dc2626', fontWeight: 800 }}>
                         Bs. {entregado.toFixed(2)}
                       </TableCell>
@@ -511,7 +566,7 @@ const CashAdvancePage = () => {
             width: '100%',
             borderRadius: '12px',
             boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
-            fontWeight: 600
+            fontWeight: 600,
           }}
         >
           {notification.message}

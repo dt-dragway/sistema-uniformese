@@ -39,7 +39,7 @@ export const createCustomer = async (req: Request, res: Response) => {
       email,
       phone: phone?.toUpperCase(),
       address: address?.toUpperCase(),
-      creditLimit
+      creditLimit,
     };
     const customer = await customerService.createCustomer(newCustomer);
     res.status(201).json(customer);
@@ -101,8 +101,9 @@ export const deleteCustomer = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('Error deleting customer:', error);
     if (error.code === 'P2003') {
-      return res.status(400).json({ 
-        message: 'No se puede eliminar el cliente porque tiene facturas o abonos registrados. Considere anular su historial primero.' 
+      return res.status(400).json({
+        message:
+          'No se puede eliminar el cliente porque tiene facturas o abonos registrados. Considere anular su historial primero.',
       });
     }
     res.status(500).json({ message: 'Error al intentar eliminar el cliente' });

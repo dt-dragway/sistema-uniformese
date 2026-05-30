@@ -7,6 +7,7 @@ import { CashRegisterSession } from '../models/CashRegisterSession';
 import PdfPreviewModal from '../components/reports/PdfPreviewModal';
 
 import { ProfessionalPagination } from '../components/common/ProfessionalPagination';
+import axiosInstance from '../api/axiosInstance';
 
 import {
   Box,
@@ -23,12 +24,9 @@ import {
   IconButton,
   Chip,
   Tooltip,
+  Button,
 } from '@mui/material';
-import {
-  Visibility as VisibilityIcon,
-  PictureAsPdf as PdfIcon,
-  EventNote as EventNoteIcon,
-} from '@mui/icons-material';
+import { Visibility as VisibilityIcon, PictureAsPdf as PdfIcon, EventNote as EventNoteIcon, Download as DownloadIcon } from '@mui/icons-material';
 
 const HistorialCajaPage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -70,6 +68,23 @@ const HistorialCajaPage = () => {
     setPdfDataUri('');
   };
 
+  const handleExportExcel = async () => {
+    try {
+      const response = await axiosInstance.get('/reports/cash-register/export-excel', {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `reporte_cajas_${new Date().toISOString().split('T')[0]}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error('Error exporting Excel:', err);
+    }
+  };
+
   const filteredSessions = sessions || [];
   const paginatedSessions = filteredSessions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -83,16 +98,56 @@ const HistorialCajaPage = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 4 }}>
-        Historial de Aperturas y Cierres
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, flexWrap: 'wrap', gap: 2 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 900,
+            color: '#0f172a',
+            fontFamily: '"Outfit", sans-serif',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+          }}
+        >
+          Historial de Aperturas y Cierres
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<DownloadIcon />}
+          onClick={handleExportExcel}
+          sx={{
+            bgcolor: '#10b981',
+            color: 'white',
+            fontWeight: 700,
+            borderRadius: '12px',
+            textTransform: 'none',
+            px: 3,
+            '&:hover': {
+              bgcolor: '#059669',
+            },
+          }}
+        >
+          Exportar Excel
+        </Button>
+      </Box>
 
-      {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
 
       {filteredSessions.length === 0 && !loading ? (
         <Alert severity="info">No se encontraron sesiones de caja registradas.</Alert>
       ) : (
-        <Paper sx={{ borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+        <Paper
+          sx={{
+            borderRadius: '24px',
+            overflow: 'hidden',
+            border: '1px solid rgba(0,0,0,0.05)',
+            boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
+          }}
+        >
           <TableContainer>
             <Table stickyHeader>
               <TableHead>
@@ -100,10 +155,18 @@ const HistorialCajaPage = () => {
                   <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Apertura</TableCell>
                   <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Cierre</TableCell>
                   <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Usuario</TableCell>
-                  <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>Efectivo Inicial</TableCell>
-                  <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>Efectivo Final</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>Estado</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>Acciones</TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>
+                    Efectivo Inicial
+                  </TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 800, color: '#475569' }}>
+                    Efectivo Final
+                  </TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>
+                    Estado
+                  </TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>
+                    Acciones
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -120,29 +183,41 @@ const HistorialCajaPage = () => {
                       <TableCell sx={{ color: '#64748b' }}>
                         {session.closedAt ? new Date(session.closedAt).toLocaleString() : '-'}
                       </TableCell>
-                      <TableCell sx={{ fontWeight: 500 }}>{session.user?.fullname || session.user?.username || '-'}</TableCell>
+                      <TableCell sx={{ fontWeight: 500 }}>
+                        {session.user?.fullname || session.user?.username || '-'}
+                      </TableCell>
                       <TableCell align="right">
-                        <Typography variant="body2" sx={{ fontWeight: 700 }}>$ {session.openingAmountUsd.toFixed(2)}</Typography>
-                        <Typography variant="caption" color="text.secondary">Bs. {session.openingAmountBs.toFixed(2)}</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                          $ {session.openingAmountUsd.toFixed(2)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          Bs. {session.openingAmountBs.toFixed(2)}
+                        </Typography>
                       </TableCell>
                       <TableCell align="right">
                         {session.closedAt ? (
                           <>
-                            <Typography variant="body2" sx={{ fontWeight: 700 }}>$ {session.closingAmountUsd?.toFixed(2)}</Typography>
-                            <Typography variant="caption" color="text.secondary">Bs. {session.closingAmountBs?.toFixed(2)}</Typography>
+                            <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                              $ {session.closingAmountUsd?.toFixed(2)}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              Bs. {session.closingAmountBs?.toFixed(2)}
+                            </Typography>
                           </>
-                        ) : '-'}
+                        ) : (
+                          '-'
+                        )}
                       </TableCell>
                       <TableCell align="center">
-                        <Chip 
-                          label={isOpen ? 'ABIERTA' : 'CERRADA'} 
+                        <Chip
+                          label={isOpen ? 'ABIERTA' : 'CERRADA'}
                           size="small"
-                          sx={{ 
-                            fontWeight: 800, 
+                          sx={{
+                            fontWeight: 800,
                             backgroundColor: isOpen ? 'rgba(22, 163, 74, 0.08)' : 'rgba(100, 116, 139, 0.08)',
                             color: isOpen ? '#16a34a' : '#64748b',
-                            borderRadius: '8px'
-                          }} 
+                            borderRadius: '8px',
+                          }}
                         />
                       </TableCell>
                       <TableCell align="center">
@@ -169,12 +244,7 @@ const HistorialCajaPage = () => {
           />
         </Paper>
       )}
-      <PdfPreviewModal
-        open={isPdfModalOpen}
-        onClose={handleCloseModal}
-        pdfDataUri={pdfDataUri}
-        title={pdfTitle}
-      />
+      <PdfPreviewModal open={isPdfModalOpen} onClose={handleCloseModal} pdfDataUri={pdfDataUri} title={pdfTitle} />
     </Box>
   );
 };

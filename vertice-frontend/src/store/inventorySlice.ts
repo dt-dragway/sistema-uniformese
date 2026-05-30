@@ -69,12 +69,16 @@ export const createMerchandiseEntry = createAsyncThunk(
   }
 );
 
-export const createInternalWithdrawal = createAsyncThunk(
-  'inventory/createInternalWithdrawal',
-  async (data: { productId: number; quantity: number; reason: string }, { rejectWithValue }) => {
+export const createSpecialMovement = createAsyncThunk(
+  'inventory/createSpecialMovement',
+  async (data: { productId: number; quantity: number; reason: string; type: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post<InventoryMovement>('/inventory/withdrawals', data);
-      return response.data;
+      const response = await axiosInstance.post<InventoryMovement[]>('/inventory/withdrawals', {
+        items: [{ productId: data.productId, quantity: data.quantity }],
+        reason: data.reason,
+        type: data.type,
+      });
+      return response.data[0]; // The API returns an array, we take the first one
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -110,7 +114,7 @@ const inventorySlice = createSlice({
         state.loading = false;
         state.movements.unshift(action.payload);
       })
-      .addCase(createInternalWithdrawal.fulfilled, (state, action: PayloadAction<InventoryMovement>) => {
+      .addCase(createSpecialMovement.fulfilled, (state, action: PayloadAction<InventoryMovement>) => {
         state.loading = false;
         state.internalWithdrawals.unshift(action.payload);
         state.movements.unshift(action.payload);

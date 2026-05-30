@@ -100,7 +100,7 @@ export const OpenCashRegisterModal: React.FC<OpenCashRegisterModalProps> = ({
                 '& fieldset': { borderColor: '#e2e8f0' },
                 '&:hover fieldset': { borderColor: '#cbd5e1' },
                 '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
-              }
+              },
             }}
           />
         </Box>
@@ -120,20 +120,20 @@ export const OpenCashRegisterModal: React.FC<OpenCashRegisterModalProps> = ({
                 '& fieldset': { borderColor: '#e2e8f0' },
                 '&:hover fieldset': { borderColor: '#cbd5e1' },
                 '&.Mui-focused fieldset': { borderColor: '#2a6c8d' },
-              }
+              },
             }}
           />
         </Box>
 
         {(localError || error) && (
-          <Alert 
-            severity="error" 
-            sx={{ 
-              mb: 3, 
+          <Alert
+            severity="error"
+            sx={{
+              mb: 3,
               borderRadius: '12px',
               backgroundColor: '#fef2f2',
               color: '#b91c1c',
-              border: '1px solid #fee2e2'
+              border: '1px solid #fee2e2',
             }}
           >
             {localError || error}
@@ -141,18 +141,18 @@ export const OpenCashRegisterModal: React.FC<OpenCashRegisterModalProps> = ({
         )}
 
         <Box mt={4} display="flex" gap={2}>
-          <Button 
+          <Button
             fullWidth
-            variant="outlined" 
-            onClick={onClose} 
+            variant="outlined"
+            onClick={onClose}
             disabled={loading}
-            sx={{ 
-              borderRadius: '12px', 
-              py: 1.5, 
-              textTransform: 'none', 
+            sx={{
+              borderRadius: '12px',
+              py: 1.5,
+              textTransform: 'none',
               fontWeight: 600,
               color: '#64748b',
-              borderColor: '#e2e8f0'
+              borderColor: '#e2e8f0',
             }}
           >
             Cancelar

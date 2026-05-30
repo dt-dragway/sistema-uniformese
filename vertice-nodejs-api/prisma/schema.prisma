@@ -27,6 +27,7 @@ model User {
   fullname             String?
   cashRegisterSessions CashRegisterSession[]
   creditPayments       CreditPayment[]
+  userConnections      UserConnection[]
 }
 
 model Product {
@@ -67,8 +68,8 @@ model Product {
 model InventoryMovement {
   id               Int      @id @default(autoincrement())
   productId        Int
-  product          Product  @relation(fields: [productId], references: [id])
-  type             String   // 'SALE', 'RETURN', 'ADJUSTMENT', 'ENTRY', 'INITIAL_STOCK'
+  product  Product  @relation(fields: [productId], references: [id])
+  type             String   // 'SALE', 'RETURN', 'ADJUSTMENT', 'ENTRY', 'INITIAL_STOCK', 'LOAN', 'INTERNAL_CONSUMPTION'
   quantityChange   Float    // Positive for additions, negative for subtractions (in base unit)
   reason           String?  // Optional: e.g., "manual correction", "initial stock entry"
   timestamp        DateTime @default(now())
@@ -76,8 +77,6 @@ model InventoryMovement {
   @@index([productId])
   @@index([timestamp])
 }
-
-
 
 model MerchandiseEntry {
   id        Int      @id @default(autoincrement())
@@ -163,6 +162,13 @@ model Customer {
   email          String?         @unique
   phone          String?
   address        String?
+  
+  // Professional CRM Fields
+  category       String?         @default("GENERAL") // e.g., INDUSTRIAL, SALUD, CORPORATIVO
+  instagram      String?
+  facebook       String?
+  otherContact   String?
+
   creditLimit    Float           @default(0)
   currentCredit  Float           @default(0)
   createdAt      DateTime        @default(now())
@@ -177,6 +183,8 @@ model CreditPayment {
   customerId  Int
   user        User?    @relation(fields: [userId], references: [id])
   userId      Int?
+  cashRegisterSession   CashRegisterSession? @relation(fields: [cashRegisterSessionId], references: [id])
+  cashRegisterSessionId Int?
   amount      Float // Amount in USD
   amountBs    Float
   exchangeRate Float
@@ -205,8 +213,6 @@ model CashRegisterSession {
   calculatedOtherIncomeBs Float        @default(0)
   calculatedExpensesUsd       Float @default(0)
   calculatedExpensesBs        Float @default(0)
-  totalAvanceSalidaBs         Float          @default(0) // New field
-  totalAvanceEntradaBs        Float          @default(0) // New field
   discrepancyUsd        Float          @default(0)
   discrepancyBs         Float          @default(0)
   status                String         @default("OPEN") // "OPEN" or "CLOSED"
@@ -214,14 +220,14 @@ model CashRegisterSession {
   closedAt              DateTime?
   movements             CashMovement[]
   sales                 Sale[]
-  recharges             Recharge[]
+  creditPayments        CreditPayment[]
 }
 
 model CashMovement {
   id                    Int                 @id @default(autoincrement())
   cashRegisterSession   CashRegisterSession @relation(fields: [cashRegisterSessionId], references: [id])
   cashRegisterSessionId Int
-  type                  String // 'deposit', 'withdrawal', 'sale', 'refund'
+  type                  String // 'deposit', 'withdrawal', 'sale', 'refund', 'anulacion'
   paymentMethod         String?
   amountUsd             Float              @default(0)
   amountBs              Float              @default(0)
@@ -257,31 +263,14 @@ model Setting {
   value String
 }
 
-model RechargeService {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  icon      String?
-  isEnabled Boolean    @default(true)
-  recharges Recharge[]
-}
+model UserConnection {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  ipAddress String?
+  userAgent String?
+  loginTime DateTime @default(now())
 
-model Recharge {
-  id                    Int                 @id @default(autoincrement())
-  ticketNumber          String              @unique
-  serviceId             Int
-  service               RechargeService     @relation(fields: [serviceId], references: [id])
-  phoneNumber           String
-  amountBs              Float
-  commissionPercent     Float
-  commissionBs          Float
-  totalChargeBs         Float
-  amountUsd             Float
-  exchangeRate          Float
-  cashRegisterSessionId Int
-  cashRegisterSession   CashRegisterSession @relation(fields: [cashRegisterSessionId], references: [id])
-  status                String              @default("PENDING")
-  createdAt             DateTime            @default(now())
-
-  @@index([createdAt])
-  @@index([cashRegisterSessionId])
+  @@index([userId])
+  @@index([loginTime])
 }

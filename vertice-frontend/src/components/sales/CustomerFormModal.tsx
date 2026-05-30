@@ -12,6 +12,11 @@ import {
   Alert,
   InputAdornment,
   Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Divider,
 } from '@mui/material';
 import {
   Person as PersonIcon,
@@ -19,6 +24,9 @@ import {
   Phone as PhoneIcon,
   Home as HomeIcon,
   Save as SaveIcon,
+  Instagram as InstagramIcon,
+  Facebook as FacebookIcon,
+  Category as CategoryIcon,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
@@ -31,6 +39,8 @@ interface CustomerFormModalProps {
   customer?: Customer; // Optional, for editing existing customers
 }
 
+const CUSTOMER_CATEGORIES = ['GENERAL', 'INDUSTRIAL', 'SALUD', 'CORPORATIVO', 'ESTÉTICA', 'GASTRONOMÍA'];
+
 const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, customer }) => {
   const dispatch: AppDispatch = useDispatch();
   const { loading, error } = useSelector((state: RootState) => state.customers);
@@ -39,6 +49,9 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
   const [cedula, setCedula] = useState(customer?.cedula || '');
   const [phone, setPhone] = useState(customer?.phone || '');
   const [address, setAddress] = useState(customer?.address || '');
+  const [category, setCategory] = useState(customer?.category || 'GENERAL');
+  const [instagram, setInstagram] = useState(customer?.instagram || '');
+  const [facebook, setFacebook] = useState(customer?.facebook || '');
 
   useEffect(() => {
     if (open) {
@@ -47,28 +60,42 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
         setCedula(customer.cedula || '');
         setPhone(customer.phone || '');
         setAddress(customer.address || '');
+        setCategory(customer.category || 'GENERAL');
+        setInstagram(customer.instagram || '');
+        setFacebook(customer.facebook || '');
       } else {
         setName('');
         setCedula('');
         setPhone('');
         setAddress('');
+        setCategory('GENERAL');
+        setInstagram('');
+        setFacebook('');
       }
     }
   }, [open, customer]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const customerData = { name, cedula, phone, address, creditLimit: 0, currentCredit: 0 };
+    const customerData = {
+      name,
+      cedula,
+      phone,
+      address,
+      category,
+      instagram,
+      facebook,
+      creditLimit: 0,
+      currentCredit: 0,
+    };
 
     if (customer) {
-      // Update existing customer
       dispatch(updateCustomer({ ...customer, ...customerData })).then((result) => {
         if (updateCustomer.fulfilled.match(result)) {
           onClose();
         }
       });
     } else {
-      // Create new customer
       dispatch(createCustomer(customerData)).then((result) => {
         if (createCustomer.fulfilled.match(result)) {
           onClose();
@@ -78,29 +105,35 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
   };
 
   return (
-    <Dialog 
-      open={open} 
+    <Dialog
+      open={open}
       onClose={onClose}
-      maxWidth="sm"
+      maxWidth="md"
       fullWidth
       PaperProps={{
         sx: {
           borderRadius: '24px',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        }
+        },
       }}
     >
-      <DialogTitle sx={{ 
-        backgroundColor: '#2a6c8d', 
-        color: 'white', 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 1.5,
-        p: 3
-      }}>
+      <DialogTitle
+        sx={{
+          backgroundColor: '#0255A5',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1.5,
+          p: 3,
+        }}
+      >
         <PersonIcon />
-        <Typography variant="h6" fontWeight={800} sx={{ fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-          {customer ? 'Editar Cliente' : 'Nuevo Cliente'}
+        <Typography
+          variant="h6"
+          fontWeight={800}
+          sx={{ fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}
+        >
+          {customer ? 'Editar Perfil de Cliente' : 'Registrar Nuevo Cliente'}
         </Typography>
       </DialogTitle>
 
@@ -113,7 +146,7 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
           )}
 
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={7}>
               <TextField
                 fullWidth
                 label="Nombre Completo / Razón Social"
@@ -128,9 +161,32 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
                       <PersonIcon color="action" />
                     </InputAdornment>
                   ),
-                  sx: { borderRadius: '12px' }
+                  sx: { borderRadius: '12px' },
                 }}
               />
+            </Grid>
+
+            <Grid item xs={12} md={5}>
+              <FormControl fullWidth>
+                <InputLabel>Categoría de Rubro</InputLabel>
+                <Select
+                  value={category}
+                  label="Categoría de Rubro"
+                  onChange={(e) => setCategory(e.target.value)}
+                  sx={{ borderRadius: '12px' }}
+                  startAdornment={
+                    <InputAdornment position="start" sx={{ ml: 1 }}>
+                      <CategoryIcon color="action" />
+                    </InputAdornment>
+                  }
+                >
+                  {CUSTOMER_CATEGORIES.map((cat) => (
+                    <MenuItem key={cat} value={cat}>
+                      {cat}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
 
             <Grid item xs={12} sm={6}>
@@ -147,7 +203,7 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
                       <BadgeIcon color="action" />
                     </InputAdornment>
                   ),
-                  sx: { borderRadius: '12px' }
+                  sx: { borderRadius: '12px' },
                 }}
               />
             </Grid>
@@ -158,14 +214,59 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
                 label="Teléfono"
                 variant="outlined"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value.toUpperCase())}
+                onChange={(e) => setPhone(e.target.value)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <PhoneIcon color="action" />
                     </InputAdornment>
                   ),
-                  sx: { borderRadius: '12px' }
+                  sx: { borderRadius: '12px' },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Divider sx={{ mb: 1 }}>
+                <Typography variant="caption" sx={{ color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>
+                  REDES Y CONTACTO
+                </Typography>
+              </Divider>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Instagram"
+                variant="outlined"
+                value={instagram}
+                onChange={(e) => setInstagram(e.target.value)}
+                placeholder="@usuario"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <InstagramIcon color="action" />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: '12px' },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Facebook"
+                variant="outlined"
+                value={facebook}
+                onChange={(e) => setFacebook(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FacebookIcon color="action" />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: '12px' },
                 }}
               />
             </Grid>
@@ -173,7 +274,7 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Dirección"
+                label="Dirección de la Empresa / Oficina"
                 variant="outlined"
                 multiline
                 rows={2}
@@ -185,7 +286,7 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
                       <HomeIcon color="action" />
                     </InputAdornment>
                   ),
-                  sx: { borderRadius: '12px' }
+                  sx: { borderRadius: '12px' },
                 }}
               />
             </Grid>
@@ -193,14 +294,14 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
         </DialogContent>
 
         <DialogActions sx={{ p: 3, bgcolor: '#f8fafc', borderTop: '1px solid #edf2f7', gap: 1.5 }}>
-          <Button 
-            onClick={onClose} 
-            sx={{ 
-              borderRadius: '12px', 
-              px: 3, 
-              color: '#64748b', 
+          <Button
+            onClick={onClose}
+            sx={{
+              borderRadius: '12px',
+              px: 3,
+              color: '#64748b',
               fontWeight: 700,
-              textTransform: 'none'
+              textTransform: 'none',
             }}
           >
             Cancelar
@@ -211,7 +312,7 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
             disabled={loading}
             startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
             sx={{
-              backgroundColor: '#2a6c8d',
+              backgroundColor: '#0255A5',
               borderRadius: '12px',
               px: 4,
               py: 1,
@@ -220,7 +321,7 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
               boxShadow: '0 4px 6px -1px rgba(2, 85, 165, 0.3)',
               '&:hover': {
                 backgroundColor: '#014484',
-              }
+              },
             }}
           >
             {customer ? 'Guardar Cambios' : 'Registrar Cliente'}

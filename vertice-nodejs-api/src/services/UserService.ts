@@ -34,7 +34,10 @@ export const createUser = async (username: string, password_plain: string, role:
   });
 };
 
-export const updateUser = async (id: number, data: { username?: string; password?: string; role?: string; fullname?: string }) => {
+export const updateUser = async (
+  id: number,
+  data: { username?: string; password?: string; role?: string; fullname?: string }
+) => {
   const updateData: Prisma.UserUpdateInput = {};
 
   if (data.username) {

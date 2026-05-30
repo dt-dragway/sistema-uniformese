@@ -18,6 +18,7 @@ import {
   styled,
   useTheme,
   Tooltip,
+  ListSubheader,
 } from '@mui/material';
 import {
   PointOfSale as PointOfSaleIcon,
@@ -34,6 +35,9 @@ import {
   Backup as BackupIcon,
   Info as InfoIcon,
   AccountBalance as AccountBalanceIcon,
+  Inventory as InventoryIcon,
+  PhoneAndroid as PhoneAndroidIcon,
+  PriceChange as PriceChangeIcon,
 } from '@mui/icons-material';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { logout } from '../store/authSlice';
@@ -44,7 +48,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { fetchClosingPreview } from '../store/cashRegisterSlice';
 import WindowControls from './WindowControls';
 
-const drawerWidth = 260; 
+const drawerWidth = 260;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -114,22 +118,20 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: 'nowrap',
+  boxSizing: 'border-box',
+  ...(open && {
+    ...openedMixin(theme),
+    '& .MuiDrawer-paper': openedMixin(theme),
   }),
-);
+  ...(!open && {
+    ...closedMixin(theme),
+    '& .MuiDrawer-paper': closedMixin(theme),
+  }),
+}));
 
 interface NavItem {
   text: string;
@@ -137,22 +139,23 @@ interface NavItem {
   path: string;
 }
 const navigationItems: NavItem[] = [
-  { text: 'Ventas', icon: <PointOfSaleIcon sx={{ color: '#2a6c8d' }} />, path: '/sales' },
-  { text: 'Tasa REF/Bs.', icon: <AttachMoneyIcon sx={{ color: '#2a6c8d' }} />, path: '/settings/exchange-rate' },
-  { text: 'Historial', icon: <HistoryIcon sx={{ color: '#2a6c8d' }} />, path: '/history' },
-  { text: 'Historial de Cajas', icon: <HistoryIcon sx={{ color: '#2a6c8d' }} />, path: '/historial-caja' },
-  { text: 'Clientes', icon: <PeopleIcon sx={{ color: '#2a6c8d' }} />, path: '/customers' },
+  { text: 'Ventas', icon: <PointOfSaleIcon sx={{ color: '#0255A5' }} />, path: '/sales' },
+  { text: 'Tasa REF/Bs.', icon: <AttachMoneyIcon sx={{ color: '#0255A5' }} />, path: '/settings/exchange-rate' },
+  { text: 'Historial', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/history' },
+  { text: 'Historial de Cajas', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/historial-caja' },
+  { text: 'Clientes', icon: <PeopleIcon sx={{ color: '#0255A5' }} />, path: '/customers' },
 ];
 
 const managementItems: NavItem[] = [
-  { text: 'Inventario', icon: <CategoryIcon sx={{ color: '#2a6c8d' }} />, path: '/products' },
-  { text: 'Usuarios', icon: <PeopleIcon sx={{ color: '#2a6c8d' }} />, path: '/users' },
-  { text: 'Admin Caja', icon: <AccountBalanceIcon sx={{ color: '#2a6c8d' }} />, path: '/admin-caja' },
-  { text: 'Informes', icon: <AssessmentIcon sx={{ color: '#2a6c8d' }} />, path: '/reports' },
-  { text: 'Movimientos de Inventario', icon: <HistoryIcon sx={{ color: '#2a6c8d' }} />, path: '/inventory/movements' },
-  { text: 'Mantenimiento', icon: <BackupIcon sx={{ color: '#2a6c8d' }} />, path: '/maintenance' },
-  { text: 'Impresora', icon: <PrintIcon sx={{ color: '#2a6c8d' }} />, path: '/settings/printer' },
-  { text: 'Acerca de', icon: <InfoIcon sx={{ color: '#2a6c8d' }} />, path: '/about' },
+  { text: 'Inventario', icon: <CategoryIcon sx={{ color: '#0255A5' }} />, path: '/products' },
+  { text: 'Operaciones Especiales', icon: <InventoryIcon sx={{ color: '#0255A5' }} />, path: '/internal-withdrawal' },
+  { text: 'Usuarios', icon: <PeopleIcon sx={{ color: '#0255A5' }} />, path: '/users' },
+  { text: 'Admin Caja', icon: <AccountBalanceIcon sx={{ color: '#0255A5' }} />, path: '/admin-caja' },
+  { text: 'Informes', icon: <AssessmentIcon sx={{ color: '#0255A5' }} />, path: '/reports' },
+  { text: 'Movimientos de Inventario', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/inventory/movements' },
+  { text: 'Mantenimiento', icon: <BackupIcon sx={{ color: '#0255A5' }} />, path: '/maintenance' },
+  { text: 'Impresora', icon: <PrintIcon sx={{ color: '#0255A5' }} />, path: '/settings/printer' },
+  { text: 'Acerca de', icon: <InfoIcon sx={{ color: '#0255A5' }} />, path: '/about' },
 ];
 
 function MainLayout({ children }: { children: React.ReactNode }) {
@@ -206,7 +209,11 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#ffffff' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ bgcolor: '#ffffff', borderBottom: '1px solid #e2e8f0', boxShadow: 'none' }}>
+      <AppBar
+        position="fixed"
+        open={open}
+        sx={{ bgcolor: '#ffffff', borderBottom: '1px solid #e2e8f0', boxShadow: 'none' }}
+      >
         <Toolbar>
           {!open && (
             <Tooltip title="Expandir menú">
@@ -223,7 +230,18 @@ function MainLayout({ children }: { children: React.ReactNode }) {
           )}
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography variant="h6" noWrap component="div" sx={{ color: '#2a6c8d', fontFamily: '"Kanit", sans-serif', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{
+                color: '#2a6c8d',
+                fontFamily: '"Kanit", sans-serif',
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+              }}
+            >
               Uniformese
             </Typography>
           </Box>
@@ -237,22 +255,35 @@ function MainLayout({ children }: { children: React.ReactNode }) {
         </Toolbar>
       </AppBar>
 
-      <Drawer variant="permanent" open={open} PaperProps={{ sx: { bgcolor: '#ffffff', borderRight: '1px solid #e2e8f0' } }}>
+      <Drawer
+        variant="permanent"
+        open={open}
+        PaperProps={{ sx: { bgcolor: '#ffffff', borderRight: '1px solid #e2e8f0' } }}
+      >
         <DrawerHeader sx={{ borderBottom: '1px solid #f1f5f9' }}>
           {open ? (
             <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 900, fontFamily: '"Kanit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#2a6c8d' }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 900,
+                  fontFamily: '"Kanit", sans-serif',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  color: '#2a6c8d',
+                }}
+              >
                 UNIFORMESE
               </Typography>
             </Box>
           ) : null}
-          <Tooltip title={open ? "Contraer menú" : "Expandir menú"}>
+          <Tooltip title={open ? 'Contraer menú' : 'Expandir menú'}>
             <IconButton
               onClick={handleToggleDrawer}
               sx={{
                 transition: 'all 0.3s ease',
                 margin: open ? '0' : 'auto',
-                color: '#2a6c8d'
+                color: '#2a6c8d',
               }}
             >
               {open ? <MenuOpenIcon /> : <MenuIcon />}
@@ -261,84 +292,111 @@ function MainLayout({ children }: { children: React.ReactNode }) {
         </DrawerHeader>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', bgcolor: '#ffffff' }}>
-          <Box sx={{ flexGrow: 1, overflowY: 'auto', py: 1, '&::-webkit-scrollbar': { width: '4px' }, '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.05)', borderRadius: '10px' } }}>
-            {isSuperAdmin ? (
-              <List sx={{ px: 1 }}>
-                <ListItem disablePadding sx={{ display: 'block', mb: 0.5 }}>
-                  <ListItemButton
-                    component={Link}
-                    to="/users"
-                    selected={location.pathname === '/users'}
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? 'initial' : 'center',
-                      px: 2.5,
-                      borderRadius: '10px',
-                      '&.Mui-selected': { backgroundColor: 'rgba(2, 85, 165, 0.15)', '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.25)' } }
-                    }}
+          <Box
+            sx={{
+              flexGrow: 1,
+              overflowY: 'auto',
+              py: 1,
+              '&::-webkit-scrollbar': { width: '4px' },
+              '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.05)', borderRadius: '10px' },
+            }}
+          >
+            {[
+              {
+                title: 'Operaciones',
+                items: [
+                  { text: 'Ventas', icon: <PointOfSaleIcon sx={{ color: '#0255A5' }} />, path: '/sales', show: !isSuperAdmin },
+                  { text: 'Clientes', icon: <PeopleIcon sx={{ color: '#0255A5' }} />, path: '/customers', show: !isSuperAdmin },
+                  { text: 'Inventario', icon: <CategoryIcon sx={{ color: '#0255A5' }} />, path: '/products', show: !isCashier && !isSuperAdmin },
+                  { text: 'Admin Caja', icon: <AccountBalanceIcon sx={{ color: '#0255A5' }} />, path: '/admin-caja', show: !isCashier && !isSuperAdmin },
+                  { text: 'Op. Especiales', icon: <InventoryIcon sx={{ color: '#0255A5' }} />, path: '/internal-withdrawal', show: !isCashier && !isSuperAdmin },
+                ]
+              },
+              {
+                title: 'Historiales y Reportes',
+                items: [
+                  { text: 'Ventas', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/history', show: !isSuperAdmin },
+                  { text: 'Cajas', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/historial-caja', show: !isSuperAdmin },
+                  { text: 'Inventario', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/inventory/movements', show: !isCashier && !isSuperAdmin },
+                  { text: 'Informes', icon: <AssessmentIcon sx={{ color: '#0255A5' }} />, path: '/reports', show: !isCashier && !isSuperAdmin },
+                  { text: 'Conexiones', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/admin/connections', show: isSuperAdmin },
+                ]
+              },
+              {
+                title: 'Configuración',
+                items: [
+                  { text: 'Usuarios', icon: <PeopleIcon sx={{ color: '#0255A5' }} />, path: '/users', show: !isCashier },
+                  { text: 'Tasa REF/Bs.', icon: <AttachMoneyIcon sx={{ color: '#0255A5' }} />, path: '/settings/exchange-rate', show: !isSuperAdmin },
+                  { text: 'Impresora', icon: <PrintIcon sx={{ color: '#0255A5' }} />, path: '/settings/printer', show: !isCashier && !isSuperAdmin },
+                  { text: 'Mantenimiento', icon: <BackupIcon sx={{ color: '#0255A5' }} />, path: '/maintenance', show: !isCashier && !isSuperAdmin },
+                  { text: 'Acerca de', icon: <InfoIcon sx={{ color: '#0255A5' }} />, path: '/about', show: !isCashier && !isSuperAdmin },
+                ]
+              }
+            ].map((group, index) => {
+              const visibleItems = group.items.filter(item => item.show);
+              if (visibleItems.length === 0) return null;
+              
+              return (
+                <React.Fragment key={group.title}>
+                  {index > 0 && <Divider sx={{ my: 1, mx: 2, opacity: 0.6 }} />}
+                  <List
+                    sx={{ px: 1 }}
+                    subheader={
+                      open ? (
+                        <ListSubheader 
+                          component="div" 
+                          sx={{ 
+                            bgcolor: 'transparent', 
+                            lineHeight: '24px', 
+                            pt: 1, 
+                            pb: 0.5,
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            letterSpacing: '0.05em',
+                            color: '#64748b',
+                            textTransform: 'uppercase'
+                          }}
+                        >
+                          {group.title}
+                        </ListSubheader>
+                      ) : null
+                    }
                   >
-                    <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center' }}>
-                      <PeopleIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Usuarios" sx={{ opacity: open ? 1 : 0 }} primaryTypographyProps={{ fontSize: '0.9rem', fontWeight: location.pathname === '/users' ? 600 : 400 }} />
-                  </ListItemButton>
-                </ListItem>
-              </List>
-            ) : (
-              <>
-                <List sx={{ px: 1 }}>
-                  {navigationItems.map((item) => (
-                    <ListItem key={item.text} disablePadding sx={{ display: 'block', mb: 0.5 }}>
-                      <ListItemButton
-                        component={Link}
-                        to={item.path}
-                        selected={location.pathname === item.path}
-                        sx={{
-                          minHeight: 48,
-                          justifyContent: open ? 'initial' : 'center',
-                          px: 2.5,
-                          borderRadius: '10px',
-                          '&.Mui-selected': { backgroundColor: 'rgba(2, 85, 165, 0.15)', '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.25)' } }
-                        }}
-                      >
-                        <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center' }}>
-                          {item.icon}
-                        </ListItemIcon>
-                        <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} primaryTypographyProps={{ fontSize: '0.9rem', fontWeight: location.pathname === item.path ? 600 : 400 }} />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                </List>
-                {!isCashier && (
-                  <>
-                    <Divider sx={{ my: 1, mx: 2, opacity: 0.6 }} />
-                    <List sx={{ px: 1 }}>
-                      {managementItems.map((item) => (
-                        <ListItem key={item.text} disablePadding sx={{ display: 'block', mb: 0.5 }}>
-                          <ListItemButton
-                            component={Link}
-                            to={item.path}
-                            selected={location.pathname === item.path}
-                            sx={{
-                              minHeight: 48,
-                              justifyContent: open ? 'initial' : 'center',
-                              px: 2.5,
-                              borderRadius: '10px',
-                              '&.Mui-selected': { backgroundColor: 'rgba(2, 85, 165, 0.15)', '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.25)' } }
+                    {visibleItems.map((item) => (
+                      <ListItem key={item.text} disablePadding sx={{ display: 'block', mb: 0.5 }}>
+                        <ListItemButton
+                          component={Link}
+                          to={item.path}
+                          selected={location.pathname === item.path}
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                            borderRadius: '10px',
+                            '&.Mui-selected': {
+                              backgroundColor: 'rgba(2, 85, 165, 0.15)',
+                              '&:hover': { backgroundColor: 'rgba(2, 85, 165, 0.25)' },
+                            },
+                          }}
+                        >
+                          <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center' }}>
+                            {item.icon}
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={item.text}
+                            sx={{ opacity: open ? 1 : 0 }}
+                            primaryTypographyProps={{
+                              fontSize: '0.9rem',
+                              fontWeight: location.pathname === item.path ? 600 : 400,
                             }}
-                          >
-                            <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center' }}>
-                              {item.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} primaryTypographyProps={{ fontSize: '0.9rem', fontWeight: location.pathname === item.path ? 600 : 400 }} />
-                          </ListItemButton>
-                        </ListItem>
-                      ))}
-                    </List>
-                  </>
-                )}
-              </>
-            )}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </React.Fragment>
+              );
+            })}
           </Box>
 
           <Box sx={{ px: 1, pb: 2 }}>
@@ -353,13 +411,17 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                     px: 2.5,
                     borderRadius: '10px',
                     color: '#F44336',
-                    '&:hover': { backgroundColor: 'rgba(244, 67, 54, 0.08)' }
+                    '&:hover': { backgroundColor: 'rgba(244, 67, 54, 0.08)' },
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center' }}>
                     <CloseIcon sx={{ color: '#F44336' }} />
                   </ListItemIcon>
-                  <ListItemText primary="Cerrar Caja" sx={{ opacity: open ? 1 : 0 }} primaryTypographyProps={{ fontWeight: 600 }} />
+                  <ListItemText
+                    primary="Cerrar Caja"
+                    sx={{ opacity: open ? 1 : 0 }}
+                    primaryTypographyProps={{ fontWeight: 600 }}
+                  />
                 </ListItemButton>
               </ListItem>
             )}
@@ -371,7 +433,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
                   borderRadius: '10px',
-                  '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' }
+                  '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' },
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center' }}>

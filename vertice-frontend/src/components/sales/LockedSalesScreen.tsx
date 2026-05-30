@@ -19,7 +19,7 @@ export const LockedSalesScreen: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleConfirmOpen = async (amounts: { openingAmountUsd: number; openingAmountBs: number; }) => {
+  const handleConfirmOpen = async (amounts: { openingAmountUsd: number; openingAmountBs: number }) => {
     try {
       await dispatch(openCashRegister(amounts)).unwrap();
       dispatch(fetchCashMovements({}));
@@ -45,9 +45,44 @@ export const LockedSalesScreen: React.FC = () => {
       }}
     >
       {/* Decorative Background (consistent with login) */}
-      <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-        <Box sx={{ position: 'absolute', top: '-10%', right: '-5%', width: '40%', height: '300px', background: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)', borderRadius: '40px', transform: 'rotate(-15deg)', opacity: 0.5 }} />
-        <Box sx={{ position: 'absolute', bottom: '-10%', left: '-5%', width: '30%', height: '250px', background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)', borderRadius: '40px', transform: 'rotate(15deg)', opacity: 0.5 }} />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+          pointerEvents: 'none',
+          overflow: 'hidden',
+        }}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '-10%',
+            right: '-5%',
+            width: '40%',
+            height: '300px',
+            background: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)',
+            borderRadius: '40px',
+            transform: 'rotate(-15deg)',
+            opacity: 0.5,
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '-10%',
+            left: '-5%',
+            width: '30%',
+            height: '250px',
+            background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+            borderRadius: '40px',
+            transform: 'rotate(15deg)',
+            opacity: 0.5,
+          }}
+        />
       </Box>
 
       <Card
@@ -60,20 +95,40 @@ export const LockedSalesScreen: React.FC = () => {
           border: '1px solid rgba(0, 0, 0, 0.05)',
           boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)',
           zIndex: 1,
-          overflow: 'hidden'
+          overflow: 'hidden',
         }}
       >
         <CardContent sx={{ p: { xs: 4, sm: 6 } }}>
-          <Box sx={{ display: 'inline-flex', mb: 4, p: 2, backgroundColor: 'rgba(2, 85, 165, 0.08)', borderRadius: '20px' }}>
+          <Box
+            sx={{
+              display: 'inline-flex',
+              mb: 4,
+              p: 2,
+              backgroundColor: 'rgba(2, 85, 165, 0.08)',
+              borderRadius: '20px',
+            }}
+          >
             <LockIcon sx={{ fontSize: 60, color: '#2a6c8d' }} />
           </Box>
 
-          <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 900, color: '#0f172a', letterSpacing: '0.05em', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', mb: 1 }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            sx={{
+              fontWeight: 900,
+              color: '#0f172a',
+              letterSpacing: '0.05em',
+              fontFamily: '"Outfit", sans-serif',
+              textTransform: 'uppercase',
+              mb: 1,
+            }}
+          >
             CAJA CERRADA
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 5, color: '#64748b', lineHeight: 1.6, fontSize: '1.1rem' }}>
-            El sistema de ventas no está activo actualmente. <br/>
+            El sistema de ventas no está activo actualmente. <br />
             Para comenzar a operar, es necesario realizar la <strong>Apertura de Caja</strong>.
           </Typography>
 

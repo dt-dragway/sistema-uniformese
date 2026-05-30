@@ -36,7 +36,7 @@ class BackupService {
       password: match[2],
       host: match[3],
       port: match[4],
-      database: match[5]
+      database: match[5],
     };
   }
 

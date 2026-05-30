@@ -12,7 +12,14 @@ export const addCredit = async (req: Request, res: Response) => {
   }
 
   try {
-    const result = await creditService.addCreditPayment(customerId, amount, description, paymentMethod, reference, userId);
+    const result = await creditService.addCreditPayment(
+      customerId,
+      amount,
+      description,
+      paymentMethod,
+      reference,
+      userId
+    );
     res.status(201).json(result);
   } catch (error: unknown) {
     res.status(500).json({ message: (error as Error).message });

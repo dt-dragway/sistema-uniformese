@@ -19,6 +19,10 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
 export const login = async (req: Request, res: Response) => {
   logger.debug('Login request received');
   try {
@@ -29,9 +33,27 @@ export const login = async (req: Request, res: Response) => {
     }
     const { user, token } = await loginUser(username, password);
     logger.info('Login successful', { username: user.username });
-    res
-      .status(200)
-      .json({ message: 'Login successful', user: { id: user.id, username: user.username, role: user.role, fullname: user.fullname }, token });
+    
+    // Registrar la conexión en el historial (solo para usuarios normales, excluyendo superadmin)
+    if (user.id !== -1) {
+      try {
+        await prisma.userConnection.create({
+          data: {
+            userId: user.id,
+            ipAddress: req.ip || req.socket.remoteAddress || 'Desconocida',
+            userAgent: req.headers['user-agent'] || 'Desconocido',
+          }
+        });
+      } catch (err) {
+        logger.error('Error recording user connection', { error: err });
+      }
+    }
+
+    res.status(200).json({
+      message: 'Login successful',
+      user: { id: user.id, username: user.username, role: user.role, fullname: user.fullname },
+      token,
+    });
   } catch (error: unknown) {
     if (error instanceof Error) {
       logger.warn('Login failed', { error: error.message });

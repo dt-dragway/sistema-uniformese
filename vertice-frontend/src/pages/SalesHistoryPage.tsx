@@ -179,11 +179,23 @@ const SalesHistoryPage = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 900, color: '#0f172a', fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{
+          fontWeight: 900,
+          color: '#0f172a',
+          fontFamily: '"Outfit", sans-serif',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+        }}
+      >
         Historial de Ventas
       </Typography>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+      <Box
+        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}
+      >
         <TextField
           label="Buscar por Ticket"
           variant="outlined"
@@ -234,22 +246,28 @@ const SalesHistoryPage = () => {
           </Button>
         </Box>
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button 
-            variant="outlined" 
-            onClick={handleExportCsv} 
-            sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 700, borderColor: '#64748b', color: '#64748b' }}
+          <Button
+            variant="outlined"
+            onClick={handleExportCsv}
+            sx={{
+              borderRadius: '12px',
+              textTransform: 'none',
+              fontWeight: 700,
+              borderColor: '#64748b',
+              color: '#64748b',
+            }}
           >
             Exportar CSV
           </Button>
-          <Button 
-            variant="contained" 
-            onClick={handleExportExcel} 
-            sx={{ 
-              borderRadius: '12px', 
-              textTransform: 'none', 
+          <Button
+            variant="contained"
+            onClick={handleExportExcel}
+            sx={{
+              borderRadius: '12px',
+              textTransform: 'none',
               fontWeight: 700,
               backgroundColor: '#16a34a',
-              '&:hover': { backgroundColor: '#15803d' }
+              '&:hover': { backgroundColor: '#15803d' },
             }}
           >
             Exportar Excel
@@ -257,7 +275,14 @@ const SalesHistoryPage = () => {
         </Box>
       </Box>
 
-      <Paper sx={{ borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+      <Paper
+        sx={{
+          borderRadius: '24px',
+          overflow: 'hidden',
+          border: '1px solid rgba(0,0,0,0.05)',
+          boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
+        }}
+      >
         <TableContainer>
           <Table stickyHeader>
             <TableHead>
@@ -268,22 +293,37 @@ const SalesHistoryPage = () => {
                 <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Total</TableCell>
                 <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Estado</TableCell>
                 <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Referencia</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>Acciones</TableCell>
+                <TableCell align="center" sx={{ fontWeight: 800, color: '#475569' }}>
+                  Acciones
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {paginatedSales.map((sale) => (
-                <TableRow key={sale.id} hover sx={{ backgroundColor: sale.isCancelled ? 'rgba(244, 67, 54, 0.05)' : 'inherit' }}>
+                <TableRow
+                  key={sale.id}
+                  hover
+                  sx={{ backgroundColor: sale.isCancelled ? 'rgba(244, 67, 54, 0.05)' : 'inherit' }}
+                >
                   <TableCell sx={{ fontWeight: 700, color: '#2a6c8d' }}>{sale.ticketNumber}</TableCell>
-                  <TableCell sx={{ color: '#64748b', fontSize: '0.85rem' }}>{new Date(sale.createdAt).toLocaleString()}</TableCell>
+                  <TableCell sx={{ color: '#64748b', fontSize: '0.85rem' }}>
+                    {new Date(sale.createdAt).toLocaleString()}
+                  </TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>{sale.customer?.name || 'CONSUMIDOR FINAL'}</TableCell>
                   <TableCell sx={{ fontWeight: 800 }}>${sale.totalUsd.toFixed(2)}</TableCell>
                   <TableCell>
-                    <Box sx={{ 
-                      display: 'inline-flex', px: 1.5, py: 0.5, borderRadius: '8px', 
-                      backgroundColor: sale.isCancelled ? 'rgba(220, 38, 38, 0.08)' : 'rgba(22, 163, 74, 0.08)',
-                      color: sale.isCancelled ? '#dc2626' : '#16a34a', fontWeight: 700, fontSize: '0.75rem'
-                    }}>
+                    <Box
+                      sx={{
+                        display: 'inline-flex',
+                        px: 1.5,
+                        py: 0.5,
+                        borderRadius: '8px',
+                        backgroundColor: sale.isCancelled ? 'rgba(220, 38, 38, 0.08)' : 'rgba(22, 163, 74, 0.08)',
+                        color: sale.isCancelled ? '#dc2626' : '#16a34a',
+                        fontWeight: 700,
+                        fontSize: '0.75rem',
+                      }}
+                    >
                       {sale.isCancelled ? 'ANULADA' : 'COMPLETADA'}
                     </Box>
                   </TableCell>
@@ -298,7 +338,12 @@ const SalesHistoryPage = () => {
                       <IconButton onClick={() => handleViewSale(sale)} size="small" color="primary">
                         <VisibilityIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleCancelSaleClick(sale)} disabled={sale.isCancelled || submitting} size="small" color="error">
+                      <IconButton
+                        onClick={() => handleCancelSaleClick(sale)}
+                        disabled={sale.isCancelled || submitting}
+                        size="small"
+                        color="error"
+                      >
                         <CancelIcon />
                       </IconButton>
                     </Box>
