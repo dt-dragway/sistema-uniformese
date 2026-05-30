@@ -3,13 +3,13 @@ setlocal enabledelayedexpansion
 
 :: ============================================
 ::   VERTICE POS - INSTALADOR PROFESIONAL
-::   Version 1.10.2
+::   Version 1.11.0
 :: ============================================
 
 color 0A
 echo.
 echo ============================================================
-echo    VERTICE POS - INSTALACION PROFESIONAL v1.10.2
+echo    VERTICE POS - INSTALACION PROFESIONAL v1.11.0
 echo ============================================================
 echo.
 

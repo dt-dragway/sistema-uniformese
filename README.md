@@ -847,7 +847,7 @@ DT Dragway
 
 <div align="center">
 
-**Vertice POS v1.11.0**
+**Vertice POS v1.11.0 (Build: 2026-05-30)**
 
 *Sistema de Punto de Venta Profesional*
 

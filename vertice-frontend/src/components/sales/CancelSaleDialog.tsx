@@ -46,7 +46,7 @@ const CancelSaleDialog: React.FC<CancelSaleDialogProps> = ({ open, onClose, onCo
       </DialogTitle>
       <DialogContent>
         <Typography variant="body1" gutterBottom>
-          ¿Está seguro de que desea anular la venta <strong>{ticketNumber}</strong>?
+          ¿Está seguro de que desea anular el comprobante <strong>{ticketNumber}</strong>?
         </Typography>
         <Typography variant="body2" color="text.secondary" paragraph>
           Esta acción revertirá el stock de los productos y registrará un movimiento de anulación en la caja. Esta

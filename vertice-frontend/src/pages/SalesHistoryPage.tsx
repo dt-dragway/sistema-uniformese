@@ -197,7 +197,7 @@ const SalesHistoryPage = () => {
         sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}
       >
         <TextField
-          label="Buscar por Ticket"
+          label="Buscar por Comprobante"
           variant="outlined"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -287,7 +287,7 @@ const SalesHistoryPage = () => {
           <Table stickyHeader>
             <TableHead>
               <TableRow sx={{ backgroundColor: '#f8fafc' }}>
-                <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Ticket</TableCell>
+                <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Comprobante</TableCell>
                 <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Fecha</TableCell>
                 <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Cliente</TableCell>
                 <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Total</TableCell>

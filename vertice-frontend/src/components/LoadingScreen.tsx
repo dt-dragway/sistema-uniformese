@@ -1,6 +1,8 @@
 import React from 'react';
 import '../styles/LoadingScreen.css';
 
+import { APP_VERSION } from '../config/appVersion';
+
 interface LoadingScreenProps {
   status: 'connecting' | 'verifying' | 'error' | 'ready';
   serverUrl?: string;
@@ -60,7 +62,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ status, serverUrl, error,
       <div className="loading-container">
         <div className="loading-header">
           <h1>SISTEMA DE GESTIÓN</h1>
-          <span className="version">v1.11.0</span>
+          <span className="version">v{APP_VERSION}</span>
         </div>
 
         {getStatusIcon()}

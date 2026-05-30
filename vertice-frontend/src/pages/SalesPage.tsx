@@ -190,7 +190,7 @@ export const SalesPage = () => {
         <ProductCatalog cartItems={cartItems} exchangeRate={exchangeRate} onProductSelect={addProductToCart} />
       </Box>
 
-      {/* Columna Derecha: Ticket de Compra */}
+      {/* Columna Derecha: Comprobante de Venta */}
       <Paper
         elevation={3}
         sx={{

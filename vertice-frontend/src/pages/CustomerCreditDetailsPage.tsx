@@ -111,7 +111,7 @@ const CustomerCreditDetailsPage = () => {
               <TableCell align="right">Monto (REF)</TableCell>
               <TableCell align="right">Monto (Bs.)</TableCell>
               <TableCell align="center">Generado por</TableCell>
-              <TableCell align="center">Factura</TableCell>
+              <TableCell align="center">Comprobante</TableCell>
               <TableCell align="center">Estado</TableCell>
             </TableRow>
           </TableHead>

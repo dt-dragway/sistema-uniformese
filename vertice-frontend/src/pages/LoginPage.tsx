@@ -377,7 +377,7 @@ const LoginPage = () => {
         fullWidth
         PaperProps={{ sx: { borderRadius: '24px' } }}
       >
-        <DialogTitle sx={{ fontWeight: 900, color: '#2a6c8d' }}>Configuración de Servidor</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 900, color: '#0255A5' }}>Configuración de Servidor</DialogTitle>
         <DialogContent dividers>
           <Box sx={{ pt: 1 }}>
             <Typography variant="body2" sx={{ mb: 3, color: '#475569', fontWeight: 500 }}>

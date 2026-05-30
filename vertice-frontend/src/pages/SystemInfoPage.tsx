@@ -13,7 +13,7 @@ const SystemInfoPage = () => {
 
   const developerInfo = {
     name: 'Jesus Aroldo Diaz',
-    company: 'Comercializadora Gonzalez 2018',
+    company: 'UNIFORMESE',
     email: 'jadcsk15@gmail.com',
     website: 'https://github.com/dt-dragway/vertice_pos',
   };

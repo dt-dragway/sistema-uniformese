@@ -475,7 +475,7 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
                   },
                 }}
               >
-                {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Imprimir Ticket (F1)'}
+                {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Imprimir Comprobante (F1)'}
               </Button>
             </Box>
           </Box>
