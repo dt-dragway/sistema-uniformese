@@ -28,7 +28,7 @@
     "outputPath": "../release"
   },
   "prisma": {
-    "seed": "ts-node -O '{\"module\":\"commonjs\"}' prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
