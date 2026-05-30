@@ -186,7 +186,7 @@ app.get('/api/health', async (req, res) => {
 });
 
 // Serve frontend static files in production
-const frontendPath = process.env.FRONTEND_PATH || path.resolve(process.cwd(), 'vertice-frontend', 'dist');
+const frontendPath = path.resolve(process.cwd(), process.env.FRONTEND_PATH || 'vertice-frontend/dist');
 
 if (require('fs').existsSync(frontendPath)) {
   logger.info('Serving frontend', { path: frontendPath });
