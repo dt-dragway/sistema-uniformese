@@ -13,7 +13,7 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
 
   // --- Company Name ---
   doc.setFontSize(12);
-  doc.text('Comercializadora Gonzalez 2018', 14, lastY);
+  doc.text('Uniformese', 14, lastY);
 
   // --- Title ---
   doc.setFontSize(18);

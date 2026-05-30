@@ -13,7 +13,7 @@ app.use(express.json());
 
 // Business information
 const BUSINESS_INFO = {
-  name: 'Comercializadora Gonzalez 2018',
+  name: 'Uniformese',
   rif: '',
   address: 'Porlamar, Sector Achipano',
 };
