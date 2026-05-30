@@ -186,36 +186,21 @@ app.get('/api/health', async (req, res) => {
 });
 
 // Serve frontend static files in production
-// Check multiple possible frontend locations
-const possiblePaths = [
-  process.env.FRONTEND_PATH,
-  path.join(__dirname, '..', '..', 'vertice-frontend', 'dist'),
-  path.join(__dirname, '..', '..', 'frontend', 'dist'),
-  path.join(__dirname, '..', 'frontend', 'dist'),
-];
+const frontendPath = process.env.FRONTEND_PATH || path.resolve(__dirname, '..', 'vertice-frontend', 'dist');
 
-let frontendPath = '';
-for (const p of possiblePaths) {
-  if (p && require('fs').existsSync(p)) {
-    frontendPath = p;
-    break;
-  }
-}
-
-if (frontendPath) {
+if (require('fs').existsSync(frontendPath)) {
   logger.info('Serving frontend', { path: frontendPath });
   app.use(express.static(frontendPath));
 } else {
-  logger.warn('Frontend not found');
+  logger.warn('Frontend not found', { attemptedPath: frontendPath });
 }
 
 app.get('/', (req, res) => {
-  // If frontend exists, serve it; otherwise show API message
   const indexPath = path.resolve(frontendPath, 'index.html');
   if (require('fs').existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.send('Hello from Vertice-POS Node.js API!');
+    res.send('API is running. Frontend not found at: ' + frontendPath);
   }
 });
 
@@ -326,7 +311,6 @@ app.post('/api/print-ticket', (req, res) => printController.printTicket(req, res
 // This must come AFTER all API routes
 // Express 5 requires named parameter syntax for wildcards
 app.get('/{*path}', (req, res) => {
-  // Skip if it's an API route that wasn't matched
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'API endpoint not found' });
   }
@@ -334,7 +318,7 @@ app.get('/{*path}', (req, res) => {
   if (require('fs').existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(404).send('Not Found');
+    res.status(404).send('Frontend index not found');
   }
 });
 
