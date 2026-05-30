@@ -128,3 +128,46 @@ const printHtmlInBrowser = async (html: string) => {
     alert('Por favor habilite las ventanas emergentes para imprimir.');
   }
 };
+
+// ─────────────────────────────────────────────────────────────
+// ETIQUETAS ZEBRA LP2824
+// ─────────────────────────────────────────────────────────────
+
+export interface LabelItem {
+  name: string;
+  barCode?: string;
+  price: number;
+  size?: string;
+  color?: string;
+  quantity: number;
+}
+
+/**
+ * Envía una lista de productos al print server para imprimir etiquetas
+ * en la Zebra LP2824 Plus vía USB.
+ */
+export const printLabels = async (items: LabelItem[], printerName?: string): Promise<{ success: boolean; totalPrinted: number; method?: string }> => {
+  const url = getPrintServerUrl();
+  try {
+    const response = await axios.post(`${url}/print-label`, { items, printerName });
+    return response.data;
+  } catch (error: any) {
+    console.error('[Etiquetas] Error al imprimir:', error);
+    const message = error.response?.data?.message || 'No se pudo conectar al servidor de impresión.';
+    throw new Error(message);
+  }
+};
+
+/**
+ * Obtiene el ZPL generado para un producto (útil para debug/previsualización)
+ */
+export const previewLabel = async (item: Omit<LabelItem, 'quantity'>): Promise<string> => {
+  const url = getPrintServerUrl();
+  try {
+    const response = await axios.post(`${url}/preview-label`, { item });
+    return response.data.zpl || '';
+  } catch {
+    return '';
+  }
+};
+

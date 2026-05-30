@@ -22,6 +22,8 @@ import PrinterSettingsPage from './pages/PrinterSettingsPage';
 import ServerConfigPage from './pages/ServerConfigPage';
 import SystemInfoPage from './pages/SystemInfoPage';
 import AdminCajaPage from './pages/AdminCajaPage';
+import LabelPrintPage from './pages/LabelPrintPage';
+
 import { fetchExchangeRateAsync } from './store/appConfigSlice';
 import { fetchSavedPrinterAsync } from './store/printerSlice'; // Import the new action
 import { AppDispatch, RootState } from './store';
@@ -131,6 +133,17 @@ function App() {
           <PrivateRoute>
             <MainLayout>
               <InternalWithdrawalPage />
+            </MainLayout>
+          </PrivateRoute>
+        }
+      />
+      {/* Label Print Route */}
+      <Route
+        path="/labels"
+        element={
+          <PrivateRoute>
+            <MainLayout>
+              <LabelPrintPage />
             </MainLayout>
           </PrivateRoute>
         }
