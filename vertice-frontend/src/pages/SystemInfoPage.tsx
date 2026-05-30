@@ -7,7 +7,7 @@ const SystemInfoPage = () => {
   const appInfo = {
     name: APP_NAME,
     version: APP_VERSION,
-    description: 'Sistema de Punto de Venta con soporte para red',
+    description: '',
     buildDate: APP_BUILD_DATE,
   };
 
@@ -113,15 +113,7 @@ const SystemInfoPage = () => {
                       <Typography variant="body1">{developerInfo.email}</Typography>
                     </Box>
                   </Box>
-                  <Box>
-                    <Typography variant="body2" color="text.secondary">
-                      Repositorio de Desarrollo
-                    </Typography>
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <GitHub fontSize="small" color="action" />
-                      <Typography variant="body1">{developerInfo.website}</Typography>
-                    </Box>
-                  </Box>
+
                 </Stack>
               </CardContent>
             </Card>
