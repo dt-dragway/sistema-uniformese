@@ -261,7 +261,7 @@ let server: any;
   }
 
   server = app.listen(port, host, () => {
-    logger.info(`Vértice POS running on http://${host}:${port}`);
+    logger.info(`Sistema de Gestión running on http://${host}:${port}`);
   });
 })();
 

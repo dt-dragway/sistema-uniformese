@@ -131,7 +131,7 @@ class ErrorBoundary extends Component<Props, State> {
           </Paper>
 
           <Typography variant="caption" color="text.secondary" sx={{ mt: 4, opacity: 0.5 }}>
-            Vertice POS v1.11.0
+            Sistema de Gestión v1.11.0
           </Typography>
         </Box>
       );
