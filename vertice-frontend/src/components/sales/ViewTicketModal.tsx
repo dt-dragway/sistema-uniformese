@@ -44,8 +44,8 @@ interface ViewTicketModalProps {
 
 const BUSINESS_INFO = {
   name: 'UNIFORMESE',
-  rif: 'J-12345678-9', // Update this if you have a specific RIF
-  address: 'Porlamar, Isla de Margarita',
+  rif: 'J-403375640',
+  address: 'RIF-403375640',
   phone: '0414-0000000', // Update this if you have a specific phone
 };
 

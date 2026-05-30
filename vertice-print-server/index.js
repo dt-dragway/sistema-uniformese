@@ -14,9 +14,9 @@ app.use(express.json());
 
 // Business information (tickets de venta)
 const BUSINESS_INFO = {
-  name: 'Uniformese',
+  name: 'UNIFORMESE',
   rif: '',
-  address: 'Porlamar, Sector Achipano',
+  address: 'RIF-403375640',
 };
 
 // Business information (etiquetas de prenda)

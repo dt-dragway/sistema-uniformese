@@ -36,7 +36,6 @@ import {
   getActiveSessions,
   getAllSessions,
   getAllCashMovements,
-  advance,
   getCorteX,
   getCorteXByAdmin,
   processCorteZ,
@@ -181,7 +180,6 @@ app.get('/api/cash-register/preview/:userId', authMiddleware, getClosingPreviewB
 app.get('/api/cash-register/status', authMiddleware, getActiveSession);
 app.get('/api/cash-register/active-sessions', authMiddleware, getActiveSessions);
 app.get('/api/cash-register/sessions', authMiddleware, getAllSessions);
-app.post('/api/cash-register/advance', authMiddleware, advance);
 app.get('/api/cash-register/corte-x', authMiddleware, getCorteX);
 app.get('/api/cash-register/corte-x/:userId', authMiddleware, getCorteXByAdmin);
 app.post('/api/cash-register/corte-z', authMiddleware, processCorteZ);

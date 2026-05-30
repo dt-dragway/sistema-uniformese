@@ -39,6 +39,8 @@ import {
   PhoneAndroid as PhoneAndroidIcon,
   PriceChange as PriceChangeIcon,
   LocalOffer as LocalOfferIcon,
+  Fullscreen as FullscreenIcon,
+  FullscreenExit as FullscreenExitIcon,
 } from '@mui/icons-material';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { logout } from '../store/authSlice';
@@ -168,6 +170,25 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const mainContentRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((e) => {
+        console.error(`Error al intentar activar pantalla completa: ${e.message}`);
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
 
   const isSuperAdmin = user && user.username === 'superadmin';
   const isCashier = user && user.role === 'CASHIER';
@@ -248,10 +269,17 @@ function MainLayout({ children }: { children: React.ReactNode }) {
           </Box>
           <Box sx={{ flexGrow: 1 }} />
           {user && (
-            <Typography variant="body1" sx={{ color: '#000000', mr: 3, fontWeight: 700 }}>
+            <Typography variant="body1" sx={{ color: '#000000', mr: 2, fontWeight: 700 }}>
               Bienvenido <strong>{user.fullname}</strong>
             </Typography>
           )}
+
+          <Tooltip title={isFullscreen ? "Salir de Pantalla Completa" : "Pantalla Completa"}>
+            <IconButton onClick={toggleFullscreen} sx={{ color: '#0255A5', mr: 2 }}>
+              {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+            </IconButton>
+          </Tooltip>
+
           <WindowControls />
         </Toolbar>
       </AppBar>

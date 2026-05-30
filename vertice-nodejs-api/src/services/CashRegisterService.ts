@@ -138,18 +138,8 @@ export class CashRegisterService {
       },
     });
 
-    let totalAvanceSalidaBs = 0;
-    let totalAvanceEntradaBs = 0;
-    let totalRechargeIncomeBs = 0;
-
     for (const move of movements) {
-      if (move.type === 'avance_salida') {
-        totalAvanceSalidaBs += move.amountBs;
-      } else if (move.type === 'avance_entrada') {
-        totalAvanceEntradaBs += move.amountBs;
-      } else if (move.type === 'recharge') {
-        totalRechargeIncomeBs += move.amountBs;
-      } else if (move.type === 'deposit') {
+      if (move.type === 'deposit') {
         calculatedOtherIncomeUsd += move.amountUsd;
         calculatedOtherIncomeBs += move.amountBs;
       } else if (move.type === 'withdrawal') {
@@ -157,9 +147,6 @@ export class CashRegisterService {
         calculatedExpensesBs += move.amountBs;
       }
     }
-
-    // Include recharges and advances in electronic totals for auditing
-    calculatedElectronicSalesBs += totalAvanceEntradaBs + totalRechargeIncomeBs;
 
     return {
       calculatedCashSalesUsd,
@@ -172,10 +159,6 @@ export class CashRegisterService {
       calculatedOtherIncomeBs,
       calculatedExpensesUsd,
       calculatedExpensesBs,
-      totalAvanceSalidaBs,
-      totalAvanceEntradaBs,
-      totalRechargeIncomeBs,
-      calculatedElectronicSalesUsd: 0,
     };
   }
 
@@ -228,8 +211,7 @@ export class CashRegisterService {
         session.openingAmountBs +
         calculatedTotals.calculatedCashSalesBs +
         calculatedTotals.calculatedDebtPaymentsBs -
-        calculatedTotals.calculatedExpensesBs -
-        calculatedTotals.totalAvanceSalidaBs;
+        calculatedTotals.calculatedExpensesBs;
 
       const discrepancyUsd = closingAmountUsd - expectedAmountUsd;
       const discrepancyBs = closingAmountBs - expectedAmountBs;
@@ -277,40 +259,6 @@ export class CashRegisterService {
           closedAt: new Date(),
         },
       });
-    });
-  }
-
-  public async processCashAdvance(userId: number, amountToGive: number, percentage: number, paymentMethod: string) {
-    const session = await this.getActiveSession(userId);
-    if (!session) throw new Error('No hay una sesión de caja abierta.');
-
-    const commissionBs = amountToGive * (percentage / 100);
-    const totalChargeBs = amountToGive + commissionBs;
-
-    return prisma.$transaction(async (tx) => {
-      await tx.cashMovement.create({
-        data: {
-          cashRegisterSessionId: session.id,
-          type: 'avance_salida',
-          amountBs: amountToGive,
-          amountUsd: 0,
-          paymentMethod: 'Efectivo Bs.',
-          description: `Avance: Entrega de efectivo (${percentage}% com.)`,
-        },
-      });
-
-      await tx.cashMovement.create({
-        data: {
-          cashRegisterSessionId: session.id,
-          type: 'avance_entrada',
-          amountBs: totalChargeBs,
-          amountUsd: 0,
-          paymentMethod: paymentMethod,
-          description: `Avance: Cobro electrónico (Monto + Comisión)`,
-        },
-      });
-
-      return { success: true, amountGiven: amountToGive, totalCharged: totalChargeBs };
     });
   }
 
@@ -418,8 +366,7 @@ export class CashRegisterService {
       session.openingAmountBs +
       totals.calculatedCashSalesBs +
       totals.calculatedDebtPaymentsBs -
-      totals.calculatedExpensesBs -
-      totals.totalAvanceSalidaBs;
+      totals.calculatedExpensesBs;
 
     const ventas = await prisma.sale.findMany({
       where: { cashRegisterSessionId: session.id, isCancelled: false },
@@ -443,10 +390,6 @@ export class CashRegisterService {
       cobranzas: {
         efectivoUsd: totals.calculatedDebtPaymentsUsd,
         efectivoBs: totals.calculatedDebtPaymentsBs,
-      },
-      avances: {
-        salidaBs: totals.totalAvanceSalidaBs,
-        entradaBs: totals.totalAvanceEntradaBs,
       },
       gastos: {
         usd: totals.calculatedExpensesUsd,
@@ -489,8 +432,7 @@ export class CashRegisterService {
         session.openingAmountBs +
         totales.calculatedCashSalesBs +
         totales.calculatedDebtPaymentsBs -
-        totales.calculatedExpensesBs -
-        totales.totalAvanceSalidaBs;
+        totales.calculatedExpensesBs;
 
       const discrepancyUsd = conteoReal.efectivoUsd - teoricoUsd;
       const discrepancyBs = conteoReal.efectivoBs - teoricoBs;

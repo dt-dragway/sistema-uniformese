@@ -16,7 +16,8 @@ export default defineConfig({
         theme_color: '#0255A5',
         background_color: '#ffffff',
         display: 'standalone',
-        orientation: 'portrait',
+        display_override: ['window-controls-overlay', 'minimal-ui'],
+        orientation: 'any',
         scope: '/',
         start_url: '/',
         icons: [

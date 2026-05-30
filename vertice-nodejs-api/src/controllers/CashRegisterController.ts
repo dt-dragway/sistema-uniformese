@@ -185,27 +185,6 @@ export const getAllSessions = async (req: Request, res: Response) => {
   }
 };
 
-export const advance = async (req: Request, res: Response) => {
-  try {
-    const userId = getUserIdFromRequest(req);
-    if (!userId) {
-      return res.status(401).json({ message: 'Usuario no autenticado' });
-    }
-    const { amountToGive, percentage, paymentMethod } = req.body;
-
-    if (typeof amountToGive !== 'number' || typeof percentage !== 'number' || !paymentMethod) {
-      return res.status(400).json({
-        message: 'Datos inválidos. Se requiere amountToGive (número), percentage (número) y paymentMethod (string).',
-      });
-    }
-
-    const result = await cashRegisterService.processCashAdvance(userId, amountToGive, percentage, paymentMethod);
-    res.status(200).json(result);
-  } catch (error: any) {
-    res.status(500).json({ message: 'Error al procesar avance de efectivo', error: error.message });
-  }
-};
-
 export const createServiceIncome = async (req: Request, res: Response) => {
   try {
     const userId = getUserIdFromRequest(req);
