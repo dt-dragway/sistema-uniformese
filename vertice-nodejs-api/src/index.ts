@@ -79,7 +79,6 @@ import { SettingController } from './controllers/SettingController';
 import { PrintController } from './controllers/PrintController';
 import * as BackupController from './controllers/BackupController';
 import * as MaintenanceController from './controllers/MaintenanceController';
-import * as RechargeController from './controllers/RechargeController';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -190,13 +189,6 @@ app.post('/api/cash-register/corte-z-admin', authMiddleware, processCorteZByAdmi
 app.get('/api/cash-movements', authMiddleware, getAllCashMovements);
 app.post('/api/cash-register/service-income', authMiddleware, createServiceIncome);
 
-// Recharges (Legacy Support)
-app.get('/api/recharge-services', authMiddleware, (req, res) => RechargeController.getServices(req, res));
-app.get('/api/recharges', authMiddleware, (req, res) => RechargeController.getRecharges(req, res));
-app.get('/api/recharges/session/:sessionId', authMiddleware, (req, res) => RechargeController.getRechargesBySession(req, res));
-app.post('/api/recharges', authMiddleware, (req, res) => RechargeController.createRecharge(req, res));
-app.patch('/api/recharges/:id/status', authMiddleware, (req, res) => RechargeController.updateStatus(req, res));
-app.post('/api/recharge-services/seed', authMiddleware, (req, res) => RechargeController.seedServices(req, res));
 
 // Others
 app.get('/api/exchange-rate', getCurrentExchangeRate);
