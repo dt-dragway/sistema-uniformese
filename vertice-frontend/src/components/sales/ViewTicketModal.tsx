@@ -98,6 +98,7 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
 }) => {
   const { exchangeRate } = useSelector((state: RootState) => state.appConfig);
   const { printerName } = useSelector((state: RootState) => state.printer);
+  const { user } = useSelector((state: RootState) => state.auth);
   const ticketRef = useRef<HTMLDivElement>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -134,8 +135,13 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
       }
 
       const { printTicket } = await import('../../api/printService');
+      const saleToPrint = {
+        ...sale,
+        cashierName: user?.fullname || user?.username || 'Caja Principal'
+      };
+
       const result = await printTicket(
-        sale,
+        saleToPrint,
         exchangeRate,
         printerName || 'POS-80C',
         pendingRecharges,
@@ -204,7 +210,6 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
                 }}
                 className="printable-ticket"
               >
-                {/* Header */}
                 <Box sx={{ textAlign: 'center', mb: 2 }}>
                   <Typography
                     variant="body1"
@@ -225,6 +230,13 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
                   >
                     {BUSINESS_INFO.address}
                   </Typography>
+                  <Typography
+                    variant="body2"
+                    fontWeight="bold"
+                    sx={{ fontSize: '12px', color: '#000 !important', mt: 1 }}
+                  >
+                    COMPROBANTE DE VENTA
+                  </Typography>
                 </Box>
 
                 <Divider sx={{ borderStyle: 'dashed', borderColor: '#000 !important', my: 1, opacity: 0.5 }} />
@@ -232,7 +244,7 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
                 {/* Info */}
                 <Box sx={{ my: 1 }}>
                   <Typography variant="body2" sx={{ fontSize: '11px', color: '#000 !important' }}>
-                    <strong>Comprobante:</strong> {sale.ticketNumber}
+                    <strong>No. Comprobante:</strong> {sale.ticketNumber}
                   </Typography>
                   <Typography variant="body2" sx={{ fontSize: '11px', color: '#000 !important' }}>
                     <strong>Fecha:</strong> {new Date(sale.createdAt).toLocaleString()}
@@ -245,6 +257,9 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
                       <strong>CI/RIF:</strong> {sale.customer.cedula}
                     </Typography>
                   )}
+                  <Typography variant="body2" sx={{ fontSize: '11px', color: '#000 !important' }}>
+                    <strong>Cajero:</strong> {user?.fullname || user?.username || 'Caja Principal'}
+                  </Typography>
                 </Box>
 
                 <Divider sx={{ borderStyle: 'dashed', borderColor: '#000 !important', my: 1, opacity: 0.5 }} />

@@ -108,11 +108,14 @@ app.post('/print-ticket', async (req, res) => {
     <div class="business-name">${BUSINESS_INFO.name}</div>
     ${BUSINESS_INFO.rif ? `<div class="business-info">RIF: ${BUSINESS_INFO.rif}</div>` : ''}
     <div class="business-info">${BUSINESS_INFO.address}</div>
+    <div style="font-weight: bold; margin-top: 8px; font-size: 13px;">COMPROBANTE DE VENTA</div>
   </div>
   <div class="ticket-info">
-    <div><strong>Ticket:</strong> ${sale.ticketNumber}</div>
+    <div><strong>No. Comprobante:</strong> ${sale.ticketNumber}</div>
     <div><strong>Fecha:</strong> ${new Date(sale.createdAt).toLocaleString('es-VE')}</div>
-    <div><strong>Cliente:</strong> ${sale.customer?.name || 'N/A'}</div>
+    <div><strong>Cliente:</strong> ${sale.customer?.name || 'CONSUMIDOR FINAL'}</div>
+    ${sale.customer?.cedula ? `<div><strong>CI/RIF:</strong> ${sale.customer.cedula}</div>` : ''}
+    <div><strong>Cajero:</strong> ${sale.cashierName || 'Caja Principal'}</div>
   </div>
   ${sale.items.length > 0 ? `
   <div class="section-title">Artículos</div>

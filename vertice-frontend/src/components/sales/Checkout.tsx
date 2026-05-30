@@ -53,7 +53,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totals }) => {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexGrow: 1, minWidth: 0 }}>
           {selectedCustomer ? (
             <Chip
-              label={selectedCustomer.name}
+              label={`${selectedCustomer.name}${selectedCustomer.cedula ? ` - ${selectedCustomer.cedula}` : ''}`}
               color="primary"
               onDelete={handleClearCustomer}
               sx={{
@@ -113,7 +113,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totals }) => {
           transition: 'all 0.2s ease-in-out',
         }}
       >
-        COBRAR
+        PROCESAR
       </Button>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 0.5 }}>
