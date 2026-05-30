@@ -39,5 +39,5 @@ COPY --from=frontend-builder /app/frontend/dist ./vertice-frontend/dist
 # Exponer el puerto
 EXPOSE 3000
 
-# Comando para ejecutar migraciones y arrancar el servidor
-CMD npx prisma db push --accept-data-loss && node dist/index.js
+# Comando para ejecutar migraciones, poblar datos iniciales y arrancar el servidor
+CMD npx prisma db push --accept-data-loss && npx prisma db seed && node dist/index.js
