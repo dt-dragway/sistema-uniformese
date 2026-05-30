@@ -128,10 +128,11 @@ const CashAdvancePage = () => {
 
     setLoading(true);
     try {
-      await cashRegisterService.processCashAdvance(amountVal, percentageVal, paymentMethod);
+      // Obsolete call - Module deprecated in retail version
+      // await cashRegisterService.processCashAdvance(amountVal, percentageVal, paymentMethod);
       setNotification({
         open: true,
-        message: `Avance procesado con éxito. Cobrar: Bs ${totalToCharge.toFixed(2)}`,
+        message: `Este módulo está deshabilitado en esta versión.`,
         severity: 'success',
       });
       // Reset form

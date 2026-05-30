@@ -784,7 +784,7 @@ const ProductManagementPage = () => {
                 label={isEditing ? 'Stock Actual' : 'Stock Inicial'}
                 type="number"
                 variant="outlined"
-                value={selectedProduct.stock === 0 || selectedProduct.stock === '0' ? '' : selectedProduct.stock || ''}
+                value={selectedProduct.stock === 0 ? '' : selectedProduct.stock || ''}
                 placeholder="0"
                 onChange={handleProductChange}
                 inputProps={{ step: '1', min: 0 }}

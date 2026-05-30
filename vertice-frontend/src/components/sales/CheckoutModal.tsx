@@ -189,7 +189,7 @@ interface Payment {
          setShowErrorSnackbar(true);
          return;
        }
-     } catch (error: AxiosError) {
+     } catch (error: any) {
        if (error.response?.status === 404) {
          setErrorMessage('Tu caja fue cerrada por un administrador. No puedes procesar ventas.');
          setShowErrorSnackbar(true);
@@ -280,7 +280,7 @@ interface Payment {
      try {
        const result = await dispatch(submitSale(saleData)).unwrap();
        setCompletedSale(result);
-     } catch (error: AxiosError) {
+     } catch (error: any) {
        const message = typeof error === 'string' ? error : error.message || 'Failed to submit sale.';
        setErrorMessage(message);
        setShowErrorSnackbar(true);
