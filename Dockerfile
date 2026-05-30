@@ -33,6 +33,7 @@ ENV FRONTEND_PATH=/app/dist/vertice-frontend/dist
 COPY --from=backend-builder /app/backend/dist ./dist
 COPY --from=backend-builder /app/backend/node_modules ./node_modules
 COPY --from=backend-builder /app/backend/package*.json ./
+COPY --from=backend-builder /app/backend/tsconfig*.json ./
 COPY --from=backend-builder /app/backend/prisma ./prisma
 
 # Copiar el frontend compilado a una ruta FIJA y conocida
