@@ -236,13 +236,13 @@ if (fs.existsSync(frontendPath)) {
   app.use(express.static(frontendPath));
   
   // Catch-all to serve index.html for SPA
-  app.get('*', (req, res) => {
+  app.get('/(.*)', (req, res) => {
     if (req.path.startsWith('/api/')) return res.status(404).json({ error: 'Not Found' });
     res.sendFile(indexPath);
   });
 } else {
   logger.error(`FATAL: Frontend path not found at ${frontendPath}`);
-  app.get('*', (req, res) => {
+  app.get('/(.*)', (req, res) => {
     res.status(500).send(`Deployment Error: Frontend assets not found at ${frontendPath}. Current Directory: ${process.cwd()}`);
   });
 }
