@@ -211,7 +211,7 @@ if (frontendPath) {
 
 app.get('/', (req, res) => {
   // If frontend exists, serve it; otherwise show API message
-  const indexPath = path.join(frontendPath, 'index.html');
+  const indexPath = path.resolve(frontendPath, 'index.html');
   if (require('fs').existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
@@ -330,7 +330,7 @@ app.get('/{*path}', (req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'API endpoint not found' });
   }
-  const indexPath = path.join(frontendPath, 'index.html');
+  const indexPath = path.resolve(frontendPath, 'index.html');
   if (require('fs').existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {

@@ -344,6 +344,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                     subheader={
                       open ? (
                         <ListSubheader 
+                          disableSticky
                           component="div" 
                           sx={{ 
                             bgcolor: 'transparent', 

@@ -21,6 +21,9 @@ RUN npm run build
 FROM node:18-alpine
 WORKDIR /app
 
+# Instalar cliente de PostgreSQL para respaldos (pg_dump)
+RUN apk add --no-cache postgresql-client
+
 # Variables de entorno por defecto
 ENV NODE_ENV=production
 ENV PORT=3000
@@ -32,12 +35,11 @@ COPY --from=backend-builder /app/backend/package*.json ./
 COPY --from=backend-builder /app/backend/prisma ./prisma
 
 # Copiar el frontend compilado a la carpeta que el backend espera
-# El backend busca en: ../vertice-frontend/dist relativo a dist/index.js
-# O en la ruta configurada en FRONTEND_PATH
 COPY --from=frontend-builder /app/frontend/dist ./vertice-frontend/dist
 
 # Exponer el puerto
 EXPOSE 3000
 
 # Comando para ejecutar migraciones, poblar datos iniciales y arrancar el servidor
+# Se usa npx prisma db push para asegurar que la DB esté lista antes del seed
 CMD npx prisma db push --accept-data-loss && npx prisma db seed && node dist/index.js
