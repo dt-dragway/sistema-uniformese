@@ -129,6 +129,23 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+// DEBUG ROUTE: List frontend files
+app.get('/api/debug-files', (req, res) => {
+  const fPath = path.resolve(process.cwd(), 'vertice-frontend/dist');
+  try {
+    const files = fs.existsSync(fPath) ? fs.readdirSync(fPath) : 'Folder not found';
+    res.json({
+      cwd: process.cwd(),
+      frontendPath: fPath,
+      exists: fs.existsSync(fPath),
+      files: files,
+      assets: fs.existsSync(path.join(fPath, 'assets')) ? fs.readdirSync(path.join(fPath, 'assets')) : 'No assets folder'
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // --- RETAIL API ROUTES ---
 // Users
 app.get('/api/users', getUsers);
