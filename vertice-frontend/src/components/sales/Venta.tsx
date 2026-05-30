@@ -23,7 +23,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import PriceChangeIcon from '@mui/icons-material/PriceChange';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import CheckroomOutlinedIcon from '@mui/icons-material/CheckroomOutlined';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import {
@@ -209,7 +209,7 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
           fontWeight={800}
           sx={{ color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em' }}
         >
-          Carrito
+          Tienda
         </Typography>
         <Chip
           label={`${cartItems.length} items`}
@@ -242,9 +242,9 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
       >
         {cartItems.length === 0 ? (
           <Box sx={{ textAlign: 'center', opacity: 0.5, py: 8 }}>
-            <ShoppingCartOutlinedIcon sx={{ fontSize: 64, color: '#94a3b8', mb: 2 }} />
+            <CheckroomOutlinedIcon sx={{ fontSize: 64, color: '#94a3b8', mb: 2 }} />
             <Typography variant="body1" fontWeight={600} color="text.secondary">
-              Tu carrito está vacío
+              vacío
             </Typography>
             <Typography variant="caption" color="text.secondary">
               Selecciona productos del catálogo

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box, Container, Typography, TextField, Button, Paper, Table, TableBody,
   TableCell, TableContainer, TableHead, TableRow, IconButton, Chip, Alert,
@@ -15,29 +15,16 @@ import {
   CheckCircle as CheckCircleIcon,
   Warning as WarningIcon,
 } from '@mui/icons-material';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../store';
 import { printLabels, LabelItem } from '../api/printService';
-import productService from '../api/productService';
+import { fetchProducts } from '../store/productsSlice';
+import { Product } from '../models/Product';
 
 // ─── Tipos ───────────────────────────────────────────────────
 
-interface Product {
-  id: number;
-  name: string;
-  barCode?: string;
-  price: number;
-  talla?: string;
-  color?: string;
-  tipo?: string;
-  caracteristica?: string;
-  stock: number;
-  isActive: boolean;
-}
-
 interface QueueItem extends LabelItem {
-  id: number;        // product.id
+  id: number;
   productId: number;
 }
 
@@ -80,7 +67,6 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
         position: 'relative',
       }}
     >
-      {/* Encabezado empresa */}
       <Typography align="center" sx={{ fontFamily: 'monospace', fontSize: '11px', fontWeight: 'bold', lineHeight: 1.3 }}>
         UNIFORMESE PERSEO GLOBAL, C.A.
       </Typography>
@@ -93,35 +79,27 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
 
       <Divider sx={{ my: 0.5, borderColor: '#000' }} />
 
-      {/* Nombre producto */}
       <Typography sx={{ fontFamily: 'monospace', fontSize: '14px', fontWeight: 'bold', lineHeight: 1.4, textTransform: 'uppercase' }}>
         {String(item.name).substring(0, 28)}
       </Typography>
 
-      {/* Detalle */}
       {detailParts.length > 0 && (
         <Typography sx={{ fontFamily: 'monospace', fontSize: '10px', color: '#444', lineHeight: 1.3 }}>
           {detailParts.join('  ')}
         </Typography>
       )}
 
-      {/* Barcode simulado */}
       <Box sx={{ my: 0.8, display: 'flex', alignItems: 'flex-end', gap: 1 }}>
         <Box sx={{ flex: 1 }}>
-          {/* Barras simuladas con líneas */}
           <Box sx={{ display: 'flex', gap: '2px', height: 40, alignItems: 'stretch' }}>
             {Array.from({ length: 28 }, (_, i) => (
-              <Box
-                key={i}
-                sx={{ width: i % 3 === 0 ? 3 : 1.5, bgcolor: '#000', flexShrink: 0 }}
-              />
+              <Box key={i} sx={{ width: i % 3 === 0 ? 3 : 1.5, bgcolor: '#000', flexShrink: 0 }} />
             ))}
           </Box>
           <Typography sx={{ fontFamily: 'monospace', fontSize: '9px', mt: 0.3 }}>
             {barcodeDisplay}
           </Typography>
         </Box>
-        {/* Precio */}
         <Box sx={{ textAlign: 'right', minWidth: 70 }}>
           <Typography sx={{ fontFamily: 'monospace', fontSize: '10px', color: '#555' }}>REF.</Typography>
           <Typography sx={{ fontFamily: 'monospace', fontSize: '15px', fontWeight: 'bold' }}>
@@ -135,48 +113,37 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
 
 // ─── Página principal ─────────────────────────────────────────
 const LabelPrintPage: React.FC = () => {
-  const token = useSelector((s: RootState) => s.auth.token);
+  const dispatch = useDispatch<AppDispatch>();
+  const { products: allProducts, loading } = useSelector((state: RootState) => state.products);
+  
+  const [searchQuery, setSearchQuery] = useState('');
+  const [queue, setQueue] = useState<QueueItem[]>([]);
+  const [previewItem, setPreviewItem] = useState<LabelItem | null>(null);
+  const [printing, setPrinting] = useState(false);
+  const [snack, setSnack] = useState<{ open: boolean; msg: string; severity: 'success' | 'error' | 'info' }>({ open: false, msg: '', severity: 'success' });
 
-  const [searchQuery, setSearchQuery]     = useState('');
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
-  const [searching, setSearching]         = useState(false);
-  const [queue, setQueue]                 = useState<QueueItem[]>([]);
-  const [previewItem, setPreviewItem]     = useState<LabelItem | null>(null);
-  const [printing, setPrinting]           = useState(false);
-  const [snack, setSnack]                 = useState<{ open: boolean; msg: string; severity: 'success' | 'error' | 'info' }>({ open: false, msg: '', severity: 'success' });
-
-  const apiBase = useSelector((s: RootState) => (s as any).appConfig?.apiUrl || import.meta.env.VITE_API_URL || 'http://localhost:3000');
-
-  // ── Búsqueda de productos ──
-  const handleSearch = useCallback(async (q: string) => {
-    if (q.trim().length < 2) { setSearchResults([]); return; }
-    setSearching(true);
-    try {
-      const res = await productService.getAllProducts();
-      const products: Product[] = Array.isArray(res.data) ? res.data : (res.data as any)?.products || [];
-      
-      const searchLower = q.toLowerCase();
-      // El backend devuelve todos los productos, los filtramos aquí
-      const filtered = products.filter(p => 
-        p.isActive && 
-        (p.name.toLowerCase().includes(searchLower) || 
-         (p.barCode && p.barCode.toLowerCase().includes(searchLower)))
-      );
-      
-      // Mostrar máximo 10 resultados para no saturar la vista
-      setSearchResults(filtered.slice(0, 10));
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      setSearchResults([]);
-    } finally {
-      setSearching(false);
-    }
-  }, []);
-
+  // Cargar productos si no están en memoria
   useEffect(() => {
-    const t = setTimeout(() => handleSearch(searchQuery), 350);
-    return () => clearTimeout(t);
-  }, [searchQuery, handleSearch]);
+    if (allProducts.length === 0) {
+      dispatch(fetchProducts());
+    }
+  }, [dispatch, allProducts.length]);
+
+  // Filtrado ultra rápido en memoria
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) {
+      // Si está vacío, mostrar los primeros 15 productos activos para que el usuario vea la lista
+      return allProducts.filter(p => p.isActive).slice(0, 15);
+    }
+    const lowerQ = searchQuery.toLowerCase();
+    const filtered = allProducts.filter(p => 
+      p.isActive && (
+        p.name.toLowerCase().includes(lowerQ) || 
+        (p.barCode && p.barCode.toLowerCase().includes(lowerQ))
+      )
+    );
+    return filtered.slice(0, 15);
+  }, [searchQuery, allProducts]);
 
   // ── Agregar producto a la cola ──
   const handleAddProduct = (product: Product) => {
@@ -198,7 +165,6 @@ const LabelPrintPage: React.FC = () => {
     setQueue(prev => [...prev, newItem]);
     setPreviewItem(newItem);
     setSearchQuery('');
-    setSearchResults([]);
   };
 
   // ── Actualizar cantidad ──
@@ -268,7 +234,7 @@ const LabelPrintPage: React.FC = () => {
           {/* Buscador */}
           <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
             <Typography variant="subtitle1" fontWeight={700} mb={1.5} color="#0255A5">
-              🔍 Buscar Producto
+              🔍 Catálogo de Productos
             </Typography>
             <TextField
               fullWidth
@@ -279,7 +245,7 @@ const LabelPrintPage: React.FC = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    {searching ? <CircularProgress size={18} /> : <SearchIcon color="action" />}
+                    {loading ? <CircularProgress size={18} /> : <SearchIcon color="action" />}
                   </InputAdornment>
                 ),
               }}
@@ -287,7 +253,7 @@ const LabelPrintPage: React.FC = () => {
             />
 
             {/* Resultados de búsqueda */}
-            {searchResults.length > 0 && (
+            {searchResults.length > 0 ? (
               <Paper variant="outlined" sx={{ borderRadius: 1, maxHeight: 280, overflow: 'auto' }}>
                 {searchResults.map(product => (
                   <Box
@@ -318,9 +284,10 @@ const LabelPrintPage: React.FC = () => {
                   </Box>
                 ))}
               </Paper>
-            )}
-            {searchQuery.length >= 2 && !searching && searchResults.length === 0 && (
-              <Alert severity="info" sx={{ mt: 1 }}>No se encontraron productos con ese nombre o código.</Alert>
+            ) : (
+              !loading && searchQuery && (
+                <Alert severity="info" sx={{ mt: 1 }}>No se encontraron productos con ese nombre o código.</Alert>
+              )
             )}
           </Paper>
 
@@ -346,7 +313,7 @@ const LabelPrintPage: React.FC = () => {
             {queue.length === 0 ? (
               <Box py={5} textAlign="center" color="text.secondary">
                 <LabelIcon sx={{ fontSize: 48, opacity: 0.2, mb: 1 }} />
-                <Typography variant="body2">La cola está vacía. Busca y agrega productos arriba.</Typography>
+                <Typography variant="body2">La cola está vacía. Selecciona productos del catálogo.</Typography>
               </Box>
             ) : (
               <TableContainer>

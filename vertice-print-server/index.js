@@ -195,8 +195,8 @@ function generateZpl(item) {
   const { name = '', barCode = '', price = 0, size = '', color = '' } = item;
   const fecha = new Date().toLocaleDateString('es-VE');
 
-  // Nombre en mayúsculas, máx 28 caracteres para no desbordar
-  const productName = String(name).substring(0, 28).toUpperCase();
+  // Nombre en mayúsculas, permitimos hasta 45 caracteres para aprovechar 2 líneas
+  const productName = String(name).substring(0, 45).toUpperCase();
 
   // Código de barras: solo caracteres válidos para Code128
   const barCodeVal = String(barCode || '').replace(/[^A-Za-z0-9\-\.\/+\s]/g, '') || String(price);
@@ -215,41 +215,40 @@ function generateZpl(item) {
     '^PW406',         // Ancho: 406 dots = 2"
     '^LL304',         // Alto: 304 dots = 1.5"
     '^LH0,0',
+    '^CI28',          // UTF-8 encoding para tildes y ñ
 
     // ── Encabezado empresa (centrado) ──
-    '^CF0,20',
-    `^FO5,8^FB396,1,,C^FD${LABEL_COMPANY}^FS`,
-    '^CF0,16',
-    `^FO5,30^FB396,1,,C^FD${LABEL_RIF}^FS`,
-    `^FO5,48^FB396,1,,C^FDFECHA: ${fecha}^FS`,
+    '^CF0,22',
+    `^FO5,12^FB396,1,,C^FD${LABEL_COMPANY}^FS`,
+    '^CF0,18',
+    `^FO5,36^FB396,1,,C^FDRIF: ${LABEL_RIF} - FECHA: ${fecha}^FS`,
 
     // ── Separador horizontal ──
-    '^FO5,68^GB396,2,2^FS',
+    '^FO5,60^GB396,2,2^FS',
 
-    // ── Nombre del producto ──
-    '^CF0,26',
-    `^FO8,74^FB280,1,,L^FD${productName}^FS`,
+    // ── Nombre del producto (máx 2 líneas) ──
+    '^CF0,24',
+    `^FO8,66^FB390,2,0,L^FD${productName}^FS`,
   ];
 
   // Talla/Color si existen
   if (detailLine) {
-    lines.push('^CF0,16');
-    lines.push(`^FO8,104^FB280,1,,L^FD${detailLine}^FS`);
+    lines.push('^CF0,20');
+    lines.push(`^FO8,118^FB390,1,,L^FD${detailLine}^FS`);
   }
 
-  // ── Código de barras Code128 ──
-  lines.push('^BY2,2,55');
-  lines.push(`^FO8,${detailLine ? 125 : 108}^BCN,55,N,N,N^FD${barCodeVal}^FS`);
+  // ── Código de barras Code128 (siempre en la misma posición base) ──
+  // Posición Y fija en 142 para dar espacio suficiente a las 2 líneas del nombre
+  lines.push('^BY2,2,60');
+  lines.push(`^FO8,142^BCN,60,N,N,N^FD${barCodeVal}^FS`);
 
   // ── Texto del código bajo el barcode ──
-  lines.push('^CF0,16');
-  lines.push(`^FO8,${detailLine ? 184 : 167}^FB200,1,,L^FD${barCodeVal}^FS`);
+  lines.push('^CF0,20');
+  lines.push(`^FO8,208^FB200,1,,L^FD${barCodeVal}^FS`);
 
   // ── Bloque precio (derecha inferior) ──
-  lines.push('^CF0,18');
-  lines.push(`^FO260,${detailLine ? 175 : 158}^FB136,1,,R^FDREF.^FS`);
-  lines.push('^CF0,28');
-  lines.push(`^FO260,${detailLine ? 195 : 178}^FB136,1,,R^FD${priceStr}^FS`);
+  lines.push('^CF0,30'); // Precio más grande y visible
+  lines.push(`^FO150,198^FB246,1,,R^FDREF. ${priceStr}^FS`);
 
   lines.push('^XZ');
   return lines.join('\n');
