@@ -23,7 +23,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Sale, SaleItem, Payment } from '../../models/Sale';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import Barcode from 'react-barcode';
+import JsBarcode from 'jsbarcode';
 
 interface ViewTicketModalProps {
   open: boolean;
@@ -106,6 +106,25 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('success');
+  const barcodeRef = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    if (sale && barcodeRef.current) {
+      try {
+        JsBarcode(barcodeRef.current, sale.ticketNumber, {
+          format: "CODE128",
+          width: 1.5,
+          height: 40,
+          displayValue: true,
+          fontSize: 12,
+          margin: 0,
+          background: "transparent"
+        });
+      } catch (err) {
+        console.error("Error generating barcode:", err);
+      }
+    }
+  }, [sale]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -446,16 +465,7 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
 
                 {/* Footer / Barcode */}
                 <Box sx={{ textAlign: 'center', mt: 2 }}>
-                  <Barcode 
-                    value={sale.ticketNumber} 
-                    format="CODE128" 
-                    width={1.5} 
-                    height={40} 
-                    fontSize={12} 
-                    background="transparent"
-                    displayValue={true}
-                    margin={0}
-                  />
+                  <svg ref={barcodeRef}></svg>
                 </Box>
               </Paper>
             </Box>

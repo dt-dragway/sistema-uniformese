@@ -131,7 +131,7 @@ class ErrorBoundary extends Component<Props, State> {
           </Paper>
 
           <Typography variant="caption" color="text.secondary" sx={{ mt: 4, opacity: 0.5 }}>
-            Sistema de Gestión v{APP_VERSION}
+            Sistema de Gestión
           </Typography>
         </Box>
       );
