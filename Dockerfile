@@ -1,7 +1,7 @@
 # Multi-stage Dockerfile para Vértice POS (Retail Edition)
 
 # STAGE 1: Construcción del Frontend
-FROM node:18-alpine AS frontend-builder
+FROM node:22-alpine AS frontend-builder
 WORKDIR /app/frontend
 COPY vertice-frontend/package*.json ./
 RUN npm install
@@ -9,7 +9,7 @@ COPY vertice-frontend/ ./
 RUN npm run build
 
 # STAGE 2: Construcción del Backend
-FROM node:18-alpine AS backend-builder
+FROM node:22-alpine AS backend-builder
 WORKDIR /app/backend
 COPY vertice-nodejs-api/package*.json ./
 RUN npm install
@@ -18,7 +18,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # STAGE 3: Imagen Final de Producción
-FROM node:18-alpine
+FROM node:22-alpine
 WORKDIR /app
 
 # Instalar cliente de PostgreSQL para respaldos
