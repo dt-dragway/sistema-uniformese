@@ -1,25 +1,24 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 import { Customer } from '../models/Customer';
-import { API_URL } from './axiosInstance';
 
 const getAllCustomers = () => {
-  return axios.get<Customer[]>(`${API_URL}/customers`);
+  return axiosInstance.get<Customer[]>('/customers');
 };
 
 const getCustomerById = (id: number) => {
-  return axios.get<Customer>(`${API_URL}/customers/${id}`);
+  return axiosInstance.get<Customer>(`/customers/${id}`);
 };
 
 const createCustomer = (customer: Omit<Customer, 'id'>) => {
-  return axios.post<Customer>(`${API_URL}/customers`, customer);
+  return axiosInstance.post<Customer>('/customers', customer);
 };
 
 const updateCustomer = (id: number, customer: Partial<Customer>) => {
-  return axios.put<Customer>(`${API_URL}/customers/${id}`, customer);
+  return axiosInstance.put<Customer>(`/customers/${id}`, customer);
 };
 
 const deleteCustomer = (id: number) => {
-  return axios.delete(`${API_URL}/customers/${id}`);
+  return axiosInstance.delete(`/customers/${id}`);
 };
 
 export default {
