@@ -20,7 +20,7 @@ const BUSINESS_INFO = {
 };
 
 // Business information (etiquetas de prenda)
-const LABEL_COMPANY = 'UNIFORMESE PERSEO GLOBAL, C.A.';
+const LABEL_COMPANY = 'UNIFORMESE';
 const LABEL_RIF     = 'J-403375640';
 
 // ─────────────────────────────────────────────────────────────
@@ -212,7 +212,6 @@ app.get('/get-printers', (req, res) => {
  */
 function generateZpl(item) {
   const { name = '', barCode = '', price = 0, size = '', color = '' } = item;
-  const fecha = new Date().toLocaleDateString('es-VE');
 
   // Nombre en mayúsculas, permitimos hasta 45 caracteres para aprovechar 2 líneas
   const productName = String(name).substring(0, 45).toUpperCase();
@@ -221,7 +220,7 @@ function generateZpl(item) {
   const barCodeVal = String(barCode || '').replace(/[^A-Za-z0-9\-\.\/+\s]/g, '') || String(price);
 
   // Precio formateado
-  const priceStr = Number(price) > 0 ? Number(price).toFixed(2) : '0.00';
+  const priceStr = Number(price) > 0 ? Number(price).toFixed(0) : '0';
 
   // Línea de detalle con talla y color
   const detailParts = [];
@@ -238,36 +237,36 @@ function generateZpl(item) {
 
     // ── Encabezado empresa (centrado) ──
     '^CF0,22',
-    `^FO5,12^FB396,1,,C^FD${LABEL_COMPANY}^FS`,
+    `^FO5,22^FB396,1,,C^FD${LABEL_COMPANY}^FS`,
     '^CF0,18',
-    `^FO5,36^FB396,1,,C^FDRIF: ${LABEL_RIF} - FECHA: ${fecha}^FS`,
+    `^FO5,46^FB396,1,,C^FDRIF: ${LABEL_RIF}^FS`,
 
     // ── Separador horizontal ──
-    '^FO5,60^GB396,2,2^FS',
+    '^FO5,80^GB396,2,2^FS',
 
     // ── Nombre del producto (máx 2 líneas) ──
     '^CF0,24',
-    `^FO8,66^FB390,2,0,L^FD${productName}^FS`,
+    `^FO8,86^FB390,2,0,L^FD${productName}^FS`,
   ];
 
   // Talla/Color si existen
   if (detailLine) {
     lines.push('^CF0,20');
-    lines.push(`^FO8,118^FB390,1,,L^FD${detailLine}^FS`);
+    lines.push(`^FO8,138^FB390,1,,L^FD${detailLine}^FS`);
   }
 
   // ── Código de barras Code128 (siempre en la misma posición base) ──
   // Posición Y fija en 142 para dar espacio suficiente a las 2 líneas del nombre
   lines.push('^BY2,2,60');
-  lines.push(`^FO8,142^BCN,60,N,N,N^FD${barCodeVal}^FS`);
+  lines.push(`^FO8,162^BCN,60,N,N,N^FD${barCodeVal}^FS`);
 
   // ── Texto del código bajo el barcode ──
   lines.push('^CF0,20');
-  lines.push(`^FO8,208^FB200,1,,L^FD${barCodeVal}^FS`);
+  lines.push(`^FO8,228^FB200,1,,L^FD${barCodeVal}^FS`);
 
   // ── Bloque precio (derecha inferior) ──
   lines.push('^CF0,30'); // Precio más grande y visible
-  lines.push(`^FO150,198^FB246,1,,R^FDREF. ${priceStr}^FS`);
+  lines.push(`^FO150,218^FB226,1,,R^FDREF. ${priceStr}^FS`);
 
   lines.push('^XZ');
   return lines.join('\n');
