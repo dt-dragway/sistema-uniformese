@@ -18,7 +18,7 @@ class AutoBackupService {
   private dbConfig: DbConfig;
   private pgBinPath: string;
   private backupDir: string;
-  private maxBackupDays = 7; // Keep backups for 7 days
+  private maxBackupDays = 30; // Mantener backups de los últimos 30 días (rotación)
 
   constructor() {
     this.dbConfig = this.parseDbUrl(process.env.DATABASE_URL || '');
@@ -129,36 +129,31 @@ class AutoBackupService {
   }
 
   /**
-   * Clean up old backups (older than maxBackupDays)
+   * Limpia los backups antiguos manteniendo solo los últimos 30 (rotación)
    */
   async cleanupOldBackups(): Promise<void> {
     try {
-      const files = fs.readdirSync(this.backupDir);
-      const now = Date.now();
-      const maxAge = this.maxBackupDays * 24 * 60 * 60 * 1000; // Days to milliseconds
-      let deletedCount = 0;
+      // Obtener lista de archivos de backup, ordenados por fecha de modificación (más nuevos primero)
+      const files = fs.readdirSync(this.backupDir)
+        .filter(file => file.startsWith('db_backup_') && file.endsWith('.sql'))
+        .map(file => ({
+          name: file,
+          time: fs.statSync(path.join(this.backupDir, file)).mtime.getTime()
+        }))
+        .sort((a, b) => b.time - a.time);
 
-      for (const file of files) {
-        if (!file.startsWith('db_backup_') || !file.endsWith('.sql')) {
-          continue;
-        }
-
-        const filePath = path.join(this.backupDir, file);
-        const stats = fs.statSync(filePath);
-        const age = now - stats.mtime.getTime();
-
-        if (age > maxAge) {
+      // Si hay más de 30 backups, borrar los más antiguos
+      if (files.length > this.maxBackupDays) {
+        const toDelete = files.slice(this.maxBackupDays);
+        for (const file of toDelete) {
+          const filePath = path.join(this.backupDir, file.name);
           fs.unlinkSync(filePath);
-          deletedCount++;
-          logger.info('Deleted old backup', { file });
+          logger.info('Backup eliminado por rotación (máx 30 días)', { file: file.name });
         }
-      }
-
-      if (deletedCount > 0) {
-        logger.info(`Cleaned up ${deletedCount} old backup(s)`);
+        logger.info(`Limpieza completada: ${toDelete.length} backup(s) antiguos eliminados.`);
       }
     } catch (error: any) {
-      logger.error('ERROR during backup cleanup', { error: error.message });
+      logger.error('ERROR durante la limpieza de backups antiguos', { error: error.message });
     }
   }
 
