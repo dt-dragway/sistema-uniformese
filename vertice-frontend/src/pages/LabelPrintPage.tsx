@@ -72,7 +72,7 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
         UNIFORMESE
       </Typography>
       <Typography align="center" sx={{ fontFamily: 'monospace', fontSize: '10px', lineHeight: 1.3 }}>
-        J-403375640
+        RIF V-06560026-5
       </Typography>
 
       <Divider sx={{ my: 0.5, borderColor: '#000' }} />
@@ -94,7 +94,7 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
               <Box key={i} sx={{ width: i % 3 === 0 ? 3 : 1.5, bgcolor: '#000', flexShrink: 0 }} />
             ))}
           </Box>
-          <Typography sx={{ fontFamily: 'monospace', fontSize: '9px', mt: 0.3 }}>
+          <Typography sx={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 'bold', letterSpacing: '1px', mt: 0.5 }}>
             {barcodeDisplay}
           </Typography>
         </Box>
@@ -179,6 +179,7 @@ const LabelPrintPage: React.FC = () => {
       setPreviewItem(null);
     }
   };
+  // Comentario para forzar sincronización del editor con el disco
 
   // ── Imprimir todo ──
   const handlePrint = async () => {

@@ -45,8 +45,8 @@ interface ViewTicketModalProps {
 
 const BUSINESS_INFO = {
   name: 'UNIFORMESE',
-  rif: 'J-403375640',
-  address: 'RIF-403375640',
+  rif: 'V-06560026-5',
+  address: 'RIF V-06560026-5',
   phone: '0414-0000000', // Update this if you have a specific phone
 };
 

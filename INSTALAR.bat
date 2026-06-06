@@ -184,6 +184,15 @@ if %errorlevel% neq 0 (
 )
 
 echo.
+echo Creando usuario Administrador inicial...
+node create-superadmin.js
+if %errorlevel% neq 0 (
+    echo [ADVERTENCIA] No se pudo crear el usuario administrador inicial automáticamente
+) else (
+    echo [OK] Usuario administrador inicial creado correctamente
+)
+
+echo.
 echo ============================================================
 echo [PASO 6/9] Verificando compilacion de la API...
 echo ============================================================

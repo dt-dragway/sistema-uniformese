@@ -15,13 +15,13 @@ app.use(express.json());
 // Business information (tickets de venta)
 const BUSINESS_INFO = {
   name: 'UNIFORMESE',
-  rif: '',
-  address: 'RIF-403375640',
+  rif: 'V-06560026-5',
+  address: 'RIF V-06560026-5',
 };
 
 // Business information (etiquetas de prenda)
 const LABEL_COMPANY = 'UNIFORMESE';
-const LABEL_RIF     = 'J-403375640';
+const LABEL_RIF     = 'V-06560026-5';
 
 // ─────────────────────────────────────────────────────────────
 // Endpoint: imprimir ticket de venta (HTML → navegador)
@@ -261,7 +261,7 @@ function generateZpl(item) {
   lines.push(`^FO8,162^BCN,60,N,N,N^FD${barCodeVal}^FS`);
 
   // ── Texto del código bajo el barcode ──
-  lines.push('^CF0,20');
+  lines.push('^CF0,24');
   lines.push(`^FO8,228^FB200,1,,L^FD${barCodeVal}^FS`);
 
   // ── Bloque precio (derecha inferior) ──
