@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { fetchSessions } from '../store/cashRegisterSlice';
@@ -70,16 +72,91 @@ const HistorialCajaPage = () => {
 
   const handleExportExcel = async () => {
     try {
-      const response = await axiosInstance.get('/reports/cash-register/export-excel', {
-        responseType: 'blob',
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('Historial de Cajas');
+
+      // Título
+      sheet.mergeCells('A1:H1');
+      const titleCell = sheet.getCell('A1');
+      titleCell.value = 'HISTORIAL DE APERTURAS Y CIERRES DE CAJA';
+      titleCell.font = { name: 'Arial', size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
+      titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0255A5' } };
+      titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      sheet.getRow(1).height = 30;
+
+      // Fecha de generación
+      sheet.mergeCells('A2:H2');
+      const dateCell = sheet.getCell('A2');
+      dateCell.value = `Generado el: ${new Date().toLocaleString()}`;
+      dateCell.font = { name: 'Arial', size: 10, italic: true };
+      dateCell.alignment = { horizontal: 'right' };
+
+      // Espacio
+      sheet.addRow([]);
+
+      // Encabezados
+      const headers = ['Apertura', 'Cierre', 'Usuario', 'Inicial (USD)', 'Inicial (Bs)', 'Final (USD)', 'Final (Bs)', 'Estado'];
+      const headerRow = sheet.addRow(headers);
+      
+      headerRow.eachCell((cell) => {
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } };
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `reporte_cajas_${new Date().toISOString().split('T')[0]}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+
+      // Anchos de columna
+      sheet.getColumn(1).width = 22; // Apertura
+      sheet.getColumn(2).width = 22; // Cierre
+      sheet.getColumn(3).width = 30; // Usuario
+      sheet.getColumn(4).width = 18; // Inicial USD
+      sheet.getColumn(5).width = 18; // Inicial Bs
+      sheet.getColumn(6).width = 18; // Final USD
+      sheet.getColumn(7).width = 18; // Final Bs
+      sheet.getColumn(8).width = 15; // Estado
+
+      // Datos
+      sessions.forEach(session => {
+        const row = sheet.addRow([
+          new Date(session.openedAt).toLocaleString(),
+          session.closedAt ? new Date(session.closedAt).toLocaleString() : '-',
+          session.user?.fullname || session.user?.username || 'Usuario Desconocido',
+          session.openingAmountUsd,
+          session.openingAmountBs,
+          session.closedAt ? (session.closingAmountUsd || 0) : 0,
+          session.closedAt ? (session.closingAmountBs || 0) : 0,
+          session.status === 'OPEN' ? 'ABIERTA' : 'CERRADA'
+        ]);
+
+        row.eachCell((cell, colNumber) => {
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            left: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            bottom: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            right: { style: 'thin', color: { argb: 'FFEEEEEE' } }
+          };
+          
+          if (colNumber >= 4 && colNumber <= 7) {
+            cell.alignment = { vertical: 'middle', horizontal: 'right' };
+            cell.numFmt = '#,##0.00';
+          } else {
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+          }
+          
+          if (colNumber === 8) {
+             cell.font = { bold: true, color: { argb: cell.value === 'ABIERTA' ? 'FF16A34A' : 'FF64748B' } };
+          }
+        });
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      saveAs(new Blob([buffer]), `Historial_Cajas_${new Date().toISOString().split('T')[0]}.xlsx`);
+
     } catch (err) {
       console.error('Error exporting Excel:', err);
     }

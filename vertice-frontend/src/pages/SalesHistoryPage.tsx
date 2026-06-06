@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import {
   Box,
   Typography,
@@ -120,17 +122,80 @@ const SalesHistoryPage = () => {
 
   const handleExportExcel = async () => {
     try {
-      const response = await axios.get(`${API_URL}/reports/sales/export-excel`, {
-        responseType: 'blob',
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('Historial de Ventas');
+
+      // Título
+      sheet.mergeCells('A1:G1');
+      const titleCell = sheet.getCell('A1');
+      titleCell.value = 'HISTORIAL DE VENTAS';
+      titleCell.font = { name: 'Arial', size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
+      titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0255A5' } };
+      titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      sheet.getRow(1).height = 30;
+
+      // Fecha de generación
+      sheet.mergeCells('A2:G2');
+      const dateCell = sheet.getCell('A2');
+      dateCell.value = `Generado el: ${new Date().toLocaleString()}`;
+      dateCell.font = { name: 'Arial', size: 10, italic: true };
+      dateCell.alignment = { horizontal: 'right' };
+
+      sheet.addRow([]);
+
+      // Encabezados
+      const headers = ['Comprobante', 'Fecha', 'Cliente', 'Total (USD)', 'Total (Bs)', 'Estado', 'Referencia'];
+      const headerRow = sheet.addRow(headers);
+      
+      headerRow.eachCell((cell) => {
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } };
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      const fileName = `reporte_ventas_${new Date().toISOString().split('T')[0]}.xlsx`;
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+
+      sheet.getColumn(1).width = 20; // Comprobante
+      sheet.getColumn(2).width = 22; // Fecha
+      sheet.getColumn(3).width = 30; // Cliente
+      sheet.getColumn(4).width = 18; // Total USD
+      sheet.getColumn(5).width = 18; // Total Bs
+      sheet.getColumn(6).width = 15; // Estado
+      sheet.getColumn(7).width = 25; // Referencia
+
+      // Datos - Exportamos lo que está actualmente filtrado en la pantalla
+      filteredSales.forEach(sale => {
+        const row = sheet.addRow([
+          sale.ticketNumber,
+          new Date(sale.createdAt).toLocaleString(),
+          sale.customer?.name || 'CONSUMIDOR FINAL',
+          sale.totalUsd,
+          sale.totalBs,
+          sale.isCancelled ? 'ANULADA' : 'COMPLETADA',
+          sale.payments.filter((p) => p.reference).map((p) => `${p.method}: ${p.reference}`).join(', ') || '-'
+        ]);
+
+        row.eachCell((cell, colNumber) => {
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            left: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            bottom: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            right: { style: 'thin', color: { argb: 'FFEEEEEE' } }
+          };
+          if (colNumber === 4 || colNumber === 5) {
+            cell.alignment = { vertical: 'middle', horizontal: 'right' };
+            cell.numFmt = '#,##0.00';
+          } else {
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+          }
+          if (colNumber === 6) {
+            cell.font = { bold: true, color: { argb: sale.isCancelled ? 'FFDC2626' : 'FF16A34A' } };
+          }
+        });
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      saveAs(new Blob([buffer]), `Historial_Ventas_${new Date().toISOString().split('T')[0]}.xlsx`);
+
     } catch (error) {
       console.error('Error exporting Excel:', error);
     }
