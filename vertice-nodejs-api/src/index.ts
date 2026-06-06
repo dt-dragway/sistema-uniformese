@@ -180,7 +180,7 @@ app.get('/api/cash-register/preview', authMiddleware, getClosingPreview);
 app.get('/api/cash-register/preview/:userId', authMiddleware, roleMiddleware(['ADMIN']), getClosingPreviewByAdmin);
 app.get('/api/cash-register/status', authMiddleware, getActiveSession);
 app.get('/api/cash-register/active-sessions', authMiddleware, roleMiddleware(['ADMIN']), getActiveSessions);
-app.get('/api/cash-register/sessions', authMiddleware, roleMiddleware(['ADMIN']), getAllSessions);
+app.get('/api/cash-register/sessions', authMiddleware, getAllSessions);
 app.get('/api/cash-register/corte-x', authMiddleware, getCorteX);
 app.get('/api/cash-register/corte-x/:userId', authMiddleware, roleMiddleware(['ADMIN']), getCorteXByAdmin);
 app.post('/api/cash-register/corte-z', authMiddleware, processCorteZ);
@@ -190,7 +190,7 @@ app.post('/api/cash-register/service-income', authMiddleware, createServiceIncom
 
 // Others
 app.get('/api/exchange-rate', authMiddleware, getCurrentExchangeRate);
-app.put('/api/exchange-rate', authMiddleware, roleMiddleware(['ADMIN']), updateExchangeRate);
+app.put('/api/exchange-rate', authMiddleware, roleMiddleware(['ADMIN', 'CASHIER']), updateExchangeRate);
 app.get('/api/sales', authMiddleware, getAllSales);
 app.get('/api/sales/:id', authMiddleware, getSaleById);
 app.get('/api/sales/ticket/:ticketNumber', authMiddleware, getSaleByTicketNumber);

@@ -130,8 +130,8 @@ const LabelPrintPage: React.FC = () => {
   // Filtrado ultra rápido en memoria
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) {
-      // Si está vacío, mostrar los primeros 15 productos activos para que el usuario vea la lista
-      return allProducts.filter(p => p.isActive).slice(0, 15);
+      // Si está vacío, mostrar todos los productos activos
+      return allProducts.filter(p => p.isActive);
     }
     const lowerQ = searchQuery.toLowerCase();
     const filtered = allProducts.filter(p => 
@@ -140,7 +140,7 @@ const LabelPrintPage: React.FC = () => {
         (p.barCode && p.barCode.toLowerCase().includes(lowerQ))
       )
     );
-    return filtered.slice(0, 15);
+    return filtered;
   }, [searchQuery, allProducts]);
 
   // ── Agregar producto a la cola ──

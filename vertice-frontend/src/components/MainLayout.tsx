@@ -339,7 +339,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                   { text: 'Inventario', icon: <CategoryIcon sx={{ color: '#0255A5' }} />, path: '/products', show: !isCashier && !isSuperAdmin },
                   { text: 'Admin Caja', icon: <AccountBalanceIcon sx={{ color: '#0255A5' }} />, path: '/admin-caja', show: !isCashier && !isSuperAdmin },
                   { text: 'Op. Especiales', icon: <InventoryIcon sx={{ color: '#0255A5' }} />, path: '/internal-withdrawal', show: !isCashier && !isSuperAdmin },
-                  { text: 'Etiquetas', icon: <LocalOfferIcon sx={{ color: '#0255A5' }} />, path: '/labels', show: !isSuperAdmin },
+                  { text: 'Etiquetas', icon: <LocalOfferIcon sx={{ color: '#0255A5' }} />, path: '/labels', show: !isCashier && !isSuperAdmin },
                 ]
               },
               {

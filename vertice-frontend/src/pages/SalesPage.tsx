@@ -170,7 +170,7 @@ export const SalesPage = () => {
         flexGrow: 1,
         gap: 2,
         minHeight: 0,
-        height: '100%', // Occupy full available flex height
+        height: 'calc(100vh - 120px)', // Constrain height to viewport minus header and padding
         overflow: 'hidden',
         bgcolor: '#ffffff', // Explicit solid white
         p: 0, // MainLayout already has padding

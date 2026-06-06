@@ -117,8 +117,8 @@ const CustomerCreditDetailsPage = () => {
           </TableHead>
           <TableBody>
             {customerCreditMovements.map((movement) => {
-              const isSale = movement.description?.startsWith('Venta #');
-              const ticketNumber = isSale ? movement.description?.split('#')[1] : null;
+              const isSale = movement.description?.toLowerCase().includes('venta') && movement.description?.includes('#');
+              const ticketNumber = isSale ? movement.description?.split('#')[1]?.trim() : null;
               const authorizer = movement.user ? movement.user.fullname || movement.user.username : '-';
 
               return (

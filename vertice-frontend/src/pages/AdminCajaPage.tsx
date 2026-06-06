@@ -1,4 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+import { DatePicker } from '@mui/x-date-pickers';
 import {
   Box,
   Typography,
@@ -27,6 +30,7 @@ import {
   Tabs,
   Tab,
   TablePagination,
+  ButtonGroup,
 } from '@mui/material';
 import {
   Refresh as RefreshIcon,
@@ -38,6 +42,7 @@ import {
   Lock as LockIcon,
   History as HistoryIcon,
   CheckCircle as CheckCircleIcon,
+  Download as DownloadIcon,
 } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
@@ -100,6 +105,10 @@ const AdminCajaPage = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  // Filtros
+  const [dateFilter, setDateFilter] = useState('all');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
   const isAdmin = user?.role === 'ADMIN';
 
   const fetchActiveSessions = async () => {
@@ -125,6 +134,92 @@ const AdminCajaPage = () => {
   const handleRefresh = () => {
     fetchActiveSessions();
     dispatch(fetchSessions());
+  };
+
+  const handleExportExcel = async () => {
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('Historial de Cierres');
+
+      // Título
+      sheet.mergeCells('A1:G1');
+      const titleCell = sheet.getCell('A1');
+      titleCell.value = 'HISTORIAL DE CIERRES DE CAJA (ADMIN)';
+      titleCell.font = { name: 'Arial', size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
+      titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0255A5' } };
+      titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      sheet.getRow(1).height = 30;
+
+      // Fecha de generación
+      sheet.mergeCells('A2:G2');
+      const dateCell = sheet.getCell('A2');
+      dateCell.value = `Generado el: ${new Date().toLocaleString()}`;
+      dateCell.font = { name: 'Arial', size: 10, italic: true };
+      dateCell.alignment = { horizontal: 'right' };
+
+      sheet.addRow([]);
+
+      // Encabezados
+      const headers = ['Cajero', 'Fecha Apertura', 'Fecha Cierre', 'Contado (USD)', 'Contado (Bs)', 'Diferencia (USD)', 'Diferencia (Bs)'];
+      const headerRow = sheet.addRow(headers);
+      
+      headerRow.eachCell((cell) => {
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } };
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+      });
+
+      sheet.getColumn(1).width = 30; // Cajero
+      sheet.getColumn(2).width = 22; // Fecha Apertura
+      sheet.getColumn(3).width = 22; // Fecha Cierre
+      sheet.getColumn(4).width = 18; // Contado USD
+      sheet.getColumn(5).width = 18; // Contado Bs
+      sheet.getColumn(6).width = 18; // Diferencia USD
+      sheet.getColumn(7).width = 18; // Diferencia Bs
+
+      // Datos
+      closedSessions.forEach(session => {
+        const row = sheet.addRow([
+          session.user?.fullname || session.user?.username || `Usuario #${session.userId}`,
+          new Date(session.openedAt).toLocaleString('es-VE', { dateStyle: 'short', timeStyle: 'short' }),
+          session.closedAt ? new Date(session.closedAt).toLocaleString('es-VE', { dateStyle: 'short', timeStyle: 'short' }) : '-',
+          session.closingAmountUsd || 0,
+          session.closingAmountBs || 0,
+          session.discrepancyUsd || 0,
+          session.discrepancyBs || 0
+        ]);
+
+        row.eachCell((cell, colNumber) => {
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            left: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            bottom: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            right: { style: 'thin', color: { argb: 'FFEEEEEE' } }
+          };
+          if (colNumber >= 4 && colNumber <= 7) {
+            cell.alignment = { vertical: 'middle', horizontal: 'right' };
+            cell.numFmt = '#,##0.00';
+          } else {
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+          }
+          if (colNumber === 6 || colNumber === 7) {
+            const val = parseFloat(cell.value as string) || 0;
+            if (val > 0) {
+              cell.font = { bold: true, color: { argb: 'FF16A34A' } }; // success
+            } else if (val < 0) {
+              cell.font = { bold: true, color: { argb: 'FFDC2626' } }; // error
+            }
+          }
+        });
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      saveAs(new Blob([buffer]), `Admin_Cajas_${new Date().toISOString().split('T')[0]}.xlsx`);
+
+    } catch (err) {
+      console.error('Error exporting Excel:', err);
+    }
   };
 
   // Generar PDF con html2canvas
@@ -210,7 +305,37 @@ const AdminCajaPage = () => {
   };
 
   // Sesiones cerradas (filtrada del historial)
-  const closedSessions = sessions.filter((s) => s.status === 'CLOSED');
+  let closedSessions = sessions.filter((s) => s.status === 'CLOSED');
+
+  // Aplicar filtros
+  if (dateFilter !== 'all') {
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    // Obtener inicio de semana (Domingo como primer día)
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+    closedSessions = closedSessions.filter(session => {
+      const sessionDate = new Date(session.openedAt);
+      if (dateFilter === 'today') return sessionDate >= startOfToday;
+      if (dateFilter === 'week') return sessionDate >= startOfWeek;
+      if (dateFilter === 'month') return sessionDate >= startOfMonth;
+      if (dateFilter === 'year') return sessionDate >= startOfYear;
+      if (dateFilter === 'day' && selectedDate) {
+        const selected = new Date(selectedDate);
+        return sessionDate.getFullYear() === selected.getFullYear() &&
+               sessionDate.getMonth() === selected.getMonth() &&
+               sessionDate.getDate() === selected.getDate();
+      }
+      return true;
+    });
+  }
+
   const paginatedClosedSessions = closedSessions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   if (!isAdmin) {
@@ -230,9 +355,31 @@ const AdminCajaPage = () => {
             Administración de Cajas
           </Typography>
         </Box>
-        <Button variant="outlined" startIcon={<RefreshIcon />} onClick={handleRefresh} disabled={loading}>
-          Actualizar
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          {tabValue === 1 && (
+            <Button
+              variant="contained"
+              startIcon={<DownloadIcon />}
+              onClick={handleExportExcel}
+              sx={{
+                bgcolor: '#10b981',
+                color: 'white',
+                fontWeight: 700,
+                borderRadius: '12px',
+                textTransform: 'none',
+                px: 3,
+                '&:hover': {
+                  bgcolor: '#059669',
+                },
+              }}
+            >
+              Exportar Excel
+            </Button>
+          )}
+          <Button variant="outlined" startIcon={<RefreshIcon />} onClick={handleRefresh} disabled={loading}>
+            Actualizar
+          </Button>
+        </Box>
       </Box>
 
       {error && (
@@ -333,6 +480,42 @@ const AdminCajaPage = () => {
 
       {/* Tab 2: Historial de Cierres */}
       <TabPanel value={tabValue} index={1}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 2, flexWrap: 'wrap' }}>
+          <ButtonGroup variant="outlined" size="small">
+            <Button onClick={() => setDateFilter('today')} variant={dateFilter === 'today' ? 'contained' : 'outlined'}>
+              Hoy
+            </Button>
+            <Button onClick={() => setDateFilter('week')} variant={dateFilter === 'week' ? 'contained' : 'outlined'}>
+              Semana
+            </Button>
+            <Button onClick={() => setDateFilter('month')} variant={dateFilter === 'month' ? 'contained' : 'outlined'}>
+              Mes
+            </Button>
+            <Button onClick={() => setDateFilter('year')} variant={dateFilter === 'year' ? 'contained' : 'outlined'}>
+              Año
+            </Button>
+          </ButtonGroup>
+          <DatePicker
+            label="Fecha específica"
+            value={selectedDate}
+            onChange={(newValue) => {
+              setSelectedDate(newValue);
+              setDateFilter('day');
+            }}
+            slotProps={{ textField: { size: 'small', variant: 'outlined' } }}
+          />
+          <Button
+            size="small"
+            onClick={() => {
+              setDateFilter('all');
+              setSelectedDate(null);
+            }}
+            sx={{ textTransform: 'none' }}
+          >
+            Limpiar Filtros
+          </Button>
+        </Box>
+
         <TableContainer component={Paper}>
           <Table>
             <TableHead>

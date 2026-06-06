@@ -36,6 +36,7 @@ import {
 } from '../../store/cartSlice';
 import { UnitType } from '../../models/Product';
 import Checkout from './Checkout';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 // Helper function to format quantity based on unit type
 const formatQuantity = (quantity: number, unitType?: UnitType): string => {
@@ -72,6 +73,69 @@ interface VentaProps {
   exchangeRate: number;
   totals: { usd: number; bs: number };
 }
+
+// Sub-component for direct quantity input
+const QuantityControl = ({ item, dispatch }: { item: any; dispatch: AppDispatch }) => {
+  const [localVal, setLocalVal] = useState<string>(item.quantity.toString());
+
+  useEffect(() => {
+    setLocalVal(item.quantity.toString());
+  }, [item.quantity]);
+
+  const handleBlur = () => {
+    const val = parseInt(localVal, 10);
+    if (isNaN(val) || val <= 0) {
+      setLocalVal(item.quantity.toString()); // revert
+    } else {
+      dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: val }));
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleBlur();
+    }
+  };
+
+  return (
+    <>
+      <IconButton
+        size="small"
+        onClick={() => dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity - 1 }))}
+        sx={{ color: '#2a6c8d' }}
+      >
+        <RemoveCircleOutlineIcon fontSize="small" />
+      </IconButton>
+      <input
+        type="number"
+        value={localVal}
+        onChange={(e) => setLocalVal(e.target.value)}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+        style={{
+          width: '36px',
+          textAlign: 'center',
+          fontWeight: 700,
+          border: 'none',
+          outline: 'none',
+          background: 'transparent',
+          fontSize: '1rem',
+          color: '#0f172a',
+          fontFamily: 'inherit',
+          // Hide standard HTML number arrows to keep it clean, the +/- buttons do the job
+          appearance: 'textfield',
+        }}
+      />
+      <IconButton
+        size="small"
+        onClick={() => dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity + 1 }))}
+        sx={{ color: '#2a6c8d' }}
+      >
+        <AddCircleOutlineIcon fontSize="small" />
+      </IconButton>
+    </>
+  );
+};
 
 const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
   const dispatch: AppDispatch = useDispatch();
@@ -303,14 +367,14 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 6 }}>
                     <Typography variant="caption" color="text.secondary">
-                      Bs. {item.rechargeData.amountBs.toFixed(2)} + {item.rechargeData.commissionPercent}% com.
+                      Bs. {formatCurrency(item.rechargeData.amountBs)} + {item.rechargeData.commissionPercent}% com.
                     </Typography>
                     <Box sx={{ textAlign: 'right' }}>
                       <Typography variant="body2" fontWeight={800} sx={{ color: '#ff9800' }}>
-                        Bs. {item.rechargeData.totalChargeBs.toFixed(2)}
+                        Bs. {formatCurrency(item.rechargeData.totalChargeBs)}
                       </Typography>
                       <Typography variant="caption" sx={{ color: '#64748b', display: 'block' }}>
-                        Ref: ${lineTotalUsd.toFixed(2)}
+                        Ref: ${formatCurrency(lineTotalUsd)}
                       </Typography>
                     </Box>
                   </Box>
@@ -366,15 +430,15 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pl: 6 }}>
                     <Typography variant="caption" color="text.secondary">
-                      Entregado: Bs. {item.cashAdvanceData.amountToGive.toFixed(2)} +{' '}
+                      Entregado: Bs. {formatCurrency(item.cashAdvanceData.amountToGive)} +{' '}
                       {item.cashAdvanceData.commissionPercent}% com.
                     </Typography>
                     <Box sx={{ textAlign: 'right' }}>
                       <Typography variant="body2" fontWeight={800} sx={{ color: '#4caf50' }}>
-                        Bs. {item.cashAdvanceData.totalChargeBs.toFixed(2)}
+                        Bs. {formatCurrency(item.cashAdvanceData.totalChargeBs)}
                       </Typography>
                       <Typography variant="caption" sx={{ color: '#64748b', display: 'block' }}>
-                        Ref: ${lineTotalUsd.toFixed(2)}
+                        Ref: ${formatCurrency(lineTotalUsd)}
                       </Typography>
                     </Box>
                   </Box>
@@ -424,29 +488,7 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
                       }}
                     >
                       {!item.unitType || item.unitType === 'UNIT' ? (
-                        <>
-                          <IconButton
-                            size="small"
-                            onClick={() =>
-                              dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity - 1 }))
-                            }
-                            sx={{ color: '#2a6c8d' }}
-                          >
-                            <RemoveCircleOutlineIcon fontSize="small" />
-                          </IconButton>
-                          <Typography fontWeight={700} sx={{ mx: 1.5, minWidth: '20px', textAlign: 'center' }}>
-                            {item.quantity}
-                          </Typography>
-                          <IconButton
-                            size="small"
-                            onClick={() =>
-                              dispatch(updateCartItemQuantity({ productId: item.id, newQuantity: item.quantity + 1 }))
-                            }
-                            sx={{ color: '#2a6c8d' }}
-                          >
-                            <AddCircleOutlineIcon fontSize="small" />
-                          </IconButton>
-                        </>
+                        <QuantityControl item={item} dispatch={dispatch} />
                       ) : (
                         <Typography sx={{ px: 1.5, fontWeight: 700, color: '#2a6c8d', fontSize: '0.9rem' }}>
                           {formatQuantity(item.quantity, item.unitType)}
@@ -456,11 +498,11 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
 
                     <Box sx={{ textAlign: 'right' }}>
                       <Typography variant="body1" fontWeight={800} sx={{ color: '#0f172a' }}>
-                        Bs. {lineTotalBs.toFixed(2)}
+                        Bs. {formatCurrency(lineTotalBs)}
                       </Typography>
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5 }}>
                         <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600 }}>
-                          Ref: ${lineTotalUsd.toFixed(2)}
+                          Ref: ${formatCurrency(lineTotalUsd)}
                         </Typography>
                         {selectedCustomer && (
                           <IconButton
@@ -493,7 +535,7 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
               Subtotal
             </Typography>
             <Typography variant="body2" fontWeight={700}>
-              Bs. {totals.bs.toFixed(2)}
+              Bs. {formatCurrency(totals.bs)}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -501,7 +543,7 @@ const Venta: React.FC<VentaProps> = ({ exchangeRate, totals }) => {
               Ref. Total
             </Typography>
             <Typography variant="body2" fontWeight={700}>
-              ${totals.usd.toFixed(2)}
+              ${formatCurrency(totals.usd)}
             </Typography>
           </Box>
         </Box>

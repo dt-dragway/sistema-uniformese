@@ -43,7 +43,7 @@ const CUSTOMER_CATEGORIES = ['GENERAL', 'INDUSTRIAL', 'SALUD', 'CORPORATIVO', 'E
 
 const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, customer }) => {
   const dispatch: AppDispatch = useDispatch();
-  const { loading, error } = useSelector((state: RootState) => state.customers);
+  const { customers, loading, error } = useSelector((state: RootState) => state.customers);
 
   const [name, setName] = useState(customer?.name || '');
   const [cedula, setCedula] = useState(customer?.cedula || '');
@@ -74,6 +74,10 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
       }
     }
   }, [open, customer]);
+
+  const isCedulaDuplicate = customers.some(
+    (c) => c.cedula === cedula.toUpperCase() && c.id !== customer?.id
+  );
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -200,11 +204,13 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <BadgeIcon color="action" />
+                      <BadgeIcon color={isCedulaDuplicate ? "error" : "action"} />
                     </InputAdornment>
                   ),
                   sx: { borderRadius: '12px' },
                 }}
+                error={isCedulaDuplicate}
+                helperText={isCedulaDuplicate ? "Este cliente ya se encuentra registrado." : ""}
               />
             </Grid>
 
@@ -309,7 +315,7 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
           <Button
             type="submit"
             variant="contained"
-            disabled={loading}
+            disabled={loading || isCedulaDuplicate}
             startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
             sx={{
               backgroundColor: '#0255A5',

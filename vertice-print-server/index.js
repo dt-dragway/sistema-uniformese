@@ -16,7 +16,7 @@ app.use(express.json());
 const BUSINESS_INFO = {
   name: 'UNIFORMESE',
   rif: 'V-06560026-5',
-  address: 'RIF V-06560026-5',
+  address: '',
 };
 
 // Business information (etiquetas de prenda)
@@ -33,12 +33,18 @@ app.post('/print-ticket', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Missing sale data or exchange rate.' });
   }
 
+  const formatCurrency = (amount) => {
+    const num = Number(amount);
+    if (isNaN(num)) return '0,00';
+    return new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+  };
+
   try {
     console.log(`Generating ticket for: ${sale.ticketNumber}`);
 
     const itemsHtml = sale.items.map(item => {
-      const unitPrice = (item.price * exchangeRate).toFixed(2);
-      const totalPrice = (item.quantity * item.price * exchangeRate).toFixed(2);
+      const unitPrice = formatCurrency(item.price * exchangeRate);
+      const totalPrice = formatCurrency(item.quantity * item.price * exchangeRate);
       const formattedQty = Number.isInteger(item.quantity) ? item.quantity : item.quantity.toFixed(2);
       return `
         <tr>
@@ -55,7 +61,7 @@ app.post('/print-ticket', async (req, res) => {
       ${pendingRecharges.map(r => `
         <div style="display: flex; justify-content: space-between; font-size: 10px; margin: 3px 0;">
           <span>${r.serviceName} - ${r.phoneNumber}</span>
-          <span>Bs. ${r.totalChargeBs.toFixed(2)}</span>
+          <span>Bs. ${formatCurrency(r.totalChargeBs)}</span>
         </div>
       `).join('')}
     ` : '';
@@ -64,8 +70,8 @@ app.post('/print-ticket', async (req, res) => {
       <div class="section-title">Avances de Efectivo</div>
       ${pendingCashAdvances.map(a => `
         <div style="display: flex; justify-content: space-between; font-size: 10px; margin: 3px 0;">
-          <span>Entrega: Bs. ${a.amountToGive.toFixed(2)}</span>
-          <span>Cobro: Bs. ${a.totalChargeBs.toFixed(2)}</span>
+          <span>Entrega: Bs. ${formatCurrency(a.amountToGive)}</span>
+          <span>Cobro: Bs. ${formatCurrency(a.totalChargeBs)}</span>
         </div>
       `).join('')}
     ` : '';
@@ -128,7 +134,7 @@ app.post('/print-ticket', async (req, res) => {
   ${cashAdvancesHtml}
   <div class="section-title">Pagos</div>
   ${paymentsHtml}
-  <div class="total">Total: Bs. ${sale.totalBs.toFixed(2)}</div>
+  <div class="total">Total: Bs. ${formatCurrency(sale.totalBs)}</div>
   <div class="footer">
     <div style="margin-top: 10px;">
       <svg id="barcode"></svg>
@@ -140,8 +146,7 @@ app.post('/print-ticket', async (req, res) => {
       format: "CODE128",
       width: 1.5,
       height: 40,
-      displayValue: true,
-      fontSize: 12,
+      displayValue: false,
       margin: 0
     });
     ${!returnHtml ? `

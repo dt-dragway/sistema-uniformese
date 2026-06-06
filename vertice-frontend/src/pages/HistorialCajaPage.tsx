@@ -27,8 +27,12 @@ import {
   Chip,
   Tooltip,
   Button,
+  TextField,
+  ButtonGroup,
+  InputAdornment,
 } from '@mui/material';
-import { Visibility as VisibilityIcon, PictureAsPdf as PdfIcon, EventNote as EventNoteIcon, Download as DownloadIcon } from '@mui/icons-material';
+import { Visibility as VisibilityIcon, PictureAsPdf as PdfIcon, EventNote as EventNoteIcon, Download as DownloadIcon, Clear as ClearIcon } from '@mui/icons-material';
+import { DatePicker } from '@mui/x-date-pickers';
 
 const HistorialCajaPage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -40,6 +44,10 @@ const HistorialCajaPage = () => {
   const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
   const [pdfDataUri, setPdfDataUri] = useState<string>('');
   const [pdfTitle, setPdfTitle] = useState<string>('');
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [dateFilter, setDateFilter] = useState('all');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
     dispatch(fetchSessions());
@@ -69,6 +77,46 @@ const HistorialCajaPage = () => {
     setIsPdfModalOpen(false);
     setPdfDataUri('');
   };
+
+  const filteredSessions = sessions.filter((session) => {
+    const userFullName = session.user?.fullname?.toLowerCase() || '';
+    const username = session.user?.username?.toLowerCase() || '';
+    const searchString = searchTerm.toLowerCase();
+    const searchTermMatch = userFullName.includes(searchString) || username.includes(searchString);
+
+    if (dateFilter === 'all' && !searchTerm) {
+      return true;
+    }
+
+    const sessionDate = new Date(session.openedAt);
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    let dateMatch = false;
+    if (dateFilter === 'all') {
+      dateMatch = true;
+    } else if (dateFilter === 'today') {
+      dateMatch = sessionDate >= startOfToday;
+    } else if (dateFilter === 'week') {
+      dateMatch = sessionDate >= startOfWeek;
+    } else if (dateFilter === 'month') {
+      dateMatch = sessionDate >= startOfMonth;
+    } else if (dateFilter === 'day' && selectedDate) {
+      const selected = new Date(selectedDate);
+      dateMatch =
+        sessionDate.getFullYear() === selected.getFullYear() &&
+        sessionDate.getMonth() === selected.getMonth() &&
+        sessionDate.getDate() === selected.getDate();
+    }
+
+    return searchTermMatch && dateMatch;
+  });
 
   const handleExportExcel = async () => {
     try {
@@ -121,7 +169,7 @@ const HistorialCajaPage = () => {
       sheet.getColumn(8).width = 15; // Estado
 
       // Datos
-      sessions.forEach(session => {
+      filteredSessions.forEach(session => {
         const row = sheet.addRow([
           new Date(session.openedAt).toLocaleString(),
           session.closedAt ? new Date(session.closedAt).toLocaleString() : '-',
@@ -162,7 +210,6 @@ const HistorialCajaPage = () => {
     }
   };
 
-  const filteredSessions = sessions || [];
   const paginatedSessions = filteredSessions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   if (loading && sessions.length === 0) {
@@ -188,24 +235,66 @@ const HistorialCajaPage = () => {
         >
           Historial de Aperturas y Cierres
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<DownloadIcon />}
-          onClick={handleExportExcel}
-          sx={{
-            bgcolor: '#10b981',
-            color: 'white',
-            fontWeight: 700,
-            borderRadius: '12px',
-            textTransform: 'none',
-            px: 3,
-            '&:hover': {
-              bgcolor: '#059669',
-            },
-          }}
-        >
-          Exportar Excel
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <TextField
+            label="Buscar por Usuario"
+            variant="outlined"
+            size="small"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ minWidth: 200, bgcolor: 'white', borderRadius: 1 }}
+            InputProps={{
+              endAdornment: searchTerm && (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={() => setSearchTerm('')}>
+                    <ClearIcon fontSize="small" />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <ButtonGroup variant="outlined" size="small" sx={{ bgcolor: 'white' }}>
+            <Button onClick={() => setDateFilter('all')} variant={dateFilter === 'all' ? 'contained' : 'outlined'}>
+              Todo
+            </Button>
+            <Button onClick={() => setDateFilter('today')} variant={dateFilter === 'today' ? 'contained' : 'outlined'}>
+              Hoy
+            </Button>
+            <Button onClick={() => setDateFilter('week')} variant={dateFilter === 'week' ? 'contained' : 'outlined'}>
+              Semana
+            </Button>
+            <Button onClick={() => setDateFilter('month')} variant={dateFilter === 'month' ? 'contained' : 'outlined'}>
+              Mes
+            </Button>
+          </ButtonGroup>
+          <DatePicker
+            label="Fecha específica"
+            value={selectedDate}
+            onChange={(newValue) => {
+              setSelectedDate(newValue);
+              setDateFilter('day');
+            }}
+            slotProps={{ textField: { size: 'small', variant: 'outlined', sx: { bgcolor: 'white' } } }}
+          />
+          <Button
+            variant="contained"
+            startIcon={<DownloadIcon />}
+            onClick={handleExportExcel}
+            sx={{
+              bgcolor: '#10b981',
+              color: 'white',
+              fontWeight: 700,
+              borderRadius: '12px',
+              textTransform: 'none',
+              px: 3,
+              '&:hover': {
+                bgcolor: '#059669',
+              },
+            }}
+          >
+            Exportar Excel
+          </Button>
+        </Box>
       </Box>
 
       {error && (
