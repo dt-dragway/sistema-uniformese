@@ -22,22 +22,20 @@ class TransactionAdjustmentService {
       return undefined; // Sale not found
     }
 
-    // Reverse stock logic
+    // Stock logic: 
+    // If it's a cancellation, we call saleService.cancelSale which ALREADY increments stock.
+    // We MUST NOT increment it again here.
     if (newAdjustment.type === 'cancellation') {
       await saleService.cancelSale(sale.id);
-      for (const item of sale.items) {
-        const product = await productService.getProductById(item.productId);
-        if (product) {
-          await productService.updateProduct(product.id, { stock: product.stock + item.quantity });
-        }
-      }
     } else if (newAdjustment.type === 'return' && newAdjustment.adjustedItems) {
+      // For partial returns, we still need to increment stock for the specific items
       for (const adjustedItem of newAdjustment.adjustedItems) {
         const product = await productService.getProductById(adjustedItem.productId);
         if (product) {
           await productService.updateProduct(product.id, { stock: product.stock + adjustedItem.quantity });
         }
       }
+      // TODO: Implement CashMovement for partial returns to avoid cash leaks
     }
 
     // Create the adjustment record

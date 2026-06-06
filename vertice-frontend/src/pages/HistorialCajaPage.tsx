@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { fetchSessions } from '../store/cashRegisterSlice';
@@ -25,8 +27,12 @@ import {
   Chip,
   Tooltip,
   Button,
+  TextField,
+  ButtonGroup,
+  InputAdornment,
 } from '@mui/material';
-import { Visibility as VisibilityIcon, PictureAsPdf as PdfIcon, EventNote as EventNoteIcon, Download as DownloadIcon } from '@mui/icons-material';
+import { Visibility as VisibilityIcon, PictureAsPdf as PdfIcon, EventNote as EventNoteIcon, Download as DownloadIcon, Clear as ClearIcon } from '@mui/icons-material';
+import { DatePicker } from '@mui/x-date-pickers';
 
 const HistorialCajaPage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -38,6 +44,10 @@ const HistorialCajaPage = () => {
   const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
   const [pdfDataUri, setPdfDataUri] = useState<string>('');
   const [pdfTitle, setPdfTitle] = useState<string>('');
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [dateFilter, setDateFilter] = useState('all');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
     dispatch(fetchSessions());
@@ -68,24 +78,138 @@ const HistorialCajaPage = () => {
     setPdfDataUri('');
   };
 
+  const filteredSessions = sessions.filter((session) => {
+    const userFullName = session.user?.fullname?.toLowerCase() || '';
+    const username = session.user?.username?.toLowerCase() || '';
+    const searchString = searchTerm.toLowerCase();
+    const searchTermMatch = userFullName.includes(searchString) || username.includes(searchString);
+
+    if (dateFilter === 'all' && !searchTerm) {
+      return true;
+    }
+
+    const sessionDate = new Date(session.openedAt);
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    let dateMatch = false;
+    if (dateFilter === 'all') {
+      dateMatch = true;
+    } else if (dateFilter === 'today') {
+      dateMatch = sessionDate >= startOfToday;
+    } else if (dateFilter === 'week') {
+      dateMatch = sessionDate >= startOfWeek;
+    } else if (dateFilter === 'month') {
+      dateMatch = sessionDate >= startOfMonth;
+    } else if (dateFilter === 'day' && selectedDate) {
+      const selected = new Date(selectedDate);
+      dateMatch =
+        sessionDate.getFullYear() === selected.getFullYear() &&
+        sessionDate.getMonth() === selected.getMonth() &&
+        sessionDate.getDate() === selected.getDate();
+    }
+
+    return searchTermMatch && dateMatch;
+  });
+
   const handleExportExcel = async () => {
     try {
-      const response = await axiosInstance.get('/reports/cash-register/export-excel', {
-        responseType: 'blob',
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('Historial de Cajas');
+
+      // Título
+      sheet.mergeCells('A1:H1');
+      const titleCell = sheet.getCell('A1');
+      titleCell.value = 'HISTORIAL DE APERTURAS Y CIERRES DE CAJA';
+      titleCell.font = { name: 'Arial', size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
+      titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0255A5' } };
+      titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      sheet.getRow(1).height = 30;
+
+      // Fecha de generación
+      sheet.mergeCells('A2:H2');
+      const dateCell = sheet.getCell('A2');
+      dateCell.value = `Generado el: ${new Date().toLocaleString()}`;
+      dateCell.font = { name: 'Arial', size: 10, italic: true };
+      dateCell.alignment = { horizontal: 'right' };
+
+      // Espacio
+      sheet.addRow([]);
+
+      // Encabezados
+      const headers = ['Apertura', 'Cierre', 'Usuario', 'Inicial (USD)', 'Inicial (Bs)', 'Final (USD)', 'Final (Bs)', 'Estado'];
+      const headerRow = sheet.addRow(headers);
+      
+      headerRow.eachCell((cell) => {
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } };
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `reporte_cajas_${new Date().toISOString().split('T')[0]}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+
+      // Anchos de columna
+      sheet.getColumn(1).width = 22; // Apertura
+      sheet.getColumn(2).width = 22; // Cierre
+      sheet.getColumn(3).width = 30; // Usuario
+      sheet.getColumn(4).width = 18; // Inicial USD
+      sheet.getColumn(5).width = 18; // Inicial Bs
+      sheet.getColumn(6).width = 18; // Final USD
+      sheet.getColumn(7).width = 18; // Final Bs
+      sheet.getColumn(8).width = 15; // Estado
+
+      // Datos
+      filteredSessions.forEach(session => {
+        const row = sheet.addRow([
+          new Date(session.openedAt).toLocaleString(),
+          session.closedAt ? new Date(session.closedAt).toLocaleString() : '-',
+          session.user?.fullname || session.user?.username || 'Usuario Desconocido',
+          session.openingAmountUsd,
+          session.openingAmountBs,
+          session.closedAt ? (session.closingAmountUsd || 0) : 0,
+          session.closedAt ? (session.closingAmountBs || 0) : 0,
+          session.status === 'OPEN' ? 'ABIERTA' : 'CERRADA'
+        ]);
+
+        row.eachCell((cell, colNumber) => {
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            left: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            bottom: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            right: { style: 'thin', color: { argb: 'FFEEEEEE' } }
+          };
+          
+          if (colNumber >= 4 && colNumber <= 7) {
+            cell.alignment = { vertical: 'middle', horizontal: 'right' };
+            cell.numFmt = '#,##0.00';
+          } else {
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+          }
+          
+          if (colNumber === 8) {
+             cell.font = { bold: true, color: { argb: cell.value === 'ABIERTA' ? 'FF16A34A' : 'FF64748B' } };
+          }
+        });
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      saveAs(new Blob([buffer]), `Historial_Cajas_${new Date().toISOString().split('T')[0]}.xlsx`);
+
     } catch (err) {
       console.error('Error exporting Excel:', err);
     }
   };
 
-  const filteredSessions = sessions || [];
   const paginatedSessions = filteredSessions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   if (loading && sessions.length === 0) {
@@ -111,24 +235,66 @@ const HistorialCajaPage = () => {
         >
           Historial de Aperturas y Cierres
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<DownloadIcon />}
-          onClick={handleExportExcel}
-          sx={{
-            bgcolor: '#10b981',
-            color: 'white',
-            fontWeight: 700,
-            borderRadius: '12px',
-            textTransform: 'none',
-            px: 3,
-            '&:hover': {
-              bgcolor: '#059669',
-            },
-          }}
-        >
-          Exportar Excel
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <TextField
+            label="Buscar por Usuario"
+            variant="outlined"
+            size="small"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ minWidth: 200, bgcolor: 'white', borderRadius: 1 }}
+            InputProps={{
+              endAdornment: searchTerm && (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={() => setSearchTerm('')}>
+                    <ClearIcon fontSize="small" />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <ButtonGroup variant="outlined" size="small" sx={{ bgcolor: 'white' }}>
+            <Button onClick={() => setDateFilter('all')} variant={dateFilter === 'all' ? 'contained' : 'outlined'}>
+              Todo
+            </Button>
+            <Button onClick={() => setDateFilter('today')} variant={dateFilter === 'today' ? 'contained' : 'outlined'}>
+              Hoy
+            </Button>
+            <Button onClick={() => setDateFilter('week')} variant={dateFilter === 'week' ? 'contained' : 'outlined'}>
+              Semana
+            </Button>
+            <Button onClick={() => setDateFilter('month')} variant={dateFilter === 'month' ? 'contained' : 'outlined'}>
+              Mes
+            </Button>
+          </ButtonGroup>
+          <DatePicker
+            label="Fecha específica"
+            value={selectedDate}
+            onChange={(newValue) => {
+              setSelectedDate(newValue);
+              setDateFilter('day');
+            }}
+            slotProps={{ textField: { size: 'small', variant: 'outlined', sx: { bgcolor: 'white' } } }}
+          />
+          <Button
+            variant="contained"
+            startIcon={<DownloadIcon />}
+            onClick={handleExportExcel}
+            sx={{
+              bgcolor: '#10b981',
+              color: 'white',
+              fontWeight: 700,
+              borderRadius: '12px',
+              textTransform: 'none',
+              px: 3,
+              '&:hover': {
+                bgcolor: '#059669',
+              },
+            }}
+          >
+            Exportar Excel
+          </Button>
+        </Box>
       </Box>
 
       {error && (

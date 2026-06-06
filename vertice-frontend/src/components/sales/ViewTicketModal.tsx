@@ -45,8 +45,8 @@ interface ViewTicketModalProps {
 
 const BUSINESS_INFO = {
   name: 'UNIFORMESE',
-  rif: 'J-403375640',
-  address: 'RIF-403375640',
+  rif: 'V-06560026-5',
+  address: 'RIF V-06560026-5',
   phone: '0414-0000000', // Update this if you have a specific phone
 };
 
@@ -109,14 +109,13 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
   const barcodeRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
-    if (sale && barcodeRef.current) {
+    if (open && sale && barcodeRef.current) {
       try {
         JsBarcode(barcodeRef.current, sale.ticketNumber, {
           format: "CODE128",
           width: 1.5,
           height: 40,
-          displayValue: true,
-          fontSize: 12,
+          displayValue: false,
           margin: 0,
           background: "transparent"
         });
@@ -124,7 +123,7 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
         console.error("Error generating barcode:", err);
       }
     }
-  }, [sale]);
+  }, [sale, open]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -142,7 +141,11 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
 
   const formatCurrency = (value: number | string | undefined | null) => {
     const num = Number(value);
-    return isNaN(num) ? '0.00' : num.toFixed(2);
+    if (isNaN(num)) return '0,00';
+    return new Intl.NumberFormat('de-DE', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(num);
   };
 
   const handlePrint = async () => {
@@ -501,7 +504,6 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
                 disabled={isLoading}
                 startIcon={!isLoading && <PrintIcon />}
                 sx={{
-                  display: 'none', // HIDDEN AS REQUESTED
                   py: 1.5,
                   px: 4,
                   fontSize: '0.95rem',

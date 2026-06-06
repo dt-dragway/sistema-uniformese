@@ -90,6 +90,13 @@ export class CashRegisterService {
       },
     });
 
+    // Auditoría: Obtener tipos de métodos de pago para evitar errores por nombres cambiados
+    const paymentMethods = await prisma.paymentMethod.findMany();
+    const getMethodType = (methodName: string) => {
+      const m = paymentMethods.find((pm) => pm.name === methodName);
+      return m ? m.type : 'other';
+    };
+
     for (const sale of sales) {
       const isCreditSale = sale.payments.some((p) => p.method === 'Crédito a Cliente');
 
@@ -97,12 +104,16 @@ export class CashRegisterService {
         calculatedCreditSalesUsd += sale.totalUsd;
       } else {
         for (const payment of sale.payments) {
-          const method = payment.method;
-          if (method === 'Efectivo REF' || method === 'Efectivo $') {
-            calculatedCashSalesUsd += payment.amount;
-          } else if (method === 'Efectivo Bs.') {
-            calculatedCashSalesBs += payment.amount * exchangeRate.rate;
+          const type = getMethodType(payment.method);
+          
+          if (type === 'cash' || payment.method.toLowerCase().includes('efectivo')) {
+            if (payment.method.toLowerCase().includes('bs')) {
+              calculatedCashSalesBs += payment.amount * exchangeRate.rate;
+            } else {
+              calculatedCashSalesUsd += payment.amount;
+            }
           } else {
+            // Todo lo que no sea efectivo va a ventas electrónicas
             calculatedElectronicSalesBs += payment.amount * exchangeRate.rate;
           }
         }
@@ -110,6 +121,7 @@ export class CashRegisterService {
         const totalPaidInUsd = sale.payments.reduce((sum, p) => sum + p.amount, 0);
         if (totalPaidInUsd > sale.totalUsd) {
           const changeInUsd = totalPaidInUsd - sale.totalUsd;
+          // El vuelto siempre sale del efectivo USD en este sistema
           calculatedCashSalesUsd -= changeInUsd;
         }
       }

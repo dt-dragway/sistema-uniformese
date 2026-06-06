@@ -27,6 +27,7 @@ import { ViewTicketModal } from './ViewTicketModal';
 import salesService from '../../api/salesService';
 import cashRegisterService from '../../api/cashRegisterService';
 import { AxiosError } from 'axios';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 interface CheckoutModalProps {
   open: boolean;
@@ -595,23 +596,21 @@ interface Payment {
                     my: 1,
                     // Dynamic font sizing: Start large, shrink as number gets longer
                     fontSize: {
-                      xs: totalWithDiscount.toFixed(2).length > 8 ? '2rem' : '2.5rem',
+                      xs: totalWithDiscount.toFixed(2).length > 8 ? '1.8rem' : '2.2rem',
                       sm:
                         totalWithDiscount.toFixed(2).length > 10
-                          ? '2.2rem'
+                          ? '1.8rem'
                           : totalWithDiscount.toFixed(2).length > 7
-                            ? '2.5rem'
-                            : '3rem',
+                            ? '2.2rem'
+                            : '2.5rem',
                       md:
                         totalWithDiscount.toFixed(2).length > 10
-                          ? '2.2rem'
+                          ? '1.8rem'
                           : totalWithDiscount.toFixed(2).length > 7
-                            ? '2.8rem'
-                            : '3.5rem',
+                            ? '2.2rem'
+                            : '2.8rem',
                     },
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
+                    wordBreak: 'break-word',
                     lineHeight: 1.1,
                   }}
                 >
@@ -626,7 +625,7 @@ interface Payment {
                   >
                     Bs.
                   </span>
-                  {totalWithDiscount.toFixed(2)}
+                  {formatCurrency(totalWithDiscount)}
                 </Typography>
                 <Box
                   sx={{
@@ -642,7 +641,7 @@ interface Payment {
                     variant="h6"
                     sx={{ color: '#2a6c8d', fontWeight: 700, fontFamily: '"Outfit", sans-serif' }}
                   >
-                    REF {(totals.usd - discount / exchangeRate).toFixed(2)}
+                    REF {formatCurrency(totals.usd - discount / exchangeRate)}
                   </Typography>
                 </Box>
               </Box>
@@ -655,7 +654,7 @@ interface Payment {
                     Pagado:
                   </Typography>
                   <Typography variant="body1" sx={{ color: '#0f172a', fontWeight: 700 }}>
-                    Bs. {totalPaidBs.toFixed(2)}
+                    Bs. {formatCurrency(totalPaidBs)}
                   </Typography>
                 </Box>
 
@@ -676,10 +675,10 @@ interface Payment {
                     </Typography>
                     <Box sx={{ textAlign: 'right' }}>
                       <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                        Bs. {remainingBalance.toFixed(2)}
+                        Bs. {formatCurrency(remainingBalance)}
                       </Typography>
                       <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                        REF {(remainingBalance / exchangeRate).toFixed(2)}
+                        REF {formatCurrency(remainingBalance / exchangeRate)}
                       </Typography>
                     </Box>
                   </Box>
@@ -726,10 +725,10 @@ interface Payment {
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', mt: 1 }}>
                       <Typography variant="h5" sx={{ fontWeight: 900, color: '#0f172a' }}>
-                        Bs. {changeData.bs.toFixed(2)}
+                        Bs. {formatCurrency(changeData.bs)}
                       </Typography>
                       <Typography variant="h6" sx={{ color: '#2a6c8d', fontWeight: 700 }}>
-                        REF {changeData.usd.toFixed(2)}
+                        REF {formatCurrency(changeData.usd)}
                       </Typography>
                     </Box>
                   </Box>

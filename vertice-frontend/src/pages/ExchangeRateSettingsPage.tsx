@@ -206,15 +206,36 @@ const ExchangeRateSettingsPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      <Snackbar open={showSuccess} autoHideDuration={3000} onClose={handleCloseSuccess}>
+      <Snackbar 
+        open={showSuccess} 
+        autoHideDuration={4000} 
+        onClose={handleCloseSuccess}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
         <Alert
           onClose={handleCloseSuccess}
           severity="success"
+          icon={<CurrencyExchangeIcon sx={{ color: '#059669', fontSize: 24 }} />}
           sx={{
             width: '100%',
-            borderRadius: '12px',
-            boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
-            fontWeight: 600,
+            minWidth: '350px',
+            borderRadius: '16px',
+            backgroundColor: '#ffffff',
+            color: '#064e3b',
+            border: '1px solid #d1fae5',
+            borderLeft: '6px solid #10b981',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+            fontWeight: 700,
+            fontSize: '0.95rem',
+            alignItems: 'center',
+            '& .MuiAlert-icon': {
+              padding: '0 8px 0 0',
+              opacity: 1
+            },
+            '& .MuiAlert-action': {
+              paddingTop: 0,
+              alignItems: 'center'
+            }
           }}
         >
           ¡Tasa de cambio actualizada correctamente!

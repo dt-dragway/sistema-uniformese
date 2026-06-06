@@ -102,8 +102,6 @@ export const createSale = async (req: Request, res: Response) => {
       discount: discount || 0,
       discountType: discountType || null,
       discountValue: discountValue || 0,
-      pendingRecharges: pendingRecharges || undefined,
-      pendingCashAdvances: pendingCashAdvances || undefined,
     };
 
     const newSale = await saleService.createSale(saleData);

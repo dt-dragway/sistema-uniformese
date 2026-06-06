@@ -101,6 +101,10 @@ class SaleService {
   async createSale(saleData: SaleCreateData): Promise<SaleWithRelations> {
     const { items, payments, customerId, cashRegisterSessionId, ...saleInfo } = saleData;
 
+    if (!payments || payments.length === 0) {
+      throw new Error('No se puede crear una venta sin pagos asociados.');
+    }
+
     const creditPayment = payments.find((p) => p.method === 'Crédito a Cliente');
     const otherPayments = payments.filter((p) => p.method !== 'Crédito a Cliente');
 
@@ -143,7 +147,7 @@ class SaleService {
             })),
           },
           payments: {
-            create: otherPayments.map((p) => ({
+            create: payments.map((p) => ({
               method: p.method,
               amount: p.amount,
               reference: p.reference ?? null,
@@ -162,7 +166,7 @@ class SaleService {
       const exchangeRate = await exchangeRateService.getCurrentExchangeRate();
       if (!exchangeRate) throw new Error('Exchange rate not found');
 
-      // 3. Cash movements
+      // 3. Cash movements (Only for real payments, not credits)
       for (const payment of otherPayments) {
         await tx.cashMovement.create({
           data: {

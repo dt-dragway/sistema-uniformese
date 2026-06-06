@@ -91,7 +91,7 @@ const CustomerCreditDetailsPage = () => {
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h4" gutterBottom>
-          Crédito de {customer.name}
+          Historial de {customer.name}
         </Typography>
         <Button variant="contained" color="primary" onClick={handleOpenAddPaymentModal}>
           Añadir Abono
@@ -117,8 +117,8 @@ const CustomerCreditDetailsPage = () => {
           </TableHead>
           <TableBody>
             {customerCreditMovements.map((movement) => {
-              const isSale = movement.description?.startsWith('Venta #');
-              const ticketNumber = isSale ? movement.description?.split('#')[1] : null;
+              const isSale = movement.description?.toLowerCase().includes('venta') && movement.description?.includes('#');
+              const ticketNumber = isSale ? movement.description?.split('#')[1]?.trim() : null;
               const authorizer = movement.user ? movement.user.fullname || movement.user.username : '-';
 
               return (
@@ -155,32 +155,33 @@ const CustomerCreditDetailsPage = () => {
         <ViewTicketModal open={isTicketModalOpen} onClose={() => setIsTicketModalOpen(false)} sale={selectedSale} />
       )}
 
-      {/* Styled Notification Dialog */}
+      {/* Modern Notification Dialog */}
       <Dialog
         open={!!infoMessage}
         onClose={() => setInfoMessage(null)}
         PaperProps={{
-          style: {
-            backgroundColor: '#1e272e',
-            color: '#fff',
-            borderRadius: '12px',
-            border: '1px solid #ff9f43',
-            minWidth: '300px',
+          sx: {
+            borderRadius: '24px',
+            padding: 1,
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(20px)',
+            minWidth: '320px',
           },
         }}
       >
         <DialogTitle
           sx={{
-            backgroundColor: 'rgba(255, 159, 67, 0.15)',
-            color: '#ff9f43',
-            fontWeight: 'bold',
-            borderBottom: '1px solid rgba(255, 159, 67, 0.3)',
+            fontWeight: 800,
+            fontSize: '1.25rem',
+            color: '#1e293b',
+            pb: 1,
           }}
         >
           Información
         </DialogTitle>
-        <DialogContent sx={{ mt: 2 }}>
-          <Typography variant="body1" sx={{ color: '#dcdcdc' }}>
+        <DialogContent>
+          <Typography variant="body1" sx={{ color: '#475569', fontSize: '1rem', lineHeight: 1.5 }}>
             {infoMessage}
           </Typography>
         </DialogContent>
@@ -188,12 +189,20 @@ const CustomerCreditDetailsPage = () => {
           <Button
             onClick={() => setInfoMessage(null)}
             variant="contained"
+            disableElevation
             sx={{
-              backgroundColor: '#ff9f43',
-              color: '#fff',
-              fontWeight: 'bold',
+              backgroundColor: '#0255A5',
+              color: 'white',
+              fontWeight: 700,
+              borderRadius: '12px',
+              textTransform: 'none',
+              px: 3,
+              py: 1,
+              transition: 'all 0.2s',
               '&:hover': {
-                backgroundColor: '#e68a00',
+                backgroundColor: '#014484',
+                transform: 'translateY(-1px)',
+                boxShadow: '0 4px 6px -1px rgba(2, 85, 165, 0.2), 0 2px 4px -1px rgba(2, 85, 165, 0.1)',
               },
             }}
           >

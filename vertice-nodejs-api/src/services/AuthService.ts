@@ -4,7 +4,9 @@ import jwt from 'jsonwebtoken';
 import { logger } from '../utils/logger';
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey'; // Should be in .env
+const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey';
+const SUPERADMIN_USER = process.env.SUPERADMIN_USER || 'superadmin';
+const SUPERADMIN_PASS = process.env.SUPERADMIN_PASS || 'superadmin';
 
 export const registerUser = async (username: string, password_plain: string, role: string) => {
   // Validate role
@@ -26,16 +28,20 @@ export const registerUser = async (username: string, password_plain: string, rol
 export const loginUser = async (username: string, password_plain: string) => {
   logger.debug('Starting login validation', { username });
 
-  // Handle superadmin case
-  if (username === 'superadmin' && password_plain === 'superadmin') {
+  // Handle superadmin case via environment variables
+  if (username === SUPERADMIN_USER && password_plain === SUPERADMIN_PASS) {
     const superAdminUser = {
       id: -1,
-      username: 'superadmin',
+      username: SUPERADMIN_USER,
       role: 'ADMIN',
       fullname: 'Super Administrador',
     };
-    logger.info('Superadmin authenticated');
-    const token = jwt.sign({ userId: superAdminUser.id, role: superAdminUser.role }, JWT_SECRET);
+    logger.info('Superadmin authenticated via ENV');
+    const token = jwt.sign(
+      { userId: superAdminUser.id, role: superAdminUser.role }, 
+      JWT_SECRET,
+      { expiresIn: '8h' }
+    );
     return { user: superAdminUser, token };
   }
 
@@ -51,17 +57,29 @@ export const loginUser = async (username: string, password_plain: string) => {
     throw new Error('Credenciales incorrectas');
   }
 
-  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET);
+  const token = jwt.sign(
+    { userId: user.id, role: user.role }, 
+    JWT_SECRET,
+    { expiresIn: '8h' }
+  );
   return { user, token };
 };
 
 export const getUserById = async (id: number) => {
+  if (id === -1) {
+    return {
+      id: -1,
+      username: SUPERADMIN_USER,
+      role: 'ADMIN',
+      fullname: 'Super Administrador',
+    };
+  }
   return prisma.user.findUnique({ where: { id } });
 };
 
 export const verifyAdminPassword = async (password_plain: string) => {
   // Check superadmin first
-  if (password_plain === 'superadmin') {
+  if (password_plain === SUPERADMIN_PASS) {
     return true;
   }
 

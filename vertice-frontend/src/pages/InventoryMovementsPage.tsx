@@ -26,6 +26,9 @@ import axiosInstance from '../api/axiosInstance';
 
 import { ProfessionalPagination } from '../components/common/ProfessionalPagination';
 
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+
 const InventoryMovementsPage: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const { movements, loading, error } = useSelector((state: RootState) => state.inventory);
@@ -53,20 +56,133 @@ const InventoryMovementsPage: React.FC = () => {
     setPage(0);
   };
 
+  const getMovementTypeLabel = (type: string) => {
+    switch (type) {
+      case 'SALE':
+        return { label: 'VENTA', color: '#dc2626', bg: '#fef2f2' };
+      case 'ENTRY':
+        return { label: 'ENTRADA', color: '#16a34a', bg: '#f0fdf4' };
+      case 'INTERNAL_CONSUMPTION':
+        return { label: 'DESPACHO INTERNO', color: '#9333ea', bg: '#fdf4ff' };
+      case 'ADJUSTMENT':
+        return { label: 'AJUSTE', color: '#d97706', bg: '#fffbeb' };
+      default:
+        return { label: type, color: '#475569', bg: '#f8fafc' };
+    }
+  };
+
+  const filteredMovements = filterType === 'TODOS' ? movements : movements.filter((m) => m.type === filterType);
+
   const handleExportExcel = async () => {
     try {
-      const response = await axiosInstance.get('/reports/inventory/export-excel', {
-        responseType: 'blob',
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Movimientos de Inventario');
+
+      // Add Title
+      worksheet.mergeCells('A1:F1');
+      const titleCell = worksheet.getCell('A1');
+      titleCell.value = 'REPORTE DE MOVIMIENTOS DE INVENTARIO';
+      titleCell.font = { name: 'Arial', size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
+      titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
+      titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+      // Add Date generated
+      worksheet.mergeCells('A2:F2');
+      const dateCell = worksheet.getCell('A2');
+      dateCell.value = `Generado el: ${new Date().toLocaleString()}`;
+      dateCell.font = { name: 'Arial', size: 10, italic: true };
+      dateCell.alignment = { horizontal: 'right' };
+
+      worksheet.addRow([]); // empty row
+
+      // Define columns
+      worksheet.columns = [
+        { header: 'Fecha y Hora', key: 'fecha', width: 25 },
+        { header: 'Prenda / Producto', key: 'producto', width: 35 },
+        { header: 'Detalles', key: 'detalles', width: 40 },
+        { header: 'Tipo', key: 'tipo', width: 20 },
+        { header: 'Cantidad', key: 'cantidad', width: 15 },
+        { header: 'Razón / Nota', key: 'razon', width: 35 },
+      ];
+
+      // Style Header Row
+      const headerRow = worksheet.getRow(4);
+      headerRow.eachCell((cell) => {
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF334155' } };
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `reporte_inventario_${new Date().toISOString().split('T')[0]}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+
+      // Add Data
+      filteredMovements.forEach((movement) => {
+        const typeInfo = getMovementTypeLabel(movement.type);
+        const product = movement.product;
+        const detalles = [
+          product?.tipo,
+          product?.caracteristica,
+          product?.detalle,
+          product?.color,
+          product?.tela,
+        ].filter(Boolean).join(' - ');
+
+        const row = worksheet.addRow({
+          fecha: new Date(movement.timestamp).toLocaleString(),
+          producto: product?.name || '-',
+          detalles: detalles || '-',
+          tipo: typeInfo.label,
+          cantidad: movement.quantityChange > 0 ? `+${movement.quantityChange}` : movement.quantityChange,
+          razon: movement.reason || '-'
+        });
+
+        // Style cells based on type and quantity
+        row.getCell('tipo').alignment = { horizontal: 'center' };
+        row.getCell('cantidad').alignment = { horizontal: 'right' };
+        
+        // Color type column
+        const tipoCell = row.getCell('tipo');
+        if (movement.type === 'SALE') {
+          tipoCell.font = { color: { argb: 'FFDC2626' }, bold: true };
+        } else if (movement.type === 'ENTRY') {
+          tipoCell.font = { color: { argb: 'FF16A34A' }, bold: true };
+        } else if (movement.type === 'INTERNAL_CONSUMPTION') {
+          tipoCell.font = { color: { argb: 'FF9333EA' }, bold: true };
+        } else if (movement.type === 'ADJUSTMENT') {
+          tipoCell.font = { color: { argb: 'FFD97706' }, bold: true };
+        }
+
+        // Color quantity column
+        const cantidadCell = row.getCell('cantidad');
+        cantidadCell.font = { 
+          color: { argb: movement.quantityChange > 0 ? 'FF16A34A' : 'FFDC2626' },
+          bold: true 
+        };
+
+        // Apply borders to all data cells
+        row.eachCell((cell) => {
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+            right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+          };
+          cell.alignment = { vertical: 'middle', ...cell.alignment };
+        });
+      });
+
+      // Write to buffer and save
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      saveAs(blob, `Reporte_Movimientos_Inventario_${new Date().toISOString().split('T')[0]}.xlsx`);
+
     } catch (err) {
       console.error('Error exporting Excel:', err);
+      alert('Hubo un error al generar el archivo Excel.');
     }
   };
 
@@ -86,22 +202,7 @@ const InventoryMovementsPage: React.FC = () => {
     );
   }
 
-  const getMovementTypeLabel = (type: string) => {
-    switch (type) {
-      case 'SALE':
-        return { label: 'VENTA', color: '#dc2626', bg: '#fef2f2' };
-      case 'ENTRY':
-        return { label: 'ENTRADA', color: '#16a34a', bg: '#f0fdf4' };
-      case 'INTERNAL_CONSUMPTION':
-        return { label: 'DESPACHO INTERNO', color: '#9333ea', bg: '#fdf4ff' };
-      case 'ADJUSTMENT':
-        return { label: 'AJUSTE', color: '#d97706', bg: '#fffbeb' };
-      default:
-        return { label: type, color: '#475569', bg: '#f8fafc' };
-    }
-  };
 
-  const filteredMovements = filterType === 'TODOS' ? movements : movements.filter((m) => m.type === filterType);
 
   const paginatedMovements = filteredMovements.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 

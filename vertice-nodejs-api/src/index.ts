@@ -43,6 +43,7 @@ import {
   createServiceIncome,
 } from './controllers/CashRegisterController';
 import { authMiddleware } from './middleware/authMiddleware';
+import { roleMiddleware } from './middleware/roleMiddleware';
 import { getCurrentExchangeRate, updateExchangeRate } from './controllers/ExchangeRateController';
 import {
   getAllSales,
@@ -146,11 +147,11 @@ app.get('/api/debug-files', (req, res) => {
 
 // --- RETAIL API ROUTES ---
 // Users
-app.get('/api/users', authMiddleware, getUsers);
-app.get('/api/users/:id', authMiddleware, getUser);
-app.post('/api/users', authMiddleware, validate(createUserSchema), createUser);
-app.put('/api/users/:id', authMiddleware, validate(updateUserSchema), updateUser);
-app.delete('/api/users/:id', authMiddleware, deleteUser);
+app.get('/api/users', authMiddleware, roleMiddleware(['ADMIN']), getUsers);
+app.get('/api/users/:id', authMiddleware, roleMiddleware(['ADMIN']), getUser);
+app.post('/api/users', authMiddleware, roleMiddleware(['ADMIN']), validate(createUserSchema), createUser);
+app.put('/api/users/:id', authMiddleware, roleMiddleware(['ADMIN']), validate(updateUserSchema), updateUser);
+app.delete('/api/users/:id', authMiddleware, roleMiddleware(['ADMIN']), deleteUser);
 app.post('/api/auth/register', validate(createUserSchema), register);
 app.post('/api/auth/login', validate(loginSchema), login);
 app.get('/api/auth/profile', authMiddleware, getProfile);
@@ -160,42 +161,42 @@ app.post('/api/auth/verify-admin', verifyAdmin);
 app.get('/api/products', authMiddleware, getAllProducts);
 app.get('/api/products/most-sold', authMiddleware, getMostSoldProducts);
 app.get('/api/products/barcode/:barCode', authMiddleware, getProductByBarcode);
-app.post('/api/products', authMiddleware, validate(productSchema), createProduct);
-app.put('/api/products/:id', authMiddleware, validate(updateProductSchema), updateProduct);
-app.delete('/api/products/:id', authMiddleware, deleteProduct);
+app.post('/api/products', authMiddleware, roleMiddleware(['ADMIN']), validate(productSchema), createProduct);
+app.put('/api/products/:id', authMiddleware, roleMiddleware(['ADMIN']), validate(updateProductSchema), updateProduct);
+app.delete('/api/products/:id', authMiddleware, roleMiddleware(['ADMIN']), deleteProduct);
 
 // Inventory
 app.get('/api/inventory/movements', authMiddleware, getAllInventoryMovements);
 app.get('/api/inventory/movements/product/:productId', authMiddleware, getInventoryMovementsByProductId);
-app.post('/api/inventory/entries', authMiddleware, createMerchandiseEntry);
-app.post('/api/inventory/withdrawals', authMiddleware, createInternalWithdrawal);
+app.post('/api/inventory/entries', authMiddleware, roleMiddleware(['ADMIN']), createMerchandiseEntry);
+app.post('/api/inventory/withdrawals', authMiddleware, roleMiddleware(['ADMIN']), createInternalWithdrawal);
 app.get('/api/inventory/historical-stock', authMiddleware, getHistoricalStock);
 
 // Cash Register
 app.post('/api/cash-register/open', authMiddleware, open);
 app.post('/api/cash-register/close', authMiddleware, close);
-app.post('/api/cash-register/close-by-admin', authMiddleware, closeByAdmin);
+app.post('/api/cash-register/close-by-admin', authMiddleware, roleMiddleware(['ADMIN']), closeByAdmin);
 app.get('/api/cash-register/preview', authMiddleware, getClosingPreview);
-app.get('/api/cash-register/preview/:userId', authMiddleware, getClosingPreviewByAdmin);
+app.get('/api/cash-register/preview/:userId', authMiddleware, roleMiddleware(['ADMIN']), getClosingPreviewByAdmin);
 app.get('/api/cash-register/status', authMiddleware, getActiveSession);
-app.get('/api/cash-register/active-sessions', authMiddleware, getActiveSessions);
+app.get('/api/cash-register/active-sessions', authMiddleware, roleMiddleware(['ADMIN']), getActiveSessions);
 app.get('/api/cash-register/sessions', authMiddleware, getAllSessions);
 app.get('/api/cash-register/corte-x', authMiddleware, getCorteX);
-app.get('/api/cash-register/corte-x/:userId', authMiddleware, getCorteXByAdmin);
+app.get('/api/cash-register/corte-x/:userId', authMiddleware, roleMiddleware(['ADMIN']), getCorteXByAdmin);
 app.post('/api/cash-register/corte-z', authMiddleware, processCorteZ);
-app.post('/api/cash-register/corte-z-admin', authMiddleware, processCorteZByAdmin);
+app.post('/api/cash-register/corte-z-admin', authMiddleware, roleMiddleware(['ADMIN']), processCorteZByAdmin);
 app.get('/api/cash-movements', authMiddleware, getAllCashMovements);
 app.post('/api/cash-register/service-income', authMiddleware, createServiceIncome);
 
 // Others
 app.get('/api/exchange-rate', authMiddleware, getCurrentExchangeRate);
-app.put('/api/exchange-rate', authMiddleware, updateExchangeRate);
+app.put('/api/exchange-rate', authMiddleware, roleMiddleware(['ADMIN', 'CASHIER']), updateExchangeRate);
 app.get('/api/sales', authMiddleware, getAllSales);
 app.get('/api/sales/:id', authMiddleware, getSaleById);
 app.get('/api/sales/ticket/:ticketNumber', authMiddleware, getSaleByTicketNumber);
 app.post('/api/sales', authMiddleware, validate(createSaleSchema), createSale);
-app.post('/api/sales/:id/cancel', authMiddleware, cancelSale);
-app.post('/api/sales/:id/returns', authMiddleware, createReturn);
+app.post('/api/sales/:id/cancel', authMiddleware, roleMiddleware(['ADMIN']), cancelSale);
+app.post('/api/sales/:id/returns', authMiddleware, roleMiddleware(['ADMIN']), createReturn);
 app.get('/api/adjustments', authMiddleware, getAllAdjustments);
 app.get('/api/adjustments/:id', authMiddleware, getAdjustmentById);
 app.post('/api/sales/check-reference', authMiddleware, checkDuplicateReference);
@@ -203,25 +204,25 @@ app.get('/api/customers', authMiddleware, getAllCustomers);
 app.get('/api/customers/:id', authMiddleware, getCustomerById);
 app.post('/api/customers', authMiddleware, validate(customerSchema), createCustomer);
 app.put('/api/customers/:id', authMiddleware, validate(updateCustomerSchema), updateCustomer);
-app.delete('/api/customers/:id', authMiddleware, deleteCustomer);
+app.delete('/api/customers/:id', authMiddleware, roleMiddleware(['ADMIN']), deleteCustomer);
 app.post('/api/customers/:id/credit', authMiddleware, addCredit);
 app.get('/api/suppliers', authMiddleware, (req, res) => getAllSuppliers(req, res));
 app.get('/api/suppliers/:id', authMiddleware, (req, res) => getSupplierById(req, res));
-app.post('/api/suppliers', authMiddleware, createSupplier);
-app.put('/api/suppliers/:id', authMiddleware, updateSupplier);
-app.delete('/api/suppliers/:id', authMiddleware, deleteSupplier);
+app.post('/api/suppliers', authMiddleware, roleMiddleware(['ADMIN']), createSupplier);
+app.put('/api/suppliers/:id', authMiddleware, roleMiddleware(['ADMIN']), updateSupplier);
+app.delete('/api/suppliers/:id', authMiddleware, roleMiddleware(['ADMIN']), deleteSupplier);
 app.get('/api/credits', authMiddleware, getAllCreditPayments);
 
 const settingController = new SettingController();
 const printController = new PrintController();
-app.get('/api/reports/sales/export-csv', authMiddleware, exportSalesCsv);
-app.get('/api/reports/sales/export-excel', authMiddleware, exportSalesExcel);
-app.get('/api/reports/internal-dispatch', authMiddleware, InternalReportController.getInternalDispatchStats);
-app.get('/api/maintenance/backup', authMiddleware, BackupController.downloadBackup);
-app.post('/api/maintenance/restore', authMiddleware, upload.single('backup'), BackupController.restoreBackup);
-app.post('/api/maintenance/cleanup', authMiddleware, MaintenanceController.cleanupOldRecords);
+app.get('/api/reports/sales/export-csv', authMiddleware, roleMiddleware(['ADMIN']), exportSalesCsv);
+app.get('/api/reports/sales/export-excel', authMiddleware, roleMiddleware(['ADMIN']), exportSalesExcel);
+app.get('/api/reports/internal-dispatch', authMiddleware, roleMiddleware(['ADMIN']), InternalReportController.getInternalDispatchStats);
+app.get('/api/maintenance/backup', authMiddleware, roleMiddleware(['ADMIN']), BackupController.downloadBackup);
+app.post('/api/maintenance/restore', authMiddleware, roleMiddleware(['ADMIN']), upload.single('backup'), BackupController.restoreBackup);
+app.post('/api/maintenance/cleanup', authMiddleware, roleMiddleware(['ADMIN']), MaintenanceController.cleanupOldRecords);
 app.get('/api/settings/printer', authMiddleware, (req, res) => settingController.getPrinter(req, res));
-app.post('/api/settings/printer', authMiddleware, (req, res) => settingController.savePrinter(req, res));
+app.post('/api/settings/printer', authMiddleware, roleMiddleware(['ADMIN']), (req, res) => settingController.savePrinter(req, res));
 app.post('/api/print-ticket', authMiddleware, (req, res) => printController.printTicket(req, res));
 
 // --- SERVING FRONTEND (ROBUST PRODUCTION LOGIC) ---

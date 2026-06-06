@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import {
   Box,
   Typography,
@@ -73,16 +75,68 @@ const UserConnectionsPage = () => {
 
   const handleExportExcel = async () => {
     try {
-      const response = await axiosInstance.get('/reports/connections/export-excel', {
-        responseType: 'blob',
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('Conexiones');
+
+      // Título
+      sheet.mergeCells('A1:E1');
+      const titleCell = sheet.getCell('A1');
+      titleCell.value = 'HISTORIAL DE CONEXIONES DE USUARIO';
+      titleCell.font = { name: 'Arial', size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
+      titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0255A5' } };
+      titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      sheet.getRow(1).height = 30;
+
+      // Fecha de generación
+      sheet.mergeCells('A2:E2');
+      const dateCell = sheet.getCell('A2');
+      dateCell.value = `Generado el: ${new Date().toLocaleString()}`;
+      dateCell.font = { name: 'Arial', size: 10, italic: true };
+      dateCell.alignment = { horizontal: 'right' };
+
+      sheet.addRow([]);
+
+      // Encabezados
+      const headers = ['Fecha y Hora', 'Usuario', 'Rol', 'Dirección IP', 'Dispositivo / Navegador'];
+      const headerRow = sheet.addRow(headers);
+      
+      headerRow.eachCell((cell) => {
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } };
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `reporte_conexiones_${new Date().toISOString().split('T')[0]}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+
+      sheet.getColumn(1).width = 25; // Fecha y Hora
+      sheet.getColumn(2).width = 30; // Usuario
+      sheet.getColumn(3).width = 15; // Rol
+      sheet.getColumn(4).width = 20; // IP
+      sheet.getColumn(5).width = 50; // Dispositivo
+
+      // Datos - Exportamos lo que está actualmente en la vista
+      connections.forEach(conn => {
+        const row = sheet.addRow([
+          format(new Date(conn.loginTime), 'dd/MM/yyyy hh:mm a'),
+          `${conn.user.fullname || conn.user.username} (${conn.user.username})`,
+          conn.user.role === 'CASHIER' ? 'CAJERO' : conn.user.role,
+          conn.ipAddress || 'Desconocida',
+          conn.userAgent || 'Desconocido'
+        ]);
+
+        row.eachCell((cell) => {
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            left: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            bottom: { style: 'thin', color: { argb: 'FFEEEEEE' } },
+            right: { style: 'thin', color: { argb: 'FFEEEEEE' } }
+          };
+          cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        });
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      saveAs(new Blob([buffer]), `Historial_Conexiones_${new Date().toISOString().split('T')[0]}.xlsx`);
+
     } catch (err) {
       console.error('Error exporting Excel:', err);
     }

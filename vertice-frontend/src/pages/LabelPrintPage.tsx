@@ -46,8 +46,8 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
     );
   }
 
-  const fecha = new Date().toLocaleDateString('es-VE');
-  const priceStr = Number(item.price) > 0 ? Number(item.price).toFixed(2) : '0.00';
+
+  const priceStr = Number(item.price) > 0 ? Number(item.price).toFixed(0) : '0';
   const barcodeDisplay = item.barCode || String(item.price) || '—';
   const detailParts = [];
   if (item.size) detailParts.push(`TALLA: ${item.size}`);
@@ -61,6 +61,7 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
         borderRadius: 1,
         bgcolor: 'white',
         p: 1.2,
+        pt: 2.5,
         fontFamily: 'monospace',
         fontSize: '11px',
         boxShadow: '2px 2px 6px rgba(0,0,0,0.15)',
@@ -68,13 +69,10 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
       }}
     >
       <Typography align="center" sx={{ fontFamily: 'monospace', fontSize: '11px', fontWeight: 'bold', lineHeight: 1.3 }}>
-        UNIFORMESE PERSEO GLOBAL, C.A.
+        UNIFORMESE
       </Typography>
       <Typography align="center" sx={{ fontFamily: 'monospace', fontSize: '10px', lineHeight: 1.3 }}>
-        J-403375640
-      </Typography>
-      <Typography align="center" sx={{ fontFamily: 'monospace', fontSize: '10px', lineHeight: 1.3 }}>
-        FECHA: {fecha}
+        RIF V-06560026-5
       </Typography>
 
       <Divider sx={{ my: 0.5, borderColor: '#000' }} />
@@ -96,13 +94,13 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
               <Box key={i} sx={{ width: i % 3 === 0 ? 3 : 1.5, bgcolor: '#000', flexShrink: 0 }} />
             ))}
           </Box>
-          <Typography sx={{ fontFamily: 'monospace', fontSize: '9px', mt: 0.3 }}>
+          <Typography sx={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 'bold', letterSpacing: '1px', mt: 0.5 }}>
             {barcodeDisplay}
           </Typography>
         </Box>
-        <Box sx={{ textAlign: 'right', minWidth: 70 }}>
-          <Typography sx={{ fontFamily: 'monospace', fontSize: '10px', color: '#555' }}>REF.</Typography>
+        <Box sx={{ textAlign: 'right', minWidth: 70, pr: 1.5 }}>
           <Typography sx={{ fontFamily: 'monospace', fontSize: '15px', fontWeight: 'bold' }}>
+            <span style={{ fontSize: '10px', color: '#555', fontWeight: 'normal', marginRight: '4px' }}>REF.</span>
             {priceStr}
           </Typography>
         </Box>
@@ -132,8 +130,8 @@ const LabelPrintPage: React.FC = () => {
   // Filtrado ultra rápido en memoria
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) {
-      // Si está vacío, mostrar los primeros 15 productos activos para que el usuario vea la lista
-      return allProducts.filter(p => p.isActive).slice(0, 15);
+      // Si está vacío, mostrar todos los productos activos
+      return allProducts.filter(p => p.isActive);
     }
     const lowerQ = searchQuery.toLowerCase();
     const filtered = allProducts.filter(p => 
@@ -142,7 +140,7 @@ const LabelPrintPage: React.FC = () => {
         (p.barCode && p.barCode.toLowerCase().includes(lowerQ))
       )
     );
-    return filtered.slice(0, 15);
+    return filtered;
   }, [searchQuery, allProducts]);
 
   // ── Agregar producto a la cola ──
@@ -181,6 +179,7 @@ const LabelPrintPage: React.FC = () => {
       setPreviewItem(null);
     }
   };
+  // Comentario para forzar sincronización del editor con el disco
 
   // ── Imprimir todo ──
   const handlePrint = async () => {
@@ -425,9 +424,7 @@ const LabelPrintPage: React.FC = () => {
                 <Typography variant="caption" color="text.secondary" display="block" mb={0.5}>
                   Esta es una simulación visual. El resultado final puede variar ligeramente según la impresora.
                 </Typography>
-                <Alert severity="info" icon={<WarningIcon fontSize="small" />} sx={{ fontSize: '11px', py: 0.5 }}>
-                  Usa <strong>labelary.com/viewer.html</strong> para verificar el ZPL exacto si necesitas ajustar el diseño.
-                </Alert>
+
               </Box>
             )}
 

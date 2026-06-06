@@ -170,10 +170,10 @@ export const SalesPage = () => {
         flexGrow: 1,
         gap: 2,
         minHeight: 0,
-        height: 'calc(100vh - 100px)', // Occupy full height minus header/footer
+        height: 'calc(100vh - 120px)', // Constrain height to viewport minus header and padding
         overflow: 'hidden',
         bgcolor: '#ffffff', // Explicit solid white
-        p: 2,
+        p: 0, // MainLayout already has padding
       }}
     >
       {/* Columna Izquierda: Catálogo de Productos */}
