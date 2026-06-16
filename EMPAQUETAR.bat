@@ -223,12 +223,15 @@ echo.
 
 :: Copiar scripts de instalacion y gestion
 echo Copiando scripts de gestion...
-copy "%SCRIPT_DIR%INSTALAR.bat" "%RELEASE_DIR%\" >nul
-copy "%SCRIPT_DIR%INICIAR.bat" "%RELEASE_DIR%\" >nul
-copy "%SCRIPT_DIR%DETENER.bat" "%RELEASE_DIR%\" >nul
-copy "%SCRIPT_DIR%REINICIAR.bat" "%RELEASE_DIR%\" >nul
-copy "%SCRIPT_DIR%ESTADO.bat" "%RELEASE_DIR%\" >nul
-copy "%SCRIPT_DIR%LOGS.bat" "%RELEASE_DIR%\" >nul
+copy "%SCRIPT_DIR%INSTALAR-SERVICIO.bat" "%RELEASE_DIR%\" >nul
+copy "%SCRIPT_DIR%DESINSTALAR-SERVICIO.bat" "%RELEASE_DIR%\" >nul
+copy "%SCRIPT_DIR%SEMBRAR-BD.bat" "%RELEASE_DIR%\" >nul
+copy "%SCRIPT_DIR%start-api.bat" "%RELEASE_DIR%\" >nul
+copy "%SCRIPT_DIR%start-print.bat" "%RELEASE_DIR%\" >nul
+copy "%SCRIPT_DIR%start-server.bat" "%RELEASE_DIR%\" >nul
+copy "%SCRIPT_DIR%stop-server.bat" "%RELEASE_DIR%\" >nul
+copy "%SCRIPT_DIR%install-service-silent.bat" "%RELEASE_DIR%\" >nul
+copy "%SCRIPT_DIR%uninstall-service-silent.bat" "%RELEASE_DIR%\" >nul
 echo [OK] Scripts copiados
 
 :: Copiar configuracion PM2
@@ -272,26 +275,22 @@ echo INSTALACION RAPIDA:
 echo   1. Descomprime este archivo en una ubicacion permanente
 echo      Ejemplo: C:\vertice_pos
 echo.
-echo   2. Ejecuta: INSTALAR.bat
-echo      - Esto instalara todas las dependencias
-echo      - Configurara la base de datos
-echo      - Compilara los componentes necesarios
-echo      - Instalara PM2 para gestion de procesos
+echo   2. Ejecuta: INSTALAR-SERVICIO.bat como Administrador
+echo      - Esto configurara la base de datos
+echo      - Registrara las tareas programadas de Windows para auto-inicio
+echo      - Iniciara los servicios en segundo plano
 echo.
-echo   3. Ejecuta: INICIAR.bat
-echo      - Inicia todos los servicios con PM2
-echo.
-echo   4. Accede a: http://localhost:3000
+echo   3. Accede a: http://localhost:4000
 echo      - Usuario: admin
 echo      - Password: admin2425*
 echo.
 echo SCRIPTS DISPONIBLES:
-echo   INSTALAR.bat   - Instalacion completa del sistema
-echo   INICIAR.bat    - Iniciar servicios con PM2
-echo   DETENER.bat    - Detener servicios
-echo   REINICIAR.bat  - Reiniciar servicios
-echo   ESTADO.bat     - Ver estado de servicios
-echo   LOGS.bat       - Ver logs en tiempo real
+echo   INSTALAR-SERVICIO.bat      - Instalar y registrar tareas programadas de auto-inicio
+echo   DESINSTALAR-SERVICIO.bat    - Detener y eliminar tareas programadas
+echo   SEMBRAR-BD.bat              - Inicializar y sembrar base de datos
+echo   start-server.bat            - Iniciar servicios de forma manual (minimizado)
+echo   stop-server.bat             - Detener servicios manuales o en ejecucion
+echo   install-service-silent.bat  - Script silencioso usado por el instalador
 echo.
 echo DOCUMENTACION:
 echo   README.md              - Documentacion completa del proyecto
@@ -301,8 +300,8 @@ echo.
 echo CONFIGURACION DE RED:
 echo   - Para acceder desde otros PCs en la red:
 echo     1. Obtener IP del servidor: ipconfig
-echo     2. Configurar firewall para puerto 3000
-echo     3. Acceder desde cliente: http://[IP-SERVIDOR]:3000
+echo     2. Configurar firewall para puerto 4000
+echo     3. Acceder desde cliente: http://[IP-SERVIDOR]:4000
 echo.
 echo SOPORTE:
 echo   - Revisa docs\INSTALACION.md para troubleshooting

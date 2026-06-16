@@ -26,7 +26,7 @@ const getLowStockProducts = () => {
 };
 
 const getMostSoldProducts = () => {
-  return axiosInstance.get<Product[]>('/products/by-sales');
+  return axiosInstance.get<Product[]>('/products/most-sold');
 };
 
 const createInternalWithdrawal = (items: { productId: number; quantity: number }[], reason: string) => {

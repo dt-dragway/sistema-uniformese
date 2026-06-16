@@ -1,107 +1,23 @@
 {
   "name": "vertice-pos",
   "productName": "Uniformese Servidor",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "description": "Sistema de Punto de Venta con soporte para red",
-  "main": "main.js",
   "scripts": {
-    "start": "electron main.js",
-    "start:electron": "electron main.js",
     "build:frontend": "cd vertice-frontend && npm run build",
     "build:api": "cd vertice-nodejs-api && npm run build",
     "build:all": "npm run build:frontend && npm run build:api",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "dist:win": "electron-builder --win",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "build": {
-    "appId": "com.vertice.pos",
-    "productName": "Vertice POS",
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "main.js",
-      "preload.js",
-      "package.json",
-      "assets/**/*"
-    ],
-    "extraResources": [
-      {
-        "from": "node",
-        "to": "node"
-      },
-      {
-        "from": "vertice-nodejs-api",
-        "to": "vertice-nodejs-api",
-        "filter": [
-          "dist/**/*",
-          "node_modules/**/*",
-          "prisma/**/*",
-          ".env",
-          ".env.example",
-          "package.json"
-        ]
-      },
-      {
-        "from": "vertice-print-server",
-        "to": "vertice-print-server",
-        "filter": [
-          "index.js",
-          "node_modules/**/*",
-          "package.json"
-        ]
-      },
-      {
-        "from": "vertice-frontend/dist",
-        "to": "vertice-frontend/dist"
-      },
-      "*.bat"
-    ],
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "icon": "assets/icon.ico",
-      "signAndEditExecutable": false
-    },
-    "forceCodeSigning": false,
-    "nsis": {
-      "oneClick": false,
-      "perMachine": true,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "Uniformese Servidor",
-      "deleteAppDataOnUninstall": true,
-      "include": "build/installer.nsh"
-    }
   },
   "keywords": [
     "pos",
     "punto-de-venta",
-    "electron"
+    "pwa"
   ],
   "author": "Jesus Diaz",
   "license": "GPL-2.0",
   "dependencies": {
     "debug": "^4.4.3",
     "express": "^5.1.0"
-  },
-  "devDependencies": {
-    "electron": "^39.2.4",
-    "electron-builder": "^25.1.8"
   }
 }

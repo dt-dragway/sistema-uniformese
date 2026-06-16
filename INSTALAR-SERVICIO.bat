@@ -30,9 +30,9 @@ if %errorlevel% equ 0 (
     echo Asegurate de que PostgreSQL este corriendo en el puerto 5432.
 )
 
-:: Crear usuario superadministrador
-echo Creando usuario administrador inicial...
-".\node\node.exe" ".\vertice-nodejs-api\create-superadmin.js"
+:: Crear usuario administrador e inicializar datos semilla (tasa de cambio, metodos de pago, etc)
+echo Inicializando datos de base de datos (tasa de cambio, metodos de pago, administrador)...
+".\node\node.exe" ".\vertice-nodejs-api\prisma\seed.js"
 
 echo.
 echo ============================================================

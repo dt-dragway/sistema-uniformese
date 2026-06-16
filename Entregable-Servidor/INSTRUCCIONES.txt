@@ -1,0 +1,76 @@
+========================================================================
+             GUIA DE INSTALACION - UNIFORMESE SERVIDOR
+========================================================================
+
+Este paquete contiene dos opciones de instaladores autoinstalables para
+el Servidor de Uniformese POS. Elige y ejecuta una de ellas:
+
+------------------------------------------------------------------------
+OPCION A: Uniformese Servidor Setup 1.13.0.exe (Recomendado)
+------------------------------------------------------------------------
+Es el instalador principal e integrado.
+- Instala el servidor (API + Impresion) en segundo plano.
+- Instala la aplicacion de ventana con icono en la bandeja del sistema
+  (System Tray, al lado del reloj).
+- Si cierras la ventana, el servidor sigue trabajando en segundo plano.
+- Puedes cerrarla definitivamente desde el icono del gancho en la bandeja.
+
+------------------------------------------------------------------------
+OPCION B: Uniformese Servidor Setup (Opcion InnoSetup).exe
+------------------------------------------------------------------------
+Es el instalador alternativo y ligero construido con Inno Setup.
+- Instala UNICAMENTE el servidor (API + Impresion) en segundo plano.
+- No instala ventana visual ni icono de bandeja.
+- Ideal si quieres un servidor 100% invisible para el equipo principal.
+- Para abrir el sistema, accedes directamente por el navegador.
+
+========================================================================
+PASOS PARA LA INSTALACION CORRECTA (APLICA A AMBAS OPCIONES):
+========================================================================
+
+PASO 1: INSTALAR MOTOR DE BASE DE DATOS (POSTGRESQL)
+------------------------------------------------------------------------
+El sistema requiere PostgreSQL instalado en el servidor local.
+1. Descarga PostgreSQL (Version 14, 15 o 16) para Windows 64-bit desde:
+   https://www.postgresql.org/download/windows/
+
+2. Durante la instalacion de PostgreSQL, establece obligatoriamente
+   la contraseña del usuario 'postgres' como:
+   ->  admin2425
+
+3. Mantén el puerto predeterminado: 5432.
+
+------------------------------------------------------------------------
+PASO 2: EJECUTAR EL INSTALADOR ELEGIDO
+------------------------------------------------------------------------
+1. Haz clic derecho sobre el instalador de tu preferencia (Opcion A o B)
+   y selecciona "Ejecutar como Administrador".
+
+2. Sigue las instrucciones. El programa se instalara en:
+   ->  C:\Program Files\Vertice POS
+
+3. Al finalizar la barra de instalacion, el programa de forma silenciosa:
+   - Creara la base de datos "uniformese_bd" e inicializara el esquema Prisma.
+   - Creara el usuario administrador por defecto.
+   - Registrara las tareas en el Programador de Tareas de Windows para
+     que el servidor arranque automaticamente al encender el equipo.
+
+------------------------------------------------------------------------
+PASO 3: CREDENCIALES DE ACCESO
+------------------------------------------------------------------------
+Accede al sistema abriendo tu navegador web en:
+- Direccion Local (Servidor): http://localhost:4000
+- Direccion en Red: http://[IP_DEL_SERVIDOR]:4000
+
+- Usuario Administrador por Defecto:
+  -> Usuario:  admin
+  -> Password: admin2425*
+
+------------------------------------------------------------------------
+GESTION DE SERVICIOS
+------------------------------------------------------------------------
+Si necesitas pausar o reiniciar los servidores de fondo manualmente,
+encontraras accesos directos en el escritorio y menu de inicio:
+- "Detener Servicios" (ejecuta stop-server.bat)
+- "Iniciar Servicios" (ejecuta start-server.bat)
+========================================================================

@@ -160,6 +160,7 @@ app.post('/api/auth/verify-admin', verifyAdmin);
 // Products
 app.get('/api/products', authMiddleware, getAllProducts);
 app.get('/api/products/most-sold', authMiddleware, getMostSoldProducts);
+app.get('/api/products/by-sales', authMiddleware, getMostSoldProducts);
 app.get('/api/products/barcode/:barCode', authMiddleware, getProductByBarcode);
 app.post('/api/products', authMiddleware, roleMiddleware(['ADMIN']), validate(productSchema), createProduct);
 app.put('/api/products/:id', authMiddleware, roleMiddleware(['ADMIN']), validate(updateProductSchema), updateProduct);
@@ -226,7 +227,13 @@ app.post('/api/settings/printer', authMiddleware, roleMiddleware(['ADMIN']), (re
 app.post('/api/print-ticket', authMiddleware, (req, res) => printController.printTicket(req, res));
 
 // --- SERVING FRONTEND (ROBUST PRODUCTION LOGIC) ---
-const frontendPath = path.resolve(process.cwd(), 'vertice-frontend/dist');
+let frontendPath = path.resolve(process.cwd(), 'vertice-frontend/dist');
+if (!fs.existsSync(frontendPath)) {
+  const siblingPath = path.resolve(process.cwd(), '../vertice-frontend/dist');
+  if (fs.existsSync(siblingPath)) {
+    frontendPath = siblingPath;
+  }
+}
 const indexPath = path.join(frontendPath, 'index.html');
 
 if (fs.existsSync(frontendPath)) {
