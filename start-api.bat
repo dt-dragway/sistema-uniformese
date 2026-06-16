@@ -1,3 +1,3 @@
-@echo off 
-cd /d "F:\Disco M\Desarrollos\vertice_pos\vertice-nodejs-api" 
-node dist/index.js 
+@echo off
+cd /d "%~dp0"
+node vertice-nodejs-api/dist/index.js

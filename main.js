@@ -14,7 +14,7 @@ let printProcess = null;
 // Start backend services in production mode
 // NOTE: In production, backend services are started separately via Windows startup
 // This function just reads configuration
-let serverUrl = 'http://localhost:3000';
+let serverUrl = 'http://localhost:4000';
 
 // Single Instance Lock - Only allow one instance of the app to run
 const gotTheLock = app.requestSingleInstanceLock();
@@ -66,8 +66,8 @@ function loadConfig() {
     // Create default config file
     console.log('Creating default config at:', configFilePath);
     const defaultConfig = {
-      serverUrl: 'http://localhost:3000',
-      _comment: 'Cambia serverUrl a la IP del servidor, ej: http://192.168.1.100:3000'
+      serverUrl: 'http://localhost:4000',
+      _comment: 'Cambia serverUrl a la IP del servidor, ej: http://192.168.1.100:4000'
     };
     fs.writeFileSync(configFilePath, JSON.stringify(defaultConfig, null, 2));
   }

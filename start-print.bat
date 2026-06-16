@@ -1,3 +1,3 @@
-@echo off 
-cd /d "F:\Disco M\Desarrollos\vertice_pos\vertice-print-server" 
-node index.js 
+@echo off
+cd /d "%~dp0vertice-print-server"
+node index.js

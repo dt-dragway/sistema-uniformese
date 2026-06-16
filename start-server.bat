@@ -21,11 +21,11 @@ start "Vertice Print" /min cmd /c "cd /d "%SCRIPT_DIR%vertice-print-server" && n
 echo.
 echo ============================================
 echo   Servicios Iniciados:
-echo   - API: http://localhost:3000
+echo   - API: http://localhost:4000
 echo   - Impresion: http://localhost:3001
 echo ============================================
 echo.
-echo Abre tu navegador en: http://localhost:3000
+echo Abre tu navegador en: http://localhost:4000
 echo.
 echo Para detener, cierra las ventanas minimizadas
 echo o ejecuta stop-server.bat

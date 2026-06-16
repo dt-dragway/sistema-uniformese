@@ -69,11 +69,11 @@ echo    SERVICIOS INICIADOS EXITOSAMENTE
 echo ============================================================
 echo.
 echo Accede a la aplicacion en:
-echo   - Servidor local: http://localhost:3000
-echo   - Desde red: http://[IP-SERVIDOR]:3000
+echo   - Servidor local: http://localhost:4000
+echo   - Desde red: http://[IP-SERVIDOR]:4000
 echo.
 echo Servicios activos:
-echo   - API: http://localhost:3000
+echo   - API: http://localhost:4000
 echo   - Print Server: http://localhost:3001
 echo.
 echo Comandos utiles:
