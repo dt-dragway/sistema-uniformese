@@ -45,7 +45,7 @@ En la raíz del proyecto, ejecuta el script de distribución:
 ```bash
 npm run dist:win
 ```
-Esto iniciará `electron-builder`, el cual empaquetará la aplicación de escritorio y creará el instalador `Vertice POS Setup 1.11.0.exe` en la carpeta `release/`.
+Esto iniciará `electron-builder`, el cual empaquetará la aplicación de escritorio y creará el instalador `Vertice POS Setup 1.12.0.exe` en la carpeta `release/`.
 
 Durante la compilación, se incluye la macro personalizada en [build/installer.nsh](file:///c:/Users/dragway/Documents/uniformese/build/installer.nsh), la cual se encargará de ejecutar el script de configuración del servicio en segundo plano cuando el cliente instale el programa.
 
@@ -53,7 +53,7 @@ Durante la compilación, se incluye la macro personalizada en [build/installer.n
 
 ## 🚀 Instalación en el Servidor del Cliente
 
-Lleva el instalador generado (`release/Vertice POS Setup 1.11.0.exe`) al equipo del cliente y ejecútalo. El instalador realizará todo lo siguiente de forma nativa y automática:
+Lleva el instalador generado (`release/Vertice POS Setup 1.12.0.exe`) al equipo del cliente y ejecútalo. El instalador realizará todo lo siguiente de forma nativa y automática:
 
 1. **Instalación de archivos**: Copiará los archivos a la carpeta del programa.
 2. **Estructuración de Base de Datos**: Creará las tablas e inicializará el esquema automáticamente usando Prisma Client y creará el usuario administrador `admin` con contraseña `admin2425*`.

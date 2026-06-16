@@ -12,6 +12,30 @@ set "SCRIPT_DIR=%~dp0"
 cd /d "%SCRIPT_DIR%"
 
 echo ============================================================
+echo   CONFIGURANDO BASE DE DATOS E INICIALIZANDO ESQUEMA
+echo ============================================================
+echo.
+
+:: Configurar variable de entorno para Prisma
+set DATABASE_URL="postgresql://postgres:admin2425@localhost:5432/uniformese_bd?schema=public"
+
+:: Ejecutar migracion de base de datos usando Node y Prisma empaquetado
+echo Sincronizando esquema de base de datos (se creara la BD si no existe)...
+".\node\node.exe" ".\vertice-nodejs-api\node_modules\prisma\build\index.js" db push --accept-data-loss --schema=".\vertice-nodejs-api\prisma\schema.prisma"
+
+if %errorlevel% equ 0 (
+    echo [OK] Base de datos sincronizada con exito.
+) else (
+    echo [ADVERTENCIA] Fallo la sincronizacion de la base de datos.
+    echo Asegurate de que PostgreSQL este corriendo en el puerto 5432.
+)
+
+:: Crear usuario superadministrador
+echo Creando usuario administrador inicial...
+".\node\node.exe" ".\vertice-nodejs-api\create-superadmin.js"
+
+echo.
+echo ============================================================
 echo   REGISTRANDO SERVICIOS DE VERTICE POS EN SEGUNDO PLANO
 echo ============================================================
 echo.

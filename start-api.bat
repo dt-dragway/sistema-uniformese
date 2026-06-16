@@ -1,3 +1,3 @@
 @echo off
 cd /d "%~dp0"
-node vertice-nodejs-api/dist/index.js
+".\node\node.exe" vertice-nodejs-api/dist/index.js

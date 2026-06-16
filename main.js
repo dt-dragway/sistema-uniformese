@@ -1,8 +1,12 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Tray, Menu } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 const http = require('http');
+
+let mainWindow = null;
+let tray = null;
+let isQuitting = false;
 
 // Detect if running in development or production mode
 const isDev = !app.isPackaged;
@@ -79,7 +83,7 @@ function stopBackendServices() {
 }
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
     show: false, // Create window hidden
@@ -89,6 +93,15 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js') // Use preload script
     }
+  });
+
+  // Interceptar evento de cierre para minimizar al System Tray
+  mainWindow.on('close', (event) => {
+    if (!isQuitting) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
+    return false;
   });
 
   mainWindow.once('ready-to-show', async () => {
@@ -129,7 +142,9 @@ function createWindow() {
       console.error('Could not load from server:', err.message);
 
       // Fallback: try loading local frontend file
-      const frontendPath = path.join(__dirname, 'vertice-frontend', 'dist', 'index.html');
+      const frontendPath = isDev
+        ? path.join(__dirname, 'vertice-frontend', 'dist', 'index.html')
+        : path.join(process.resourcesPath, 'vertice-frontend', 'dist', 'index.html');
       console.log('Trying fallback frontend path:', frontendPath);
 
       if (fs.existsSync(frontendPath)) {
@@ -178,6 +193,43 @@ app.whenReady().then(async () => {
   loadConfig();
 
   createWindow();
+
+  // Crear icono de la bandeja del sistema (System Tray)
+  try {
+    const iconPath = path.join(__dirname, 'assets', 'icon.png');
+    tray = new Tray(iconPath);
+    const contextMenu = Menu.buildFromTemplate([
+      { 
+        label: 'Abrir Vertice POS', 
+        click: () => {
+          if (mainWindow) {
+            mainWindow.show();
+            mainWindow.setFullScreen(true);
+          }
+        } 
+      },
+      { type: 'separator' },
+      { 
+        label: 'Cerrar Aplicacion', 
+        click: () => {
+          isQuitting = true;
+          app.quit();
+        } 
+      }
+    ]);
+    tray.setToolTip('Vertice POS');
+    tray.setContextMenu(contextMenu);
+    
+    // Doble clic para restaurar la ventana
+    tray.on('double-click', () => {
+      if (mainWindow) {
+        mainWindow.show();
+        mainWindow.setFullScreen(true);
+      }
+    });
+  } catch (error) {
+    console.error('Error al inicializar la bandeja del sistema:', error);
+  }
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

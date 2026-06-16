@@ -1,7 +1,7 @@
 {
   "name": "vertice-pos",
-  "productName": "Vertice POS",
-  "version": "1.11.0",
+  "productName": "Uniformese Servidor",
+  "version": "1.12.0",
   "description": "Sistema de Punto de Venta con soporte para red",
   "main": "main.js",
   "scripts": {
@@ -25,13 +25,40 @@
       "main.js",
       "preload.js",
       "package.json",
-      "vertice-frontend/dist/**/*",
-      "vertice-nodejs-api/**/*",
-      "vertice-print-server/**/*",
-      "assets/**/*",
+      "assets/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "node",
+        "to": "node"
+      },
+      {
+        "from": "vertice-nodejs-api",
+        "to": "vertice-nodejs-api",
+        "filter": [
+          "dist/**/*",
+          "node_modules/**/*",
+          "prisma/**/*",
+          ".env",
+          ".env.example",
+          "package.json"
+        ]
+      },
+      {
+        "from": "vertice-print-server",
+        "to": "vertice-print-server",
+        "filter": [
+          "index.js",
+          "node_modules/**/*",
+          "package.json"
+        ]
+      },
+      {
+        "from": "vertice-frontend/dist",
+        "to": "vertice-frontend/dist"
+      },
       "*.bat"
     ],
-    "extraResources": [],
     "win": {
       "target": [
         {
@@ -53,10 +80,11 @@
     "forceCodeSigning": false,
     "nsis": {
       "oneClick": false,
+      "perMachine": true,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Vertice POS",
+      "shortcutName": "Uniformese Servidor",
       "deleteAppDataOnUninstall": true,
       "include": "build/installer.nsh"
     }
