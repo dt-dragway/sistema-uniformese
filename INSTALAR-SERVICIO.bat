@@ -20,8 +20,8 @@ echo.
 set DATABASE_URL="postgresql://postgres:admin2425@localhost:5432/uniformese_bd?schema=public"
 
 :: Ejecutar migracion de base de datos usando Node y Prisma empaquetado
-echo Sincronizando esquema de base de datos (se creara la BD si no existe)...
-".\node\node.exe" ".\vertice-nodejs-api\node_modules\prisma\build\index.js" db push --accept-data-loss --schema=".\vertice-nodejs-api\prisma\schema.prisma"
+echo Sincronizando esquema de base de datos y limpiando instalacion previa...
+".\node\node.exe" ".\vertice-nodejs-api\node_modules\prisma\build\index.js" db push --force-reset --accept-data-loss --schema=".\vertice-nodejs-api\prisma\schema.prisma"
 
 if %errorlevel% equ 0 (
     echo [OK] Base de datos sincronizada con exito.
@@ -41,29 +41,29 @@ echo ============================================================
 echo.
 
 :: Register API Task
-echo Registrando tarea de auto-inicio para Vertice API...
-schtasks /create /tn "VerticePOS_API" /tr "cmd.exe /c \"%SCRIPT_DIR%start-api.bat\"" /sc onstart /ru SYSTEM /f
+echo Registrando tarea de auto-inicio para Uniformese API...
+schtasks /create /tn "Uniformese_API" /tr "cmd.exe /c \"%SCRIPT_DIR%start-api.bat\"" /sc onstart /ru SYSTEM /f
 if %errorlevel% equ 0 (
-    echo [OK] Tarea VerticePOS_API registrada con exito.
+    echo [OK] Tarea Uniformese_API registrada con exito.
 ) else (
-    echo [ERROR] No se pudo registrar la tarea VerticePOS_API.
+    echo [ERROR] No se pudo registrar la tarea Uniformese_API.
 )
 
 :: Register Print Server Task
-echo Registrando tarea de auto-inicio para Vertice Print Server...
-schtasks /create /tn "VerticePOS_Print" /tr "cmd.exe /c \"%SCRIPT_DIR%start-print.bat\"" /sc onstart /ru SYSTEM /f
+echo Registrando tarea de auto-inicio para Uniformese Print Server...
+schtasks /create /tn "Uniformese_Print" /tr "cmd.exe /c \"%SCRIPT_DIR%start-print.bat\"" /sc onstart /ru SYSTEM /f
 if %errorlevel% equ 0 (
-    echo [OK] Tarea VerticePOS_Print registrada con exito.
+    echo [OK] Tarea Uniformese_Print registrada con exito.
 ) else (
-    echo [ERROR] No se pudo registrar la tarea VerticePOS_Print.
+    echo [ERROR] No se pudo registrar la tarea Uniformese_Print.
 )
 
 echo.
 echo ============================================================
 echo   INICIANDO LOS SERVICIOS AHORA...
 echo ============================================================
-schtasks /run /tn "VerticePOS_API"
-schtasks /run /tn "VerticePOS_Print"
+schtasks /run /tn "Uniformese_API"
+schtasks /run /tn "Uniformese_Print"
 echo.
 echo Servicios iniciados en segundo plano correctamente.
 echo Accede a: http://localhost:4000

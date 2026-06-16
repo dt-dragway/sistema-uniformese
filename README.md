@@ -147,12 +147,6 @@ Escpos             - Protocolo para impresoras térmicas
 Express            - API REST para comandos de impresión
 ```
 
-### Desktop (Opcional)
-```
-Electron 39        - Wrapper para app de escritorio
-Electron Builder   - Empaquetador para Windows
-```
-
 ### DevOps & Tools
 ```
 Git                - Control de versiones
@@ -351,9 +345,6 @@ vertice_pos/
 │   └── icon.ico
 │
 ├── 📄 ecosystem.config.js        # Configuración PM2
-├── 📄 package.json               # Proyecto principal (Electron)
-├── 📄 main.js                    # Electron main process
-├── 📄 preload.js                 # Electron preload script
 │
 ├── 📜 INSTALAR.bat               # Instalador automático
 ├── 📜 INICIAR.bat                # Iniciar sistema
@@ -801,7 +792,6 @@ Para actualizar a una nueva versión:
 - 📖 Documentación actualizada
 
 ### v1.10.1
-- 🖼️ Corrección de íconos en Electron
 - 🔐 Mejoras en configuración de seguridad
 - 🐛 Fixes de conexión externa
 

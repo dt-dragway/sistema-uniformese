@@ -11,9 +11,9 @@ Para compilar el instalador, el equipo de desarrollo debe contar con:
 
 ---
 
-## 📦 Proceso de Compilación y Empaquetado (Método Integrado: Electron-Builder + NSIS)
+## 📦 Proceso de Compilación y Empaquetado (Método: Inno Setup + Scripts)
 
-Este método utiliza el mismo flujo de empaquetado que ya tienes configurado en **Vertice POS** a través de `electron-builder`.
+Este método prepara la API en Node.js y el Frontend en Vite (PWA) como un servidor autónomo.
 
 ### Paso 1: Limpiar la Base de Datos (Opcional, para empezar de cero)
 Si deseas vaciar la base de datos de desarrollo para empezar desde cero, ejecuta en PowerShell:
@@ -27,27 +27,20 @@ $env:DATABASE_URL="postgresql://postgres:admin2425@localhost:5432/uniformese_bd?
 node create-superadmin.js
 ```
 
-### Paso 2: Compilar el Frontend y el Backend
-Compila todos los recursos para producción:
-1. **Frontend**: Generará los archivos estáticos en `vertice-frontend/dist`.
-   ```bash
-   cd vertice-frontend
-   npm run build
-   ```
-2. **Backend**: Compilará el código de TypeScript a Javascript.
-   ```bash
-   cd vertice-nodejs-api
-   npm run build
-   ```
-
-### Paso 3: Generar el Instalador de Windows (`.exe` de instalación)
+### Paso 2: Generar los binarios y empaquetado inicial
 En la raíz del proyecto, ejecuta el script de distribución:
 ```bash
-npm run dist:win
+EMPAQUETAR.bat
 ```
-Esto iniciará `electron-builder`, el cual empaquetará la aplicación de escritorio y creará el instalador `Vertice POS Setup 1.12.0.exe` en la carpeta `release/`.
+Este script se encargará de:
+1. Compilar el Frontend (Vite PWA) y el Backend (TypeScript).
+2. Crear un empaquetado completo en la carpeta `release/vertice-pos-vX.X.X` que contiene únicamente los recursos del servidor.
 
-Durante la compilación, se incluye la macro personalizada en [build/installer.nsh](file:///c:/Users/dragway/Documents/uniformese/build/installer.nsh), la cual se encargará de ejecutar el script de configuración del servicio en segundo plano cuando el cliente instale el programa.
+### Paso 3: Generar el Instalador de Windows (`.exe` de instalación)
+Una vez que `EMPAQUETAR.bat` haya finalizado, abre el archivo `installer.iss` en el programa **Inno Setup Compiler**.
+Presiona **Compile** para que Inno Setup empaquete los archivos compilados en un único archivo instalador dentro de la carpeta `release/`.
+
+Durante la instalación en el cliente, el ejecutable usará los scripts de servicio para registrar el arranque en segundo plano.
 
 ---
 

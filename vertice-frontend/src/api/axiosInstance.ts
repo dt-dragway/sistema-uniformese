@@ -2,42 +2,12 @@ import axios from 'axios';
 import { store } from '../store';
 import { logout } from '../store/authSlice';
 
-// Sincronizar configuración de Electron al localStorage inmediatamente
-// Esto asegura que cuando la app carga en un nuevo origin (diferente servidor),
-// el localStorage tenga la URL correcta desde el config.json de Electron
-const syncElectronConfig = async () => {
-  try {
-    if (window.electronAPI?.getServerConfig) {
-      const config = await window.electronAPI.getServerConfig();
-      if (config?.serverUrl) {
-        localStorage.setItem('serverUrl', config.serverUrl);
-        console.log('[AxiosInstance] Synced serverUrl from Electron config:', config.serverUrl);
-      }
-    }
-  } catch (error) {
-    console.warn('[AxiosInstance] Could not sync Electron config:', error);
-  }
-};
-
-// Ejecutar sincronización al cargar este módulo
-syncElectronConfig();
-
-// URL base dinámica - se lee de localStorage o usa default
+// URL base dinámica
 const getBaseURL = (): string => {
-  const savedUrl = localStorage.getItem('serverUrl');
-  if (savedUrl) {
-    return `${savedUrl}/api`;
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
   }
-
-  // En producción (VPS), si no hay URL guardada, usamos el origen actual (IP o Dominio)
-  if (import.meta.env.PROD) {
-    return `${window.location.origin}/api`;
-  }
-
-  // Fallback para desarrollo
-  const hostname = window.location.hostname;
-  const port = 4000;
-  return `http://${hostname}:${port}/api`;
+  return `${window.location.origin}/api`;
 };
 
 // Exportamos función para obtener URL actual

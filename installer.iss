@@ -9,7 +9,7 @@ AppName=Uniformese Servidor
 AppVersion=1.13.0
 AppPublisher=DT Dragway
 AppPublisherURL=https://dt-dragway.com
-DefaultDirName={commonpf}\VerticePOS
+DefaultDirName={commonpf}\Uniformese
 DefaultGroupName=Uniformese Servidor
 DisableProgramGroupPage=yes
 LicenseFile=LICENSE
@@ -39,22 +39,21 @@ Source: "vertice-print-server\*"; DestDir: "{app}\vertice-print-server"; Flags: 
 ; Copiar los scripts batch principales y silenciosos
 Source: "start-api.bat"; DestDir: "{app}"
 Source: "start-print.bat"; DestDir: "{app}"
-Source: "start-server.bat"; DestDir: "{app}"
+Source: "abrir-sistema.bat"; DestDir: "{app}"
 Source: "stop-server.bat"; DestDir: "{app}"
 Source: "install-service-silent.bat"; DestDir: "{app}"
 Source: "uninstall-service-silent.bat"; DestDir: "{app}"
 Source: "INSTALAR-SERVICIO.bat"; DestDir: "{app}"
 Source: "DESINSTALAR-SERVICIO.bat"; DestDir: "{app}"
 Source: "SEMBRAR-BD.bat"; DestDir: "{app}"
-Source: "ecosystem.config.js"; DestDir: "{app}"
 
 [Icons]
-Name: "{group}\Uniformese Servidor Web"; Filename: "{app}\start-server.bat"
+Name: "{group}\Uniformese Servidor Web"; Filename: "{app}\abrir-sistema.bat"
 Name: "{group}\Detener Servicios"; Filename: "{app}\stop-server.bat"
 Name: "{group}\Instalar Servicios Windows"; Filename: "{app}\install-service-silent.bat"
 Name: "{group}\Desinstalar Servicios"; Filename: "{app}\uninstall-service-silent.bat"
 Name: "{group}\Inicializar o Sembrar Base de Datos"; Filename: "{app}\SEMBRAR-BD.bat"
-Name: "{commondesktop}\Uniformese Servidor"; Filename: "{app}\start-server.bat"; Tasks: desktopicon
+Name: "{commondesktop}\Uniformese Servidor"; Filename: "{app}\abrir-sistema.bat"; Tasks: desktopicon
 
 [Run]
 ; Configurar base de datos, ejecutar migracion y registrar servicios en segundo plano usando los scripts silenciosos
@@ -63,3 +62,6 @@ Filename: "cmd.exe"; Parameters: "/c ""{app}\install-service-silent.bat"""; Stat
 [UninstallRun]
 ; Detener y eliminar servicios registrados al desinstalar
 Filename: "cmd.exe"; Parameters: "/c ""{app}\uninstall-service-silent.bat"""; Flags: runhidden
+
+[UninstallDelete]
+Type: filesandordirs; Name: "{app}"

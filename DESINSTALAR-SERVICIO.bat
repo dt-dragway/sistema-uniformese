@@ -14,12 +14,12 @@ echo ============================================================
 echo.
 
 echo Deteniendo tareas...
-schtasks /end /tn "VerticePOS_API" >nul 2>&1
-schtasks /end /tn "VerticePOS_Print" >nul 2>&1
+schtasks /end /tn "Uniformese_API" >nul 2>&1
+schtasks /end /tn "Uniformese_Print" >nul 2>&1
 
 echo Eliminando tareas programadas...
-schtasks /delete /tn "VerticePOS_API" /f >nul 2>&1
-schtasks /delete /tn "VerticePOS_Print" /f >nul 2>&1
+schtasks /delete /tn "Uniformese_API" /f >nul 2>&1
+schtasks /delete /tn "Uniformese_Print" /f >nul 2>&1
 
 echo Deteniendo procesos node si estan activos...
 taskkill /f /im node.exe >nul 2>&1
