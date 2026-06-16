@@ -14,13 +14,12 @@ import {
   Typography,
   IconButton,
   CSSObject,
-  Theme,
   styled,
-  useTheme,
+  Theme,
   Tooltip,
   ListSubheader,
-} from '@mui/material';
-import {
+  } from '@mui/material';
+  import {
   PointOfSale as PointOfSaleIcon,
   Category as CategoryIcon,
   Assessment as AssessmentIcon,
@@ -36,12 +35,11 @@ import {
   Info as InfoIcon,
   AccountBalance as AccountBalanceIcon,
   Inventory as InventoryIcon,
-  PhoneAndroid as PhoneAndroidIcon,
-  PriceChange as PriceChangeIcon,
   LocalOffer as LocalOfferIcon,
   Fullscreen as FullscreenIcon,
   FullscreenExit as FullscreenExitIcon,
-} from '@mui/icons-material';
+  Checkroom as CheckroomIcon,
+  } from '@mui/icons-material';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { logout } from '../store/authSlice';
 import Footer from './Footer';
@@ -141,25 +139,6 @@ interface NavItem {
   icon: React.ReactElement;
   path: string;
 }
-const navigationItems: NavItem[] = [
-  { text: 'Ventas', icon: <PointOfSaleIcon sx={{ color: '#0255A5' }} />, path: '/sales' },
-  { text: 'Tasa REF/Bs.', icon: <AttachMoneyIcon sx={{ color: '#0255A5' }} />, path: '/settings/exchange-rate' },
-  { text: 'Historial', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/history' },
-  { text: 'Historial de Cajas', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/historial-caja' },
-  { text: 'Clientes', icon: <PeopleIcon sx={{ color: '#0255A5' }} />, path: '/customers' },
-];
-
-const managementItems: NavItem[] = [
-  { text: 'Inventario', icon: <CategoryIcon sx={{ color: '#0255A5' }} />, path: '/products' },
-  { text: 'Operaciones Especiales', icon: <InventoryIcon sx={{ color: '#0255A5' }} />, path: '/internal-withdrawal' },
-  { text: 'Usuarios', icon: <PeopleIcon sx={{ color: '#0255A5' }} />, path: '/users' },
-  { text: 'Admin Caja', icon: <AccountBalanceIcon sx={{ color: '#0255A5' }} />, path: '/admin-caja' },
-  { text: 'Informes', icon: <AssessmentIcon sx={{ color: '#0255A5' }} />, path: '/reports' },
-  { text: 'Movimientos de Inventario', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/inventory/movements' },
-  { text: 'Mantenimiento', icon: <BackupIcon sx={{ color: '#0255A5' }} />, path: '/maintenance' },
-  { text: 'Impresora', icon: <PrintIcon sx={{ color: '#0255A5' }} />, path: '/settings/printer' },
-  { text: 'Acerca de', icon: <InfoIcon sx={{ color: '#0255A5' }} />, path: '/about' },
-];
 
 function MainLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -252,6 +231,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
           )}
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <CheckroomIcon sx={{ color: '#2a6c8d', mr: 1.5, fontSize: 28 }} />
             <Typography
               variant="h6"
               noWrap
@@ -274,7 +254,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
             </Typography>
           )}
 
-          <Tooltip title={isFullscreen ? "Salir de Pantalla Completa" : "Pantalla Completa"}>
+          <Tooltip title={isFullscreen ? 'Salir de Pantalla Completa' : 'Pantalla Completa'}>
             <IconButton onClick={toggleFullscreen} sx={{ color: '#0255A5', mr: 2 }}>
               {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
             </IconButton>
@@ -334,38 +314,118 @@ function MainLayout({ children }: { children: React.ReactNode }) {
               {
                 title: 'Operaciones',
                 items: [
-                  { text: 'Ventas', icon: <PointOfSaleIcon sx={{ color: '#0255A5' }} />, path: '/sales', show: !isSuperAdmin },
-                  { text: 'Clientes', icon: <PeopleIcon sx={{ color: '#0255A5' }} />, path: '/customers', show: !isSuperAdmin },
-                  { text: 'Inventario', icon: <CategoryIcon sx={{ color: '#0255A5' }} />, path: '/products', show: !isCashier && !isSuperAdmin },
-                  { text: 'Admin Caja', icon: <AccountBalanceIcon sx={{ color: '#0255A5' }} />, path: '/admin-caja', show: !isCashier && !isSuperAdmin },
-                  { text: 'Op. Especiales', icon: <InventoryIcon sx={{ color: '#0255A5' }} />, path: '/internal-withdrawal', show: !isCashier && !isSuperAdmin },
-                  { text: 'Etiquetas', icon: <LocalOfferIcon sx={{ color: '#0255A5' }} />, path: '/labels', show: !isCashier && !isSuperAdmin },
-                ]
+                  {
+                    text: 'Ventas',
+                    icon: <PointOfSaleIcon sx={{ color: '#0255A5' }} />,
+                    path: '/sales',
+                    show: !isSuperAdmin,
+                  },
+                  {
+                    text: 'Clientes',
+                    icon: <PeopleIcon sx={{ color: '#0255A5' }} />,
+                    path: '/customers',
+                    show: !isSuperAdmin,
+                  },
+                  {
+                    text: 'Inventario',
+                    icon: <CategoryIcon sx={{ color: '#0255A5' }} />,
+                    path: '/products',
+                    show: !isCashier && !isSuperAdmin,
+                  },
+                  {
+                    text: 'Admin Caja',
+                    icon: <AccountBalanceIcon sx={{ color: '#0255A5' }} />,
+                    path: '/admin-caja',
+                    show: !isCashier && !isSuperAdmin,
+                  },
+                  {
+                    text: 'Op. Especiales',
+                    icon: <InventoryIcon sx={{ color: '#0255A5' }} />,
+                    path: '/internal-withdrawal',
+                    show: !isCashier && !isSuperAdmin,
+                  },
+                  {
+                    text: 'Etiquetas',
+                    icon: <LocalOfferIcon sx={{ color: '#0255A5' }} />,
+                    path: '/labels',
+                    show: !isCashier && !isSuperAdmin,
+                  },
+                ],
               },
               {
                 title: 'Historiales y Reportes',
                 items: [
-                  { text: 'Ventas', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/history', show: !isSuperAdmin },
-                  { text: 'Cajas', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/historial-caja', show: !isSuperAdmin },
-                  { text: 'Inventario', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/inventory/movements', show: !isCashier && !isSuperAdmin },
-                  { text: 'Informes', icon: <AssessmentIcon sx={{ color: '#0255A5' }} />, path: '/reports', show: !isCashier && !isSuperAdmin },
-                  { text: 'Conexiones', icon: <HistoryIcon sx={{ color: '#0255A5' }} />, path: '/admin/connections', show: isSuperAdmin },
-                ]
+                  {
+                    text: 'Ventas',
+                    icon: <HistoryIcon sx={{ color: '#0255A5' }} />,
+                    path: '/history',
+                    show: !isSuperAdmin,
+                  },
+                  {
+                    text: 'Cajas',
+                    icon: <HistoryIcon sx={{ color: '#0255A5' }} />,
+                    path: '/historial-caja',
+                    show: !isSuperAdmin,
+                  },
+                  {
+                    text: 'Inventario',
+                    icon: <HistoryIcon sx={{ color: '#0255A5' }} />,
+                    path: '/inventory/movements',
+                    show: !isCashier && !isSuperAdmin,
+                  },
+                  {
+                    text: 'Informes',
+                    icon: <AssessmentIcon sx={{ color: '#0255A5' }} />,
+                    path: '/reports',
+                    show: !isCashier && !isSuperAdmin,
+                  },
+                  {
+                    text: 'Conexiones',
+                    icon: <HistoryIcon sx={{ color: '#0255A5' }} />,
+                    path: '/admin/connections',
+                    show: isSuperAdmin,
+                  },
+                ],
               },
               {
                 title: 'Configuración',
                 items: [
-                  { text: 'Usuarios', icon: <PeopleIcon sx={{ color: '#0255A5' }} />, path: '/users', show: !isCashier },
-                  { text: 'Tasa REF/Bs.', icon: <AttachMoneyIcon sx={{ color: '#0255A5' }} />, path: '/settings/exchange-rate', show: !isSuperAdmin },
-                  { text: 'Impresora', icon: <PrintIcon sx={{ color: '#0255A5' }} />, path: '/settings/printer', show: !isCashier && !isSuperAdmin },
-                  { text: 'Mantenimiento', icon: <BackupIcon sx={{ color: '#0255A5' }} />, path: '/maintenance', show: !isCashier && !isSuperAdmin },
-                  { text: 'Acerca de', icon: <InfoIcon sx={{ color: '#0255A5' }} />, path: '/about', show: !isCashier && !isSuperAdmin },
-                ]
-              }
+                  {
+                    text: 'Usuarios',
+                    icon: <PeopleIcon sx={{ color: '#0255A5' }} />,
+                    path: '/users',
+                    show: !isCashier,
+                  },
+                  {
+                    text: 'Tasa REF/Bs.',
+                    icon: <AttachMoneyIcon sx={{ color: '#0255A5' }} />,
+                    path: '/settings/exchange-rate',
+                    show: !isSuperAdmin,
+                  },
+                  {
+                    text: 'Impresora',
+                    icon: <PrintIcon sx={{ color: '#0255A5' }} />,
+                    path: '/settings/printer',
+                    show: !isCashier && !isSuperAdmin,
+                  },
+                  {
+                    text: 'Mantenimiento',
+                    icon: <BackupIcon sx={{ color: '#0255A5' }} />,
+                    path: '/maintenance',
+                    show: !isCashier && !isSuperAdmin,
+                  },
+                  {
+                    text: 'Acerca de',
+                    icon: <InfoIcon sx={{ color: '#0255A5' }} />,
+                    path: '/about',
+                    show: !isCashier && !isSuperAdmin,
+                  },
+                ],
+              },
             ].map((group, index) => {
-              const visibleItems = group.items.filter(item => item.show);
+              const visibleItems = group.items.filter((item) => item.show);
               if (visibleItems.length === 0) return null;
-              
+
               return (
                 <React.Fragment key={group.title}>
                   {index > 0 && <Divider sx={{ my: 1, mx: 2, opacity: 0.6 }} />}
@@ -373,19 +433,19 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                     sx={{ px: 1 }}
                     subheader={
                       open ? (
-                        <ListSubheader 
+                        <ListSubheader
                           disableSticky
-                          component="div" 
-                          sx={{ 
-                            bgcolor: 'transparent', 
-                            lineHeight: '24px', 
-                            pt: 1, 
+                          component="div"
+                          sx={{
+                            bgcolor: 'transparent',
+                            lineHeight: '24px',
+                            pt: 1,
                             pb: 0.5,
                             fontSize: '0.75rem',
                             fontWeight: 700,
                             letterSpacing: '0.05em',
                             color: '#64748b',
-                            textTransform: 'uppercase'
+                            textTransform: 'uppercase',
                           }}
                         >
                           {group.title}

@@ -31,7 +31,13 @@ import {
   ButtonGroup,
   InputAdornment,
 } from '@mui/material';
-import { Visibility as VisibilityIcon, PictureAsPdf as PdfIcon, EventNote as EventNoteIcon, Download as DownloadIcon, Clear as ClearIcon } from '@mui/icons-material';
+import {
+  Visibility as VisibilityIcon,
+  PictureAsPdf as PdfIcon,
+  EventNote as EventNoteIcon,
+  Download as DownloadIcon,
+  Clear as ClearIcon,
+} from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers';
 
 const HistorialCajaPage = () => {
@@ -91,7 +97,7 @@ const HistorialCajaPage = () => {
     const sessionDate = new Date(session.openedAt);
     const now = new Date();
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    
+
     const startOfWeek = new Date(now);
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
     startOfWeek.setHours(0, 0, 0, 0);
@@ -143,9 +149,18 @@ const HistorialCajaPage = () => {
       sheet.addRow([]);
 
       // Encabezados
-      const headers = ['Apertura', 'Cierre', 'Usuario', 'Inicial (USD)', 'Inicial (Bs)', 'Final (USD)', 'Final (Bs)', 'Estado'];
+      const headers = [
+        'Apertura',
+        'Cierre',
+        'Usuario',
+        'Inicial (USD)',
+        'Inicial (Bs)',
+        'Final (USD)',
+        'Final (Bs)',
+        'Estado',
+      ];
       const headerRow = sheet.addRow(headers);
-      
+
       headerRow.eachCell((cell) => {
         cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } };
         cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
@@ -154,7 +169,7 @@ const HistorialCajaPage = () => {
           top: { style: 'thin' },
           left: { style: 'thin' },
           bottom: { style: 'thin' },
-          right: { style: 'thin' }
+          right: { style: 'thin' },
         };
       });
 
@@ -169,16 +184,16 @@ const HistorialCajaPage = () => {
       sheet.getColumn(8).width = 15; // Estado
 
       // Datos
-      filteredSessions.forEach(session => {
+      filteredSessions.forEach((session) => {
         const row = sheet.addRow([
           new Date(session.openedAt).toLocaleString(),
           session.closedAt ? new Date(session.closedAt).toLocaleString() : '-',
           session.user?.fullname || session.user?.username || 'Usuario Desconocido',
           session.openingAmountUsd,
           session.openingAmountBs,
-          session.closedAt ? (session.closingAmountUsd || 0) : 0,
-          session.closedAt ? (session.closingAmountBs || 0) : 0,
-          session.status === 'OPEN' ? 'ABIERTA' : 'CERRADA'
+          session.closedAt ? session.closingAmountUsd || 0 : 0,
+          session.closedAt ? session.closingAmountBs || 0 : 0,
+          session.status === 'OPEN' ? 'ABIERTA' : 'CERRADA',
         ]);
 
         row.eachCell((cell, colNumber) => {
@@ -186,25 +201,24 @@ const HistorialCajaPage = () => {
             top: { style: 'thin', color: { argb: 'FFEEEEEE' } },
             left: { style: 'thin', color: { argb: 'FFEEEEEE' } },
             bottom: { style: 'thin', color: { argb: 'FFEEEEEE' } },
-            right: { style: 'thin', color: { argb: 'FFEEEEEE' } }
+            right: { style: 'thin', color: { argb: 'FFEEEEEE' } },
           };
-          
+
           if (colNumber >= 4 && colNumber <= 7) {
             cell.alignment = { vertical: 'middle', horizontal: 'right' };
             cell.numFmt = '#,##0.00';
           } else {
             cell.alignment = { vertical: 'middle', horizontal: 'center' };
           }
-          
+
           if (colNumber === 8) {
-             cell.font = { bold: true, color: { argb: cell.value === 'ABIERTA' ? 'FF16A34A' : 'FF64748B' } };
+            cell.font = { bold: true, color: { argb: cell.value === 'ABIERTA' ? 'FF16A34A' : 'FF64748B' } };
           }
         });
       });
 
       const buffer = await workbook.xlsx.writeBuffer();
       saveAs(new Blob([buffer]), `Historial_Cajas_${new Date().toISOString().split('T')[0]}.xlsx`);
-
     } catch (err) {
       console.error('Error exporting Excel:', err);
     }
@@ -222,7 +236,9 @@ const HistorialCajaPage = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, flexWrap: 'wrap', gap: 2 }}>
+      <Box
+        sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, flexWrap: 'wrap', gap: 2 }}
+      >
         <Typography
           variant="h4"
           sx={{

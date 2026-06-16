@@ -215,33 +215,55 @@ const SalesReportPage = () => {
                 <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', color: '#0f172a' }}>
                   Resumen de Ventas
                 </Typography>
-                <Chip 
-                  label={getFilterDescription()} 
-                  size="small" 
-                  sx={{ 
-                    fontWeight: 700, 
-                    backgroundColor: 'rgba(2, 85, 165, 0.1)', 
+                <Chip
+                  label={getFilterDescription()}
+                  size="small"
+                  sx={{
+                    fontWeight: 700,
+                    backgroundColor: 'rgba(2, 85, 165, 0.1)',
                     color: '#0255A5',
-                    border: '1px solid rgba(2, 85, 165, 0.2)'
-                  }} 
+                    border: '1px solid rgba(2, 85, 165, 0.2)',
+                  }}
                 />
               </Box>
-              <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#10b981', display: 'inline-block' }}></span>
+              <Typography
+                variant="caption"
+                sx={{ color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 0.5 }}
+              >
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    backgroundColor: '#10b981',
+                    display: 'inline-block',
+                  }}
+                ></span>
                 Datos en tiempo real sincronizados
               </Typography>
             </Box>
 
             <Grid container spacing={3}>
               <Grid item xs={12} sm={4}>
-                <Card sx={{ 
-                  borderRadius: '20px', 
-                  border: '1px solid rgba(0,0,0,0.05)',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
-                  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
-                }}>
+                <Card
+                  sx={{
+                    borderRadius: '20px',
+                    border: '1px solid rgba(0,0,0,0.05)',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
+                    background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                  }}
+                >
                   <CardContent sx={{ p: 3 }}>
-                    <Typography sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.9rem', mb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <Typography
+                      sx={{
+                        color: '#64748b',
+                        fontWeight: 600,
+                        fontSize: '0.9rem',
+                        mb: 1,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                      }}
+                    >
                       Ingresos Calculados (REF)
                     </Typography>
                     <Typography variant="h4" sx={{ fontWeight: 900, color: '#0f172a' }}>
@@ -251,14 +273,25 @@ const SalesReportPage = () => {
                 </Card>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <Card sx={{ 
-                  borderRadius: '20px', 
-                  border: '1px solid rgba(0,0,0,0.05)',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
-                  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
-                }}>
+                <Card
+                  sx={{
+                    borderRadius: '20px',
+                    border: '1px solid rgba(0,0,0,0.05)',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
+                    background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                  }}
+                >
                   <CardContent sx={{ p: 3 }}>
-                    <Typography sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.9rem', mb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <Typography
+                      sx={{
+                        color: '#64748b',
+                        fontWeight: 600,
+                        fontSize: '0.9rem',
+                        mb: 1,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                      }}
+                    >
                       Tickets Procesados
                     </Typography>
                     <Typography variant="h4" sx={{ fontWeight: 900, color: '#0f172a' }}>
@@ -268,14 +301,25 @@ const SalesReportPage = () => {
                 </Card>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <Card sx={{ 
-                  borderRadius: '20px', 
-                  border: '1px solid rgba(0,0,0,0.05)',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
-                  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
-                }}>
+                <Card
+                  sx={{
+                    borderRadius: '20px',
+                    border: '1px solid rgba(0,0,0,0.05)',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
+                    background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                  }}
+                >
                   <CardContent sx={{ p: 3 }}>
-                    <Typography sx={{ color: '#64748b', fontWeight: 600, fontSize: '0.9rem', mb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <Typography
+                      sx={{
+                        color: '#64748b',
+                        fontWeight: 600,
+                        fontSize: '0.9rem',
+                        mb: 1,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                      }}
+                    >
                       Promedio por Ticket (REF)
                     </Typography>
                     <Typography variant="h4" sx={{ fontWeight: 900, color: '#0f172a' }}>
@@ -301,43 +345,76 @@ const SalesReportPage = () => {
       {/* Tab 1: Despacho Interno */}
       {tabValue === 1 && (
         <>
-          {internalLoading && <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>}
-          {internalError && <Alert severity="error" sx={{ mb: 3 }}>{internalError}</Alert>}
+          {internalLoading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+              <CircularProgress />
+            </Box>
+          )}
+          {internalError && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {internalError}
+            </Alert>
+          )}
           {internalStats && !internalLoading && (
             <>
               <Box sx={{ mb: 4, mt: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', color: '#0f172a' }}>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: 800, fontFamily: '"Outfit", sans-serif', color: '#0f172a' }}
+                    >
                       Resumen de Despachos Internos
                     </Typography>
-                    <Chip 
-                      label={getFilterDescription()} 
-                      size="small" 
-                      sx={{ 
-                        fontWeight: 700, 
-                        backgroundColor: 'rgba(234, 88, 12, 0.1)', 
+                    <Chip
+                      label={getFilterDescription()}
+                      size="small"
+                      sx={{
+                        fontWeight: 700,
+                        backgroundColor: 'rgba(234, 88, 12, 0.1)',
                         color: '#ea580c',
-                        border: '1px solid rgba(234, 88, 12, 0.2)'
-                      }} 
+                        border: '1px solid rgba(234, 88, 12, 0.2)',
+                      }}
                     />
                   </Box>
-                  <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#10b981', display: 'inline-block' }}></span>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 0.5 }}
+                  >
+                    <span
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: '50%',
+                        backgroundColor: '#10b981',
+                        display: 'inline-block',
+                      }}
+                    ></span>
                     Inventario en tiempo real
                   </Typography>
                 </Box>
 
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={4}>
-                    <Card sx={{ 
-                      borderRadius: '20px', 
-                      border: '1px solid rgba(0,0,0,0.05)',
-                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
-                      background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 100%)'
-                    }}>
+                    <Card
+                      sx={{
+                        borderRadius: '20px',
+                        border: '1px solid rgba(0,0,0,0.05)',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
+                        background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 100%)',
+                      }}
+                    >
                       <CardContent sx={{ p: 3 }}>
-                        <Typography sx={{ color: '#9a3412', fontWeight: 600, fontSize: '0.9rem', mb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <Typography
+                          sx={{
+                            color: '#9a3412',
+                            fontWeight: 600,
+                            fontSize: '0.9rem',
+                            mb: 1,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
                           Valor Estimado (Si se vendiera)
                         </Typography>
                         <Typography variant="h4" sx={{ fontWeight: 900, color: '#431407' }}>
@@ -347,14 +424,25 @@ const SalesReportPage = () => {
                     </Card>
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <Card sx={{ 
-                      borderRadius: '20px', 
-                      border: '1px solid rgba(0,0,0,0.05)',
-                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
-                      background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 100%)'
-                    }}>
+                    <Card
+                      sx={{
+                        borderRadius: '20px',
+                        border: '1px solid rgba(0,0,0,0.05)',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
+                        background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 100%)',
+                      }}
+                    >
                       <CardContent sx={{ p: 3 }}>
-                        <Typography sx={{ color: '#9a3412', fontWeight: 600, fontSize: '0.9rem', mb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <Typography
+                          sx={{
+                            color: '#9a3412',
+                            fontWeight: 600,
+                            fontSize: '0.9rem',
+                            mb: 1,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
                           Movimientos Registrados
                         </Typography>
                         <Typography variant="h4" sx={{ fontWeight: 900, color: '#431407' }}>
@@ -364,14 +452,25 @@ const SalesReportPage = () => {
                     </Card>
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <Card sx={{ 
-                      borderRadius: '20px', 
-                      border: '1px solid rgba(0,0,0,0.05)',
-                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
-                      background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 100%)'
-                    }}>
+                    <Card
+                      sx={{
+                        borderRadius: '20px',
+                        border: '1px solid rgba(0,0,0,0.05)',
+                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
+                        background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 100%)',
+                      }}
+                    >
                       <CardContent sx={{ p: 3 }}>
-                        <Typography sx={{ color: '#9a3412', fontWeight: 600, fontSize: '0.9rem', mb: 1, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <Typography
+                          sx={{
+                            color: '#9a3412',
+                            fontWeight: 600,
+                            fontSize: '0.9rem',
+                            mb: 1,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
                           Promedio por Despacho (REF)
                         </Typography>
                         <Typography variant="h4" sx={{ fontWeight: 900, color: '#431407' }}>
@@ -384,7 +483,10 @@ const SalesReportPage = () => {
               </Box>
 
               <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, fontFamily: '"Outfit", sans-serif', color: '#0f172a' }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 800, mb: 2, fontFamily: '"Outfit", sans-serif', color: '#0f172a' }}
+                >
                   Gráfico de Despachos vs Costo
                 </Typography>
                 <Paper sx={{ p: 2, borderRadius: '20px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>

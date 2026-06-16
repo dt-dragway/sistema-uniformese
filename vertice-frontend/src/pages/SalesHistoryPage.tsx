@@ -146,12 +146,17 @@ const SalesHistoryPage = () => {
       // Encabezados
       const headers = ['Comprobante', 'Fecha', 'Cliente', 'Total (USD)', 'Total (Bs)', 'Estado', 'Referencia'];
       const headerRow = sheet.addRow(headers);
-      
+
       headerRow.eachCell((cell) => {
         cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } };
         cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
         cell.alignment = { horizontal: 'center', vertical: 'middle' };
-        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
       });
 
       sheet.getColumn(1).width = 20; // Comprobante
@@ -163,7 +168,7 @@ const SalesHistoryPage = () => {
       sheet.getColumn(7).width = 25; // Referencia
 
       // Datos - Exportamos lo que está actualmente filtrado en la pantalla
-      filteredSales.forEach(sale => {
+      filteredSales.forEach((sale) => {
         const row = sheet.addRow([
           sale.ticketNumber,
           new Date(sale.createdAt).toLocaleString(),
@@ -171,7 +176,10 @@ const SalesHistoryPage = () => {
           sale.totalUsd,
           sale.totalBs,
           sale.isCancelled ? 'ANULADA' : 'COMPLETADA',
-          sale.payments.filter((p) => p.reference).map((p) => `${p.method}: ${p.reference}`).join(', ') || '-'
+          sale.payments
+            .filter((p) => p.reference)
+            .map((p) => `${p.method}: ${p.reference}`)
+            .join(', ') || '-',
         ]);
 
         row.eachCell((cell, colNumber) => {
@@ -179,7 +187,7 @@ const SalesHistoryPage = () => {
             top: { style: 'thin', color: { argb: 'FFEEEEEE' } },
             left: { style: 'thin', color: { argb: 'FFEEEEEE' } },
             bottom: { style: 'thin', color: { argb: 'FFEEEEEE' } },
-            right: { style: 'thin', color: { argb: 'FFEEEEEE' } }
+            right: { style: 'thin', color: { argb: 'FFEEEEEE' } },
           };
           if (colNumber === 4 || colNumber === 5) {
             cell.alignment = { vertical: 'middle', horizontal: 'right' };
@@ -195,7 +203,6 @@ const SalesHistoryPage = () => {
 
       const buffer = await workbook.xlsx.writeBuffer();
       saveAs(new Blob([buffer]), `Historial_Ventas_${new Date().toISOString().split('T')[0]}.xlsx`);
-
     } catch (error) {
       console.error('Error exporting Excel:', error);
     }

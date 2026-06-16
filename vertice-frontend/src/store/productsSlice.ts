@@ -107,6 +107,10 @@ const productsSlice = createSlice({
 
 // Selector to get all products
 const selectAllProducts = (state: RootState) => state.products.products;
+const selectMostSoldProducts = (state: RootState) => state.products.mostSoldProducts;
+
+// Memoize first 20 products to prevent infinite re-renders
+const selectFirst20Products = createSelector([selectAllProducts], (products) => products.slice(0, 20));
 
 // Selector to get sales filters
 const selectSalesFilters = (state: RootState) => state.sales;
@@ -138,14 +142,18 @@ const selectProductSearchIndex = createSelector([selectAllProducts], (products) 
 
 // Memoized selector for filtered products - OPTIMIZADO para respuesta instantánea
 export const selectFilteredProducts = createSelector(
-  [selectProductSearchIndex, selectSalesFilters],
-  (searchIndex, salesFilters) => {
+  [selectProductSearchIndex, selectSalesFilters, selectMostSoldProducts, selectFirst20Products],
+  (searchIndex, salesFilters, mostSoldProducts, first20Products) => {
     const { searchTerm, quickFilter } = salesFilters;
     const { products, barcodeIndex, nameIndex } = searchIndex;
 
-    // Si no hay filtro, retornar todos
+    // Si no hay filtro, retornar el top 20 más vendidos (si no hay, toma los primeros 20 generales)
     if (!searchTerm.trim() && !quickFilter) {
-      return products;
+      if (mostSoldProducts && mostSoldProducts.length > 0) {
+        return mostSoldProducts;
+      }
+      // Si aún no ha cargado los más vendidos, muestra los primeros 20
+      return first20Products;
     }
 
     const normalizedSearch = searchTerm.trim().toLowerCase();

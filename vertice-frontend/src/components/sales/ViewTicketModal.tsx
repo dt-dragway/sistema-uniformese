@@ -112,15 +112,15 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
     if (open && sale && barcodeRef.current) {
       try {
         JsBarcode(barcodeRef.current, sale.ticketNumber, {
-          format: "CODE128",
+          format: 'CODE128',
           width: 1.5,
           height: 40,
           displayValue: false,
           margin: 0,
-          background: "transparent"
+          background: 'transparent',
         });
       } catch (err) {
-        console.error("Error generating barcode:", err);
+        console.error('Error generating barcode:', err);
       }
     }
   }, [sale, open]);
@@ -160,7 +160,7 @@ export const ViewTicketModal: React.FC<ViewTicketModalProps> = ({
       const { printTicket } = await import('../../api/printService');
       const saleToPrint = {
         ...sale,
-        cashierName: user?.fullname || user?.username || 'Caja Principal'
+        cashierName: user?.fullname || user?.username || 'Caja Principal',
       };
 
       const result = await printTicket(

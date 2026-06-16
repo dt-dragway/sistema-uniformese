@@ -39,7 +39,7 @@ const UserConnectionsPage = () => {
   const [connections, setConnections] = useState<UserConnection[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Pagination
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
@@ -99,12 +99,17 @@ const UserConnectionsPage = () => {
       // Encabezados
       const headers = ['Fecha y Hora', 'Usuario', 'Rol', 'Dirección IP', 'Dispositivo / Navegador'];
       const headerRow = sheet.addRow(headers);
-      
+
       headerRow.eachCell((cell) => {
         cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } };
         cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
         cell.alignment = { horizontal: 'center', vertical: 'middle' };
-        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
       });
 
       sheet.getColumn(1).width = 25; // Fecha y Hora
@@ -114,13 +119,13 @@ const UserConnectionsPage = () => {
       sheet.getColumn(5).width = 50; // Dispositivo
 
       // Datos - Exportamos lo que está actualmente en la vista
-      connections.forEach(conn => {
+      connections.forEach((conn) => {
         const row = sheet.addRow([
           format(new Date(conn.loginTime), 'dd/MM/yyyy hh:mm a'),
           `${conn.user.fullname || conn.user.username} (${conn.user.username})`,
           conn.user.role === 'CASHIER' ? 'CAJERO' : conn.user.role,
           conn.ipAddress || 'Desconocida',
-          conn.userAgent || 'Desconocido'
+          conn.userAgent || 'Desconocido',
         ]);
 
         row.eachCell((cell) => {
@@ -128,7 +133,7 @@ const UserConnectionsPage = () => {
             top: { style: 'thin', color: { argb: 'FFEEEEEE' } },
             left: { style: 'thin', color: { argb: 'FFEEEEEE' } },
             bottom: { style: 'thin', color: { argb: 'FFEEEEEE' } },
-            right: { style: 'thin', color: { argb: 'FFEEEEEE' } }
+            right: { style: 'thin', color: { argb: 'FFEEEEEE' } },
           };
           cell.alignment = { vertical: 'middle', horizontal: 'center' };
         });
@@ -136,7 +141,6 @@ const UserConnectionsPage = () => {
 
       const buffer = await workbook.xlsx.writeBuffer();
       saveAs(new Blob([buffer]), `Historial_Conexiones_${new Date().toISOString().split('T')[0]}.xlsx`);
-
     } catch (err) {
       console.error('Error exporting Excel:', err);
     }
@@ -242,7 +246,16 @@ const UserConnectionsPage = () => {
                   <TableCell sx={{ fontFamily: 'monospace', color: '#2a6c8d', fontWeight: 600 }}>
                     {conn.ipAddress || 'Desconocida'}
                   </TableCell>
-                  <TableCell sx={{ fontSize: '0.8rem', color: '#64748b', maxWidth: 300, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <TableCell
+                    sx={{
+                      fontSize: '0.8rem',
+                      color: '#64748b',
+                      maxWidth: 300,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
                     {conn.userAgent || 'Desconocido'}
                   </TableCell>
                 </TableRow>

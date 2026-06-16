@@ -113,7 +113,6 @@ const SystemInfoPage = () => {
                       <Typography variant="body1">{developerInfo.email}</Typography>
                     </Box>
                   </Box>
-
                 </Stack>
               </CardContent>
             </Card>

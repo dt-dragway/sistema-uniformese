@@ -36,7 +36,7 @@ const getBaseURL = (): string => {
 
   // Fallback para desarrollo
   const hostname = window.location.hostname;
-  const port = 3000;
+  const port = 4000;
   return `http://${hostname}:${port}/api`;
 };
 

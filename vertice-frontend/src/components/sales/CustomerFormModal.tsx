@@ -75,9 +75,7 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
     }
   }, [open, customer]);
 
-  const isCedulaDuplicate = customers.some(
-    (c) => c.cedula === cedula.toUpperCase() && c.id !== customer?.id
-  );
+  const isCedulaDuplicate = customers.some((c) => c.cedula === cedula.toUpperCase() && c.id !== customer?.id);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -204,13 +202,13 @@ const CustomerFormModal: React.FC<CustomerFormModalProps> = ({ open, onClose, cu
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <BadgeIcon color={isCedulaDuplicate ? "error" : "action"} />
+                      <BadgeIcon color={isCedulaDuplicate ? 'error' : 'action'} />
                     </InputAdornment>
                   ),
                   sx: { borderRadius: '12px' },
                 }}
                 error={isCedulaDuplicate}
-                helperText={isCedulaDuplicate ? "Este cliente ya se encuentra registrado." : ""}
+                helperText={isCedulaDuplicate ? 'Este cliente ya se encuentra registrado.' : ''}
               />
             </Grid>
 

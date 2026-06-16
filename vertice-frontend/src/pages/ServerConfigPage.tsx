@@ -22,7 +22,7 @@ interface ConnectionStatus {
 
 const ServerConfigPage = () => {
   const navigate = useNavigate();
-  const [serverUrl, setServerUrl] = useState('http://localhost:3000');
+  const [serverUrl, setServerUrl] = useState('http://localhost:4000');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>({ type: 'idle' });
@@ -37,7 +37,7 @@ const ServerConfigPage = () => {
     try {
       if (window.electronAPI?.getServerConfig) {
         const config = await window.electronAPI.getServerConfig();
-        setServerUrl(config.serverUrl || 'http://localhost:3000');
+        setServerUrl(config.serverUrl || 'http://localhost:4000');
       }
     } catch (error) {
       console.error('Error loading config:', error);
@@ -129,7 +129,7 @@ const ServerConfigPage = () => {
       if (window.electronAPI?.saveServerConfig) {
         const result = await window.electronAPI.saveServerConfig({
           serverUrl,
-          _comment: 'Cambia serverUrl a la IP del servidor, ej: http://192.168.1.100:3000',
+          _comment: 'Cambia serverUrl a la IP del servidor, ej: http://192.168.1.100:4000',
         });
 
         if (result.success) {
@@ -192,7 +192,7 @@ const ServerConfigPage = () => {
             value={serverUrl}
             onChange={(e) => setServerUrl(e.target.value)}
             fullWidth
-            placeholder="http://192.168.1.122:3000"
+            placeholder="http://192.168.1.122:4000"
             helperText="Ingresa la dirección IP y puerto del servidor de la aplicación"
             error={!!validationError}
             disabled={isSaving}
@@ -229,18 +229,18 @@ const ServerConfigPage = () => {
               <Button
                 variant="outlined"
                 size="small"
-                onClick={() => setServerUrl('http://localhost:3000')}
+                onClick={() => setServerUrl('http://localhost:4000')}
                 sx={{ justifyContent: 'flex-start' }}
               >
-                http://localhost:3000 (Servidor local)
+                http://localhost:4000 (Servidor local)
               </Button>
               <Button
                 variant="outlined"
                 size="small"
-                onClick={() => setServerUrl('http://192.168.1.122:3000')}
+                onClick={() => setServerUrl('http://192.168.1.122:4000')}
                 sx={{ justifyContent: 'flex-start' }}
               >
-                http://192.168.1.122:3000 (Servidor en red)
+                http://192.168.1.122:4000 (Servidor en red)
               </Button>
             </Stack>
           </Box>

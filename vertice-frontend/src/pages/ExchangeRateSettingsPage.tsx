@@ -206,9 +206,9 @@ const ExchangeRateSettingsPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      <Snackbar 
-        open={showSuccess} 
-        autoHideDuration={4000} 
+      <Snackbar
+        open={showSuccess}
+        autoHideDuration={4000}
         onClose={handleCloseSuccess}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
@@ -230,12 +230,12 @@ const ExchangeRateSettingsPage: React.FC = () => {
             alignItems: 'center',
             '& .MuiAlert-icon': {
               padding: '0 8px 0 0',
-              opacity: 1
+              opacity: 1,
             },
             '& .MuiAlert-action': {
               paddingTop: 0,
-              alignItems: 'center'
-            }
+              alignItems: 'center',
+            },
           }}
         >
           ¡Tasa de cambio actualizada correctamente!

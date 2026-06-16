@@ -40,7 +40,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showServerConfig, setShowServerConfig] = useState(false);
-  const [serverUrl, setServerUrl] = useState('http://localhost:3000');
+  const [serverUrl, setServerUrl] = useState('http://localhost:4000');
   const [testingConnection, setTestingConnection] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [mounted, setMounted] = useState(false);
@@ -63,7 +63,7 @@ const LoginPage = () => {
     try {
       if (window.electronAPI?.getServerConfig) {
         const config = await window.electronAPI.getServerConfig();
-        const url = config.serverUrl || 'http://localhost:3000';
+        const url = config.serverUrl || 'http://localhost:4000';
         setServerUrl(url);
         localStorage.setItem('serverUrl', url);
       } else {

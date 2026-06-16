@@ -1,6 +1,6 @@
 import { Box, Typography, Snackbar, Alert, Paper } from '@mui/material';
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { fetchProducts } from '../store/productsSlice';
+import { fetchProducts, fetchMostSoldProducts } from '../store/productsSlice';
 import { addProductToCart as addProductToCartAction } from '../store/cartSlice';
 import { setSaleSuccessNotification, setSearchTerm } from '../store/salesSlice';
 import { Product } from '../models/Product';
@@ -57,7 +57,8 @@ export const SalesPage = () => {
   const scanTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    dispatch(fetchProducts()); // Changed from fetchMostSoldProducts() to fetchProducts()
+    dispatch(fetchProducts());
+    dispatch(fetchMostSoldProducts()); // Fetch the most sold products for the default view
     dispatch(fetchActiveSession()); // Fetch active session on mount
   }, [dispatch]);
 

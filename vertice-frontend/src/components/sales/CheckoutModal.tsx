@@ -39,32 +39,32 @@ interface CheckoutModalProps {
 }
 
 interface Payment {
-   id: number;
-   method: string;
-   amount: string;
-   currency: 'Bs.' | 'REF';
-   reference?: string;
- }
+  id: number;
+  method: string;
+  amount: string;
+  currency: 'Bs.' | 'REF';
+  reference?: string;
+}
 
- interface PendingRecharge {
-   serviceId: number;
-   serviceName: string;
-   phoneNumber: string;
-   amountBs: number;
-   commissionPercent: number;
-   commissionBs: number;
-   totalChargeBs: number;
- }
+interface PendingRecharge {
+  serviceId: number;
+  serviceName: string;
+  phoneNumber: string;
+  amountBs: number;
+  commissionPercent: number;
+  commissionBs: number;
+  totalChargeBs: number;
+}
 
- interface PendingCashAdvance {
-   amountToGive: number;
-   commissionPercent: number;
-   commissionBs: number;
-   totalChargeBs: number;
-   paymentMethod: string;
- }
+interface PendingCashAdvance {
+  amountToGive: number;
+  commissionPercent: number;
+  commissionBs: number;
+  totalChargeBs: number;
+  paymentMethod: string;
+}
 
- const CheckoutModal: React.FC<CheckoutModalProps> = ({
+const CheckoutModal: React.FC<CheckoutModalProps> = ({
   open,
   onClose,
   totals,
@@ -86,8 +86,8 @@ interface Payment {
   const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [completedSale, setCompletedSale] = useState<Sale | null>(null);
-   const [pendingRechargesForTicket, setPendingRechargesForTicket] = useState<PendingRecharge[]>([]);
-   const [pendingAdvancesForTicket, setPendingAdvancesForTicket] = useState<PendingCashAdvance[]>([]);
+  const [pendingRechargesForTicket, setPendingRechargesForTicket] = useState<PendingRecharge[]>([]);
+  const [pendingAdvancesForTicket, setPendingAdvancesForTicket] = useState<PendingCashAdvance[]>([]);
   const paymentsContainerRef = useRef<HTMLDivElement>(null);
 
   // --- 1. CALCULATIONS ---
@@ -155,151 +155,151 @@ interface Payment {
     setPayments(payments.filter((p) => p.id !== id));
   };
 
-   const handleFinalizeSale = useCallback(async () => {
-     // Check for duplicate references on Pago Móvil and Transferencia
-     const methodsToCheck = ['Pago Móvil', 'Transferencia'];
-     for (const payment of payments) {
-       if (methodsToCheck.includes(payment.method) && payment.reference && payment.reference.trim() !== '') {
-         try {
-           const { data } = await salesService.checkDuplicateReference(payment.reference.trim(), methodsToCheck);
-           if (data.isDuplicate) {
-             setErrorMessage(
-               `La referencia "${payment.reference}" ya fue utilizada hoy en el ticket ${data.existingTicket}. Por favor use una referencia diferente.`
-             );
-             setShowErrorSnackbar(true);
-             return;
-           }
-         } catch (error) {
-           console.error('Error checking duplicate reference:', error);
-           // Continue with sale if validation endpoint fails
-         }
-       }
-     }
+  const handleFinalizeSale = useCallback(async () => {
+    // Check for duplicate references on Pago Móvil and Transferencia
+    const methodsToCheck = ['Pago Móvil', 'Transferencia'];
+    for (const payment of payments) {
+      if (methodsToCheck.includes(payment.method) && payment.reference && payment.reference.trim() !== '') {
+        try {
+          const { data } = await salesService.checkDuplicateReference(payment.reference.trim(), methodsToCheck);
+          if (data.isDuplicate) {
+            setErrorMessage(
+              `La referencia "${payment.reference}" ya fue utilizada hoy en el ticket ${data.existingTicket}. Por favor use una referencia diferente.`
+            );
+            setShowErrorSnackbar(true);
+            return;
+          }
+        } catch (error) {
+          console.error('Error checking duplicate reference:', error);
+          // Continue with sale if validation endpoint fails
+        }
+      }
+    }
 
-     if (payments.some((p) => p.method === 'Crédito a Cliente' && !customerId)) {
-       setErrorMessage('Debe seleccionar un cliente para realizar una venta a crédito.');
-       setShowErrorSnackbar(true);
-       return;
-     }
+    if (payments.some((p) => p.method === 'Crédito a Cliente' && !customerId)) {
+      setErrorMessage('Debe seleccionar un cliente para realizar una venta a crédito.');
+      setShowErrorSnackbar(true);
+      return;
+    }
 
-     // Verify cash register session is still active (real-time check to detect remote close by admin)
-     try {
-       const sessionResponse = await cashRegisterService.getActiveSession();
-       if (!sessionResponse.data || sessionResponse.data.status !== 'OPEN') {
-         setErrorMessage('Tu caja fue cerrada por un administrador. No puedes procesar ventas.');
-         setShowErrorSnackbar(true);
-         return;
-       }
-     } catch (error: any) {
-       if (error.response?.status === 404) {
-         setErrorMessage('Tu caja fue cerrada por un administrador. No puedes procesar ventas.');
-         setShowErrorSnackbar(true);
-         return;
-       }
-       // If API fails for other reason, fall back to local state check
-       console.error('Error checking session status:', error);
-     }
+    // Verify cash register session is still active (real-time check to detect remote close by admin)
+    try {
+      const sessionResponse = await cashRegisterService.getActiveSession();
+      if (!sessionResponse.data || sessionResponse.data.status !== 'OPEN') {
+        setErrorMessage('Tu caja fue cerrada por un administrador. No puedes procesar ventas.');
+        setShowErrorSnackbar(true);
+        return;
+      }
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        setErrorMessage('Tu caja fue cerrada por un administrador. No puedes procesar ventas.');
+        setShowErrorSnackbar(true);
+        return;
+      }
+      // If API fails for other reason, fall back to local state check
+      console.error('Error checking session status:', error);
+    }
 
-     if (!currentSession) {
-       setErrorMessage('No active cash register session found.');
-       setShowErrorSnackbar(true);
-       return;
-     }
+    if (!currentSession) {
+      setErrorMessage('No active cash register session found.');
+      setShowErrorSnackbar(true);
+      return;
+    }
 
-     // Need to recalculate for exact submission
-     const currentPaidBs = payments.reduce((acc, p) => {
-       if (p.method === 'Crédito a Cliente') return acc;
-       const numericAmount = parseFloat(p.amount.replace(',', '.')) || 0;
-       return acc + (p.currency === 'REF' ? numericAmount * exchangeRate : numericAmount);
-     }, 0);
+    // Need to recalculate for exact submission
+    const currentPaidBs = payments.reduce((acc, p) => {
+      if (p.method === 'Crédito a Cliente') return acc;
+      const numericAmount = parseFloat(p.amount.replace(',', '.')) || 0;
+      return acc + (p.currency === 'REF' ? numericAmount * exchangeRate : numericAmount);
+    }, 0);
 
-     const balance = parseFloat((totalWithDiscount - currentPaidBs).toFixed(2));
+    const balance = parseFloat((totalWithDiscount - currentPaidBs).toFixed(2));
 
-     const paymentsForSubmission = payments.map(({ ...p }) => {
-       let amountInUsd: number;
-       if (p.method === 'Crédito a Cliente') {
-         amountInUsd = balance > 0 ? balance / exchangeRate : 0;
-       } else {
-         const numericAmount = parseFloat(p.amount.replace(',', '.')) || 0;
-         amountInUsd = p.currency === 'REF' ? numericAmount : numericAmount / exchangeRate;
-       }
-       return {
-         method: p.method,
-         amount: parseFloat(amountInUsd.toFixed(2)),
-         reference: p.reference,
-       };
-     });
+    const paymentsForSubmission = payments.map(({ ...p }) => {
+      let amountInUsd: number;
+      if (p.method === 'Crédito a Cliente') {
+        amountInUsd = balance > 0 ? balance / exchangeRate : 0;
+      } else {
+        const numericAmount = parseFloat(p.amount.replace(',', '.')) || 0;
+        amountInUsd = p.currency === 'REF' ? numericAmount : numericAmount / exchangeRate;
+      }
+      return {
+        method: p.method,
+        amount: parseFloat(amountInUsd.toFixed(2)),
+        reference: p.reference,
+      };
+    });
 
-     // Separar productos normales de recargas y avances de efectivo
-     const productItems = cartItems.filter((item) => !item.isRecharge && !item.isCashAdvance && item.id > 0);
-     const rechargeItems = cartItems.filter((item) => item.isRecharge && item.rechargeData);
-     const cashAdvanceItems = cartItems.filter((item) => item.isCashAdvance && item.cashAdvanceData);
+    // Separar productos normales de recargas y avances de efectivo
+    const productItems = cartItems.filter((item) => !item.isRecharge && !item.isCashAdvance && item.id > 0);
+    const rechargeItems = cartItems.filter((item) => item.isRecharge && item.rechargeData);
+    const cashAdvanceItems = cartItems.filter((item) => item.isCashAdvance && item.cashAdvanceData);
 
-     // Preparar datos de recargas pendientes
-     const pendingRecharges = rechargeItems.map((item) => ({
-       serviceId: item.rechargeData!.serviceId,
-       serviceName: item.rechargeData!.serviceName,
-       phoneNumber: item.rechargeData!.phoneNumber,
-       amountBs: item.rechargeData!.amountBs,
-       commissionPercent: item.rechargeData!.commissionPercent,
-       commissionBs: item.rechargeData!.commissionBs,
-       totalChargeBs: item.rechargeData!.totalChargeBs,
-     }));
+    // Preparar datos de recargas pendientes
+    const pendingRecharges = rechargeItems.map((item) => ({
+      serviceId: item.rechargeData!.serviceId,
+      serviceName: item.rechargeData!.serviceName,
+      phoneNumber: item.rechargeData!.phoneNumber,
+      amountBs: item.rechargeData!.amountBs,
+      commissionPercent: item.rechargeData!.commissionPercent,
+      commissionBs: item.rechargeData!.commissionBs,
+      totalChargeBs: item.rechargeData!.totalChargeBs,
+    }));
 
-     // Preparar datos de avances de efectivo pendientes
-     const pendingCashAdvances = cashAdvanceItems.map((item) => ({
-       amountToGive: item.cashAdvanceData!.amountToGive,
-       commissionPercent: item.cashAdvanceData!.commissionPercent,
-       commissionBs: item.cashAdvanceData!.commissionBs,
-       totalChargeBs: item.cashAdvanceData!.totalChargeBs,
-       paymentMethod: item.cashAdvanceData!.paymentMethod,
-     }));
+    // Preparar datos de avances de efectivo pendientes
+    const pendingCashAdvances = cashAdvanceItems.map((item) => ({
+      amountToGive: item.cashAdvanceData!.amountToGive,
+      commissionPercent: item.cashAdvanceData!.commissionPercent,
+      commissionBs: item.cashAdvanceData!.commissionBs,
+      totalChargeBs: item.cashAdvanceData!.totalChargeBs,
+      paymentMethod: item.cashAdvanceData!.paymentMethod,
+    }));
 
-     const saleData = {
-       items: productItems.map((item) => ({
-         productId: item.id,
-         quantity: item.quantity,
-         price: item.price,
-       })),
-       payments: paymentsForSubmission,
-       totalUsd: totals.usd,
-       totalBs: totals.bs,
-       customerId: customerId ?? undefined,
-       cashRegisterSessionId: currentSession.id,
-       activeVentaId: activeVentaId!, // Pass the active venta ID to clear after sale
-       discount: discount / exchangeRate,
-       discountType,
-       discountValue,
-       pendingRecharges: pendingRecharges.length > 0 ? pendingRecharges : undefined,
-       pendingCashAdvances: pendingCashAdvances.length > 0 ? pendingCashAdvances : undefined,
-     };
+    const saleData = {
+      items: productItems.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      payments: paymentsForSubmission,
+      totalUsd: totals.usd,
+      totalBs: totals.bs,
+      customerId: customerId ?? undefined,
+      cashRegisterSessionId: currentSession.id,
+      activeVentaId: activeVentaId!, // Pass the active venta ID to clear after sale
+      discount: discount / exchangeRate,
+      discountType,
+      discountValue,
+      pendingRecharges: pendingRecharges.length > 0 ? pendingRecharges : undefined,
+      pendingCashAdvances: pendingCashAdvances.length > 0 ? pendingCashAdvances : undefined,
+    };
 
-     // Guardar recargas y avances para mostrar en el ticket
-     setPendingRechargesForTicket(pendingRecharges);
-     setPendingAdvancesForTicket(pendingCashAdvances);
+    // Guardar recargas y avances para mostrar en el ticket
+    setPendingRechargesForTicket(pendingRecharges);
+    setPendingAdvancesForTicket(pendingCashAdvances);
 
-     try {
-       const result = await dispatch(submitSale(saleData)).unwrap();
-       setCompletedSale(result);
-     } catch (error: any) {
-       const message = typeof error === 'string' ? error : error.message || 'Failed to submit sale.';
-       setErrorMessage(message);
-       setShowErrorSnackbar(true);
-     }
-   }, [
-     payments,
-     customerId,
-     activeVentaId,
-     currentSession,
-     cartItems,
-     totals,
-     discount,
-     exchangeRate,
-     discountType,
-     discountValue,
-     dispatch,
-     totalWithDiscount,
-   ]);
+    try {
+      const result = await dispatch(submitSale(saleData)).unwrap();
+      setCompletedSale(result);
+    } catch (error: any) {
+      const message = typeof error === 'string' ? error : error.message || 'Failed to submit sale.';
+      setErrorMessage(message);
+      setShowErrorSnackbar(true);
+    }
+  }, [
+    payments,
+    customerId,
+    activeVentaId,
+    currentSession,
+    cartItems,
+    totals,
+    discount,
+    exchangeRate,
+    discountType,
+    discountValue,
+    dispatch,
+    totalWithDiscount,
+  ]);
 
   const handleCloseTicket = () => {
     setCompletedSale(null);

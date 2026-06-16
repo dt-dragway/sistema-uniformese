@@ -160,14 +160,27 @@ const AdminCajaPage = () => {
       sheet.addRow([]);
 
       // Encabezados
-      const headers = ['Cajero', 'Fecha Apertura', 'Fecha Cierre', 'Contado (USD)', 'Contado (Bs)', 'Diferencia (USD)', 'Diferencia (Bs)'];
+      const headers = [
+        'Cajero',
+        'Fecha Apertura',
+        'Fecha Cierre',
+        'Contado (USD)',
+        'Contado (Bs)',
+        'Diferencia (USD)',
+        'Diferencia (Bs)',
+      ];
       const headerRow = sheet.addRow(headers);
-      
+
       headerRow.eachCell((cell) => {
         cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF10B981' } };
         cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
         cell.alignment = { horizontal: 'center', vertical: 'middle' };
-        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
       });
 
       sheet.getColumn(1).width = 30; // Cajero
@@ -179,15 +192,17 @@ const AdminCajaPage = () => {
       sheet.getColumn(7).width = 18; // Diferencia Bs
 
       // Datos
-      closedSessions.forEach(session => {
+      closedSessions.forEach((session) => {
         const row = sheet.addRow([
           session.user?.fullname || session.user?.username || `Usuario #${session.userId}`,
           new Date(session.openedAt).toLocaleString('es-VE', { dateStyle: 'short', timeStyle: 'short' }),
-          session.closedAt ? new Date(session.closedAt).toLocaleString('es-VE', { dateStyle: 'short', timeStyle: 'short' }) : '-',
+          session.closedAt
+            ? new Date(session.closedAt).toLocaleString('es-VE', { dateStyle: 'short', timeStyle: 'short' })
+            : '-',
           session.closingAmountUsd || 0,
           session.closingAmountBs || 0,
           session.discrepancyUsd || 0,
-          session.discrepancyBs || 0
+          session.discrepancyBs || 0,
         ]);
 
         row.eachCell((cell, colNumber) => {
@@ -195,7 +210,7 @@ const AdminCajaPage = () => {
             top: { style: 'thin', color: { argb: 'FFEEEEEE' } },
             left: { style: 'thin', color: { argb: 'FFEEEEEE' } },
             bottom: { style: 'thin', color: { argb: 'FFEEEEEE' } },
-            right: { style: 'thin', color: { argb: 'FFEEEEEE' } }
+            right: { style: 'thin', color: { argb: 'FFEEEEEE' } },
           };
           if (colNumber >= 4 && colNumber <= 7) {
             cell.alignment = { vertical: 'middle', horizontal: 'right' };
@@ -216,7 +231,6 @@ const AdminCajaPage = () => {
 
       const buffer = await workbook.xlsx.writeBuffer();
       saveAs(new Blob([buffer]), `Admin_Cajas_${new Date().toISOString().split('T')[0]}.xlsx`);
-
     } catch (err) {
       console.error('Error exporting Excel:', err);
     }
@@ -311,7 +325,7 @@ const AdminCajaPage = () => {
   if (dateFilter !== 'all') {
     const now = new Date();
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    
+
     // Obtener inicio de semana (Domingo como primer día)
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - now.getDay());
@@ -320,7 +334,7 @@ const AdminCajaPage = () => {
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const startOfYear = new Date(now.getFullYear(), 0, 1);
 
-    closedSessions = closedSessions.filter(session => {
+    closedSessions = closedSessions.filter((session) => {
       const sessionDate = new Date(session.openedAt);
       if (dateFilter === 'today') return sessionDate >= startOfToday;
       if (dateFilter === 'week') return sessionDate >= startOfWeek;
@@ -328,9 +342,11 @@ const AdminCajaPage = () => {
       if (dateFilter === 'year') return sessionDate >= startOfYear;
       if (dateFilter === 'day' && selectedDate) {
         const selected = new Date(selectedDate);
-        return sessionDate.getFullYear() === selected.getFullYear() &&
-               sessionDate.getMonth() === selected.getMonth() &&
-               sessionDate.getDate() === selected.getDate();
+        return (
+          sessionDate.getFullYear() === selected.getFullYear() &&
+          sessionDate.getMonth() === selected.getMonth() &&
+          sessionDate.getDate() === selected.getDate()
+        );
       }
       return true;
     });

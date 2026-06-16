@@ -119,7 +119,10 @@ class SaleService {
         }
         await tx.product.update({
           where: { id: item.productId },
-          data: { stock: { decrement: item.quantity } },
+          data: { 
+            stock: { decrement: item.quantity },
+            salesCount: { increment: item.quantity }
+          },
         });
 
         await tx.inventoryMovement.create({
@@ -221,7 +224,10 @@ class SaleService {
       for (const item of saleToCancel.items) {
         await tx.product.update({
           where: { id: item.productId },
-          data: { stock: { increment: item.quantity } },
+          data: { 
+            stock: { increment: item.quantity },
+            salesCount: { decrement: item.quantity }
+          },
         });
 
         await tx.inventoryMovement.create({

@@ -27,7 +27,14 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { Add as AddIcon, Search as SearchIcon, Clear as ClearIcon, Edit as EditIcon, Delete as DeleteIcon, AddCircle as AddCircleIcon } from '@mui/icons-material';
+import {
+  Add as AddIcon,
+  Search as SearchIcon,
+  Clear as ClearIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  AddCircle as AddCircleIcon,
+} from '@mui/icons-material';
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
@@ -590,7 +597,11 @@ const ProductManagementPage = () => {
                       <IconButton
                         size="small"
                         onClick={() => handleOpenAddStockModal(product)}
-                        sx={{ color: '#16a34a', bgcolor: 'rgba(22, 163, 74, 0.08)', '&:hover': { bgcolor: 'rgba(22, 163, 74, 0.15)' } }}
+                        sx={{
+                          color: '#16a34a',
+                          bgcolor: 'rgba(22, 163, 74, 0.08)',
+                          '&:hover': { bgcolor: 'rgba(22, 163, 74, 0.15)' },
+                        }}
                       >
                         <AddCircleIcon fontSize="small" />
                       </IconButton>
@@ -599,7 +610,11 @@ const ProductManagementPage = () => {
                       <IconButton
                         size="small"
                         onClick={() => handleOpenModal(product)}
-                        sx={{ color: '#2a6c8d', bgcolor: 'rgba(2, 85, 165, 0.08)', '&:hover': { bgcolor: 'rgba(2, 85, 165, 0.15)' } }}
+                        sx={{
+                          color: '#2a6c8d',
+                          bgcolor: 'rgba(2, 85, 165, 0.08)',
+                          '&:hover': { bgcolor: 'rgba(2, 85, 165, 0.15)' },
+                        }}
                       >
                         <EditIcon fontSize="small" />
                       </IconButton>
@@ -715,12 +730,7 @@ const ProductManagementPage = () => {
                   setSelectedProduct((prev) => ({ ...prev, detalle: newValue.toUpperCase() }))
                 }
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Detalle"
-                    variant="outlined"
-                    placeholder="Ej. MANGA CORTA, PECHERA..."
-                  />
+                  <TextField {...params} label="Detalle" variant="outlined" placeholder="Ej. MANGA CORTA, PECHERA..." />
                 )}
               />
 
@@ -733,12 +743,7 @@ const ProductManagementPage = () => {
                   setSelectedProduct((prev) => ({ ...prev, tela: newValue.toUpperCase() }))
                 }
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Tela"
-                    variant="outlined"
-                    placeholder="Ej. DRIL, MICROFIBRA..."
-                  />
+                  <TextField {...params} label="Tela" variant="outlined" placeholder="Ej. DRIL, MICROFIBRA..." />
                 )}
               />
 
@@ -751,12 +756,7 @@ const ProductManagementPage = () => {
                   setSelectedProduct((prev) => ({ ...prev, color: newValue.toUpperCase() }))
                 }
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Color"
-                    variant="outlined"
-                    placeholder="Ej. BLANCO, AZUL..."
-                  />
+                  <TextField {...params} label="Color" variant="outlined" placeholder="Ej. BLANCO, AZUL..." />
                 )}
               />
             </Box>

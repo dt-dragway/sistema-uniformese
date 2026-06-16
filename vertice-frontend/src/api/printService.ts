@@ -146,7 +146,10 @@ export interface LabelItem {
  * Envía una lista de productos al print server para imprimir etiquetas
  * en la Zebra LP2824 Plus vía USB.
  */
-export const printLabels = async (items: LabelItem[], printerName?: string): Promise<{ success: boolean; totalPrinted: number; method?: string }> => {
+export const printLabels = async (
+  items: LabelItem[],
+  printerName?: string
+): Promise<{ success: boolean; totalPrinted: number; method?: string }> => {
   const url = getPrintServerUrl();
   try {
     const response = await axios.post(`${url}/print-label`, { items, printerName });
@@ -170,4 +173,3 @@ export const previewLabel = async (item: Omit<LabelItem, 'quantity'>): Promise<s
     return '';
   }
 };
-

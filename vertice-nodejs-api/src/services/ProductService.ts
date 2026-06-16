@@ -36,7 +36,21 @@ class ProductService {
   }
 
   async createProduct(newProduct: Prisma.ProductCreateInput): Promise<Product> {
-    return prisma.product.create({ data: newProduct });
+    const product = await prisma.product.create({ data: newProduct });
+    
+    // QA Fix: Record initial stock movement to maintain mathematical consistency
+    if (product.stock > 0) {
+      await prisma.inventoryMovement.create({
+        data: {
+          productId: product.id,
+          type: 'INITIAL_STOCK',
+          quantityChange: product.stock,
+          reason: 'Inventario inicial al registrar producto',
+        }
+      });
+    }
+    
+    return product;
   }
 
   async updateProduct(id: number, updatedFields: Partial<Product>): Promise<Product | null> {
@@ -89,31 +103,19 @@ class ProductService {
   }
 
   async getMostSoldProducts(): Promise<Product[]> {
-    const mostSoldItems = await prisma.saleItem.groupBy({
-      by: ['productId'],
-      _sum: {
-        quantity: true,
+    // Ultra-fast query using the new salesCount index
+    return await prisma.product.findMany({
+      where: {
+        isActive: true,
+        salesCount: {
+          gt: 0 // Only products that have been sold
+        }
       },
       orderBy: {
-        _sum: {
-          quantity: 'desc',
-        },
+        salesCount: 'desc'
       },
-      take: 10,
+      take: 20, // Now we bring the top 20 best-sellers
     });
-
-    const productIds = mostSoldItems.map((item) => item.productId);
-
-    const products = await prisma.product.findMany({
-      where: {
-        id: {
-          in: productIds,
-        },
-      },
-    });
-
-    // Return products in the order of most sold
-    return productIds.map((productId) => products.find((p) => p.id === productId)).filter((p): p is Product => !!p);
   }
 }
 

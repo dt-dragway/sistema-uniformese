@@ -120,8 +120,22 @@ const AddPaymentModal = ({ open, onClose, customer }: AddPaymentModalProps) => {
       <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
         <DialogTitle>Añadir Abono a {customer.name}</DialogTitle>
         <DialogContent>
-          <Box sx={{ mb: 3, mt: 1, p: 2, bgcolor: '#f8fafc', borderRadius: 2, border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="body1" sx={{ color: '#475569', fontWeight: 600 }}>Deuda Total Pendiente:</Typography>
+          <Box
+            sx={{
+              mb: 3,
+              mt: 1,
+              p: 2,
+              bgcolor: '#f8fafc',
+              borderRadius: 2,
+              border: '1px solid #e2e8f0',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Typography variant="body1" sx={{ color: '#475569', fontWeight: 600 }}>
+              Deuda Total Pendiente:
+            </Typography>
             <Box sx={{ textAlign: 'right' }}>
               <Typography variant="h6" sx={{ color: '#ef4444', fontWeight: 800, lineHeight: 1 }}>
                 REF {customer.currentCredit.toFixed(2)}

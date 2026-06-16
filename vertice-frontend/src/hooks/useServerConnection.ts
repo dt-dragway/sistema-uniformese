@@ -13,7 +13,7 @@ interface UseServerConnectionResult {
 
 export const useServerConnection = (): UseServerConnectionResult => {
   const [status, setStatus] = useState<ServerConnectionStatus>('connecting');
-  const [serverUrl] = useState(import.meta.env.VITE_API_URL || 'http://localhost:3000');
+  const [serverUrl] = useState(import.meta.env.VITE_API_URL || 'http://localhost:4000');
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
 

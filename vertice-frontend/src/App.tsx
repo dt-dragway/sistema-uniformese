@@ -61,6 +61,7 @@ function App() {
           </PrivateRoute>
         }
       />
+
       {/* Product Management Route */}
       <Route
         path="/products"

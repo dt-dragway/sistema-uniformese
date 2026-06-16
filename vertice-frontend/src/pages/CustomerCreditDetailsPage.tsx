@@ -28,6 +28,7 @@ import salesService from '../api/salesService';
 import { Sale } from '../models/Sale';
 import { CreditPayment } from '../models/CreditPayment';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import { ProfessionalPagination } from '../components/common/ProfessionalPagination';
 
 const CustomerCreditDetailsPage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -43,6 +44,9 @@ const CustomerCreditDetailsPage = () => {
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+
   useEffect(() => {
     if (customerId) {
       dispatch(fetchCreditMovements(customerId));
@@ -57,6 +61,10 @@ const CustomerCreditDetailsPage = () => {
   // Since the store replaces `creditMovements` with the result, it should be just fine.
   // However, `fetchCreditMovements` replaces the WHOLE state array. So `creditMovements` now ONLY contains this customer's data.
   const customerCreditMovements = creditMovements;
+
+  // Pagination logic
+  const totalPages = Math.ceil(customerCreditMovements.length / itemsPerPage);
+  const paginatedMovements = customerCreditMovements.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
   const handleOpenAddPaymentModal = () => {
     if (!customer || customer.currentCredit <= 0.01) {
@@ -116,8 +124,9 @@ const CustomerCreditDetailsPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {customerCreditMovements.map((movement) => {
-              const isSale = movement.description?.toLowerCase().includes('venta') && movement.description?.includes('#');
+            {paginatedMovements.map((movement) => {
+              const isSale =
+                movement.description?.toLowerCase().includes('venta') && movement.description?.includes('#');
               const ticketNumber = isSale ? movement.description?.split('#')[1]?.trim() : null;
               const authorizer = movement.user ? movement.user.fullname || movement.user.username : '-';
 
@@ -150,6 +159,20 @@ const CustomerCreditDetailsPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {totalPages > 1 && (
+        <ProfessionalPagination
+          page={page - 1} // MUI uses 0-based
+          count={customerCreditMovements.length}
+          onPageChange={(e, newPage) => setPage(newPage + 1)} // our state uses 1-based
+          rowsPerPage={itemsPerPage}
+          onRowsPerPageChange={(e) => {
+            setItemsPerPage(parseInt(e.target.value, 10));
+            setPage(1);
+          }}
+          rowsPerPageOptions={[12, 24, 50, 100]}
+        />
+      )}
       <AddPaymentModal open={isAddPaymentModalOpen} onClose={handleCloseAddPaymentModal} customer={customer} />
       {selectedSale && (
         <ViewTicketModal open={isTicketModalOpen} onClose={() => setIsTicketModalOpen(false)} sale={selectedSale} />

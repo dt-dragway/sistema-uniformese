@@ -8,11 +8,11 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.png', 'vite.svg', 'images/*.jpg', 'images/*.png'],
+      includeAssets: ['icon.svg', 'vite.svg', 'images/*.jpg', 'images/*.png'],
       manifest: {
-        name: 'Uniformese - Gestión de Tienda',
+        name: 'Uniformese',
         short_name: 'Uniformese',
-        description: 'Sistema de Gestión de Tienda y POS para Uniformes',
+        description: 'Uniformese',
         theme_color: '#0255A5',
         background_color: '#ffffff',
         display: 'standalone',
@@ -22,20 +22,28 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
+            src: 'icon.svg',
+            sizes: '192x192',
+            type: 'image/svg+xml',
+            purpose: 'any',
+          },
+          {
             src: 'icon.png',
             sizes: '192x192',
             type: 'image/png',
+            purpose: 'any',
           },
           {
             src: 'icon.png',
             sizes: '512x512',
             type: 'image/png',
+            purpose: 'any',
           },
           {
             src: 'icon.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable',
+            purpose: 'maskable',
           },
         ],
       },
@@ -76,7 +84,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:4000',
         changeOrigin: true,
       },
     },

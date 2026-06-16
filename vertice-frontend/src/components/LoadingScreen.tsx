@@ -61,7 +61,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ status, serverUrl, error,
     <div className="loading-screen">
       <div className="loading-container">
         <div className="loading-header">
-          <h1>SISTEMA DE GESTIÓN</h1>
+          <h1>UNIFORMESE</h1>
           <span className="version">v{APP_VERSION}</span>
         </div>
 

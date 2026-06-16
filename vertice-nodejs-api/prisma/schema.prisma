@@ -63,6 +63,8 @@ model Product {
   @@index([name])
   @@index([stock])
   @@index([isActive])
+  salesCount   Int                @default(0)
+  @@index([salesCount(sort: Desc)])
 }
 
 model InventoryMovement {

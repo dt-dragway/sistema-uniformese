@@ -37,23 +37,26 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
       }}
     >
       <Box sx={{ height: '6px', background: 'linear-gradient(90deg, #ef4444 0%, #b91c1c 100%)' }} />
-      
+
       <DialogTitle sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, pt: 4, pb: 1 }}>
-        <Box 
-          sx={{ 
-            width: 64, 
-            height: 64, 
-            borderRadius: '50%', 
-            bgcolor: 'rgba(239, 68, 68, 0.1)', 
-            display: 'flex', 
-            alignItems: 'center', 
+        <Box
+          sx={{
+            width: 64,
+            height: 64,
+            borderRadius: '50%',
+            bgcolor: 'rgba(239, 68, 68, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
             justifyContent: 'center',
-            border: '8px solid rgba(239, 68, 68, 0.05)'
+            border: '8px solid rgba(239, 68, 68, 0.05)',
           }}
         >
           <WarningAmberIcon sx={{ fontSize: 32, color: '#ef4444' }} />
         </Box>
-        <Typography variant="h5" sx={{ fontWeight: 800, color: '#0f172a', textAlign: 'center', fontFamily: '"Outfit", sans-serif' }}>
+        <Typography
+          variant="h5"
+          sx={{ fontWeight: 800, color: '#0f172a', textAlign: 'center', fontFamily: '"Outfit", sans-serif' }}
+        >
           {title}
         </Typography>
       </DialogTitle>
@@ -63,15 +66,26 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
           {message}
         </Typography>
         {itemName && (
-          <Box sx={{ 
-            p: 2, 
-            bgcolor: '#f8fafc', 
-            borderRadius: '12px', 
-            border: '1px solid #e2e8f0',
-            textAlign: 'center',
-            mt: 2
-          }}>
-            <Typography variant="subtitle2" sx={{ color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 0.5, fontSize: '0.75rem' }}>
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: '#f8fafc',
+              borderRadius: '12px',
+              border: '1px solid #e2e8f0',
+              textAlign: 'center',
+              mt: 2,
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              sx={{
+                color: '#94a3b8',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                mb: 0.5,
+                fontSize: '0.75rem',
+              }}
+            >
               Archivo / Elemento Seleccionado
             </Typography>
             <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#0f172a', wordBreak: 'break-all' }}>
@@ -82,10 +96,10 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 3, pt: 1, display: 'flex', gap: 2, justifyContent: 'center' }}>
-        <Button 
-          onClick={onClose} 
+        <Button
+          onClick={onClose}
           variant="outlined"
-          sx={{ 
+          sx={{
             flex: 1,
             color: '#64748b',
             borderColor: '#cbd5e1',
@@ -96,7 +110,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
             '&:hover': {
               borderColor: '#94a3b8',
               bgcolor: '#f8fafc',
-            }
+            },
           }}
         >
           Cancelar
@@ -120,7 +134,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
               background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
               boxShadow: '0 15px 20px -3px rgba(239, 68, 68, 0.4)',
               transform: 'translateY(-1px)',
-            }
+            },
           }}
         >
           {confirmText}

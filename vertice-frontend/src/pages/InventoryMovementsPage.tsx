@@ -115,7 +115,7 @@ const InventoryMovementsPage: React.FC = () => {
           top: { style: 'thin' },
           left: { style: 'thin' },
           bottom: { style: 'thin' },
-          right: { style: 'thin' }
+          right: { style: 'thin' },
         };
       });
 
@@ -123,13 +123,9 @@ const InventoryMovementsPage: React.FC = () => {
       filteredMovements.forEach((movement) => {
         const typeInfo = getMovementTypeLabel(movement.type);
         const product = movement.product;
-        const detalles = [
-          product?.tipo,
-          product?.caracteristica,
-          product?.detalle,
-          product?.color,
-          product?.tela,
-        ].filter(Boolean).join(' - ');
+        const detalles = [product?.tipo, product?.caracteristica, product?.detalle, product?.color, product?.tela]
+          .filter(Boolean)
+          .join(' - ');
 
         const row = worksheet.addRow({
           fecha: new Date(movement.timestamp).toLocaleString(),
@@ -137,13 +133,13 @@ const InventoryMovementsPage: React.FC = () => {
           detalles: detalles || '-',
           tipo: typeInfo.label,
           cantidad: movement.quantityChange > 0 ? `+${movement.quantityChange}` : movement.quantityChange,
-          razon: movement.reason || '-'
+          razon: movement.reason || '-',
         });
 
         // Style cells based on type and quantity
         row.getCell('tipo').alignment = { horizontal: 'center' };
         row.getCell('cantidad').alignment = { horizontal: 'right' };
-        
+
         // Color type column
         const tipoCell = row.getCell('tipo');
         if (movement.type === 'SALE') {
@@ -158,9 +154,9 @@ const InventoryMovementsPage: React.FC = () => {
 
         // Color quantity column
         const cantidadCell = row.getCell('cantidad');
-        cantidadCell.font = { 
+        cantidadCell.font = {
           color: { argb: movement.quantityChange > 0 ? 'FF16A34A' : 'FFDC2626' },
-          bold: true 
+          bold: true,
         };
 
         // Apply borders to all data cells
@@ -169,7 +165,7 @@ const InventoryMovementsPage: React.FC = () => {
             top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
             left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
             bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
-            right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+            right: { style: 'thin', color: { argb: 'FFE2E8F0' } },
           };
           cell.alignment = { vertical: 'middle', ...cell.alignment };
         });
@@ -179,7 +175,6 @@ const InventoryMovementsPage: React.FC = () => {
       const buffer = await workbook.xlsx.writeBuffer();
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       saveAs(blob, `Reporte_Movimientos_Inventario_${new Date().toISOString().split('T')[0]}.xlsx`);
-
     } catch (err) {
       console.error('Error exporting Excel:', err);
       alert('Hubo un error al generar el archivo Excel.');
@@ -201,8 +196,6 @@ const InventoryMovementsPage: React.FC = () => {
       </Box>
     );
   }
-
-
 
   const paginatedMovements = filteredMovements.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 

@@ -1,9 +1,29 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  Box, Container, Typography, TextField, Button, Paper, Table, TableBody,
-  TableCell, TableContainer, TableHead, TableRow, IconButton, Chip, Alert,
-  Snackbar, CircularProgress, Divider, Grid, InputAdornment, Tooltip,
-  Badge, Card, CardContent,
+  Box,
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  Chip,
+  Alert,
+  Snackbar,
+  CircularProgress,
+  Divider,
+  Grid,
+  InputAdornment,
+  Tooltip,
+  Badge,
+  Card,
+  CardContent,
 } from '@mui/material';
 import {
   LocalOffer as LabelIcon,
@@ -34,18 +54,25 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
     return (
       <Box
         sx={{
-          width: 320, height: 200, border: '2px dashed #b0bec5', borderRadius: 2,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          bgcolor: '#f8fafc', color: '#94a3b8',
+          width: 320,
+          height: 200,
+          border: '2px dashed #b0bec5',
+          borderRadius: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          bgcolor: '#f8fafc',
+          color: '#94a3b8',
         }}
       >
         <Typography variant="body2" textAlign="center">
-          Selecciona un producto<br />para ver la previsualización
+          Selecciona un producto
+          <br />
+          para ver la previsualización
         </Typography>
       </Box>
     );
   }
-
 
   const priceStr = Number(item.price) > 0 ? Number(item.price).toFixed(0) : '0';
   const barcodeDisplay = item.barCode || String(item.price) || '—';
@@ -56,7 +83,8 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
   return (
     <Box
       sx={{
-        width: 320, minHeight: 190,
+        width: 320,
+        minHeight: 190,
         border: '1px solid #9e9e9e',
         borderRadius: 1,
         bgcolor: 'white',
@@ -68,7 +96,10 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
         position: 'relative',
       }}
     >
-      <Typography align="center" sx={{ fontFamily: 'monospace', fontSize: '11px', fontWeight: 'bold', lineHeight: 1.3 }}>
+      <Typography
+        align="center"
+        sx={{ fontFamily: 'monospace', fontSize: '11px', fontWeight: 'bold', lineHeight: 1.3 }}
+      >
         UNIFORMESE
       </Typography>
       <Typography align="center" sx={{ fontFamily: 'monospace', fontSize: '10px', lineHeight: 1.3 }}>
@@ -77,7 +108,15 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
 
       <Divider sx={{ my: 0.5, borderColor: '#000' }} />
 
-      <Typography sx={{ fontFamily: 'monospace', fontSize: '14px', fontWeight: 'bold', lineHeight: 1.4, textTransform: 'uppercase' }}>
+      <Typography
+        sx={{
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          fontWeight: 'bold',
+          lineHeight: 1.4,
+          textTransform: 'uppercase',
+        }}
+      >
         {String(item.name).substring(0, 28)}
       </Typography>
 
@@ -94,7 +133,9 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
               <Box key={i} sx={{ width: i % 3 === 0 ? 3 : 1.5, bgcolor: '#000', flexShrink: 0 }} />
             ))}
           </Box>
-          <Typography sx={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 'bold', letterSpacing: '1px', mt: 0.5 }}>
+          <Typography
+            sx={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 'bold', letterSpacing: '1px', mt: 0.5 }}
+          >
             {barcodeDisplay}
           </Typography>
         </Box>
@@ -113,12 +154,16 @@ const LabelPreview: React.FC<{ item: LabelItem | null }> = ({ item }) => {
 const LabelPrintPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { products: allProducts, loading } = useSelector((state: RootState) => state.products);
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [previewItem, setPreviewItem] = useState<LabelItem | null>(null);
   const [printing, setPrinting] = useState(false);
-  const [snack, setSnack] = useState<{ open: boolean; msg: string; severity: 'success' | 'error' | 'info' }>({ open: false, msg: '', severity: 'success' });
+  const [snack, setSnack] = useState<{ open: boolean; msg: string; severity: 'success' | 'error' | 'info' }>({
+    open: false,
+    msg: '',
+    severity: 'success',
+  });
 
   // Cargar productos si no están en memoria
   useEffect(() => {
@@ -131,23 +176,25 @@ const LabelPrintPage: React.FC = () => {
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) {
       // Si está vacío, mostrar todos los productos activos
-      return allProducts.filter(p => p.isActive);
+      return allProducts.filter((p) => p.isActive);
     }
     const lowerQ = searchQuery.toLowerCase();
-    const filtered = allProducts.filter(p => 
-      p.isActive && (
-        p.name.toLowerCase().includes(lowerQ) || 
-        (p.barCode && p.barCode.toLowerCase().includes(lowerQ))
-      )
+    const filtered = allProducts.filter(
+      (p) =>
+        p.isActive && (p.name.toLowerCase().includes(lowerQ) || (p.barCode && p.barCode.toLowerCase().includes(lowerQ)))
     );
     return filtered;
   }, [searchQuery, allProducts]);
 
   // ── Agregar producto a la cola ──
   const handleAddProduct = (product: Product) => {
-    const exists = queue.find(q => q.productId === product.id);
+    const exists = queue.find((q) => q.productId === product.id);
     if (exists) {
-      setSnack({ open: true, msg: `"${product.name}" ya está en la cola. Ajusta la cantidad directamente.`, severity: 'info' });
+      setSnack({
+        open: true,
+        msg: `"${product.name}" ya está en la cola. Ajusta la cantidad directamente.`,
+        severity: 'info',
+      });
       return;
     }
     const newItem: QueueItem = {
@@ -160,21 +207,21 @@ const LabelPrintPage: React.FC = () => {
       color: product.color,
       quantity: 1,
     };
-    setQueue(prev => [...prev, newItem]);
+    setQueue((prev) => [...prev, newItem]);
     setPreviewItem(newItem);
     setSearchQuery('');
   };
 
   // ── Actualizar cantidad ──
   const handleQtyChange = (productId: number, qty: number) => {
-    setQueue(prev =>
-      prev.map(q => q.productId === productId ? { ...q, quantity: Math.max(1, Math.min(qty, 500)) } : q)
+    setQueue((prev) =>
+      prev.map((q) => (q.productId === productId ? { ...q, quantity: Math.max(1, Math.min(qty, 500)) } : q))
     );
   };
 
   // ── Eliminar de cola ──
   const handleRemove = (productId: number) => {
-    setQueue(prev => prev.filter(q => q.productId !== productId));
+    setQueue((prev) => prev.filter((q) => q.productId !== productId));
     if (previewItem && (previewItem as QueueItem).productId === productId) {
       setPreviewItem(null);
     }
@@ -191,7 +238,11 @@ const LabelPrintPage: React.FC = () => {
     setPrinting(true);
     try {
       const result = await printLabels(queue);
-      setSnack({ open: true, msg: `✅ ${result.totalPrinted} etiqueta(s) enviadas a la Zebra LP2824.`, severity: 'success' });
+      setSnack({
+        open: true,
+        msg: `✅ ${result.totalPrinted} etiqueta(s) enviadas a la Zebra LP2824.`,
+        severity: 'success',
+      });
     } catch (err: any) {
       setSnack({ open: true, msg: `Error: ${err.message}`, severity: 'error' });
     } finally {
@@ -229,7 +280,6 @@ const LabelPrintPage: React.FC = () => {
       <Grid container spacing={3}>
         {/* ── Columna izquierda: búsqueda + cola ── */}
         <Grid item xs={12} lg={8}>
-
           {/* Buscador */}
           <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
             <Typography variant="subtitle1" fontWeight={700} mb={1.5} color="#0255A5">
@@ -239,7 +289,7 @@ const LabelPrintPage: React.FC = () => {
               fullWidth
               placeholder="Escribe el nombre o escanea el código de barras..."
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
               autoComplete="off"
               InputProps={{
                 startAdornment: (
@@ -254,12 +304,16 @@ const LabelPrintPage: React.FC = () => {
             {/* Resultados de búsqueda */}
             {searchResults.length > 0 ? (
               <Paper variant="outlined" sx={{ borderRadius: 1, maxHeight: 280, overflow: 'auto' }}>
-                {searchResults.map(product => (
+                {searchResults.map((product) => (
                   <Box
                     key={product.id}
                     onClick={() => handleAddProduct(product)}
                     sx={{
-                      p: 1.5, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2,
+                      p: 1.5,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
                       borderBottom: '1px solid #f1f5f9',
                       '&:hover': { bgcolor: '#eff6ff' },
                       '&:last-child': { borderBottom: 'none' },
@@ -267,9 +321,17 @@ const LabelPrintPage: React.FC = () => {
                   >
                     <LabelIcon sx={{ color: '#0255A5', flexShrink: 0 }} />
                     <Box flex={1} minWidth={0}>
-                      <Typography variant="body2" fontWeight={700} noWrap>{product.name}</Typography>
+                      <Typography variant="body2" fontWeight={700} noWrap>
+                        {product.name}
+                      </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {[product.barCode && `Cód: ${product.barCode}`, product.talla && `T: ${product.talla}`, product.color && `C: ${product.color}`].filter(Boolean).join(' · ')}
+                        {[
+                          product.barCode && `Cód: ${product.barCode}`,
+                          product.talla && `T: ${product.talla}`,
+                          product.color && `C: ${product.color}`,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}
                       </Typography>
                     </Box>
                     <Typography variant="body2" fontWeight={700} color="#0255A5" sx={{ flexShrink: 0 }}>
@@ -284,8 +346,11 @@ const LabelPrintPage: React.FC = () => {
                 ))}
               </Paper>
             ) : (
-              !loading && searchQuery && (
-                <Alert severity="info" sx={{ mt: 1 }}>No se encontraron productos con ese nombre o código.</Alert>
+              !loading &&
+              searchQuery && (
+                <Alert severity="info" sx={{ mt: 1 }}>
+                  No se encontraron productos con ese nombre o código.
+                </Alert>
               )
             )}
           </Paper>
@@ -301,7 +366,10 @@ const LabelPrintPage: React.FC = () => {
                   size="small"
                   color="error"
                   startIcon={<ClearAllIcon />}
-                  onClick={() => { setQueue([]); setPreviewItem(null); }}
+                  onClick={() => {
+                    setQueue([]);
+                    setPreviewItem(null);
+                  }}
                 >
                   Limpiar todo
                 </Button>
@@ -321,33 +389,50 @@ const LabelPrintPage: React.FC = () => {
                     <TableRow sx={{ bgcolor: '#f8fafc' }}>
                       <TableCell sx={{ fontWeight: 700 }}>Producto</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Talla / Color</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }} align="center">Precio REF</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }} align="center">Cantidad</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }} align="center">Acción</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">
+                        Precio REF
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">
+                        Cantidad
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">
+                        Acción
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {queue.map(item => (
+                    {queue.map((item) => (
                       <TableRow
                         key={item.productId}
                         onClick={() => setPreviewItem(item)}
                         sx={{
                           cursor: 'pointer',
-                          bgcolor: previewItem && (previewItem as QueueItem).productId === item.productId ? '#eff6ff' : 'transparent',
+                          bgcolor:
+                            previewItem && (previewItem as QueueItem).productId === item.productId
+                              ? '#eff6ff'
+                              : 'transparent',
                           '&:hover': { bgcolor: '#f0f9ff' },
                         }}
                       >
                         <TableCell>
-                          <Typography variant="body2" fontWeight={600}>{item.name}</Typography>
+                          <Typography variant="body2" fontWeight={600}>
+                            {item.name}
+                          </Typography>
                           {item.barCode && (
-                            <Typography variant="caption" color="text.secondary">Cód: {item.barCode}</Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              Cód: {item.barCode}
+                            </Typography>
                           )}
                         </TableCell>
                         <TableCell>
                           <Box display="flex" gap={0.5} flexWrap="wrap">
                             {item.size && <Chip label={item.size} size="small" variant="outlined" />}
                             {item.color && <Chip label={item.color} size="small" variant="outlined" color="info" />}
-                            {!item.size && !item.color && <Typography variant="caption" color="text.disabled">—</Typography>}
+                            {!item.size && !item.color && (
+                              <Typography variant="caption" color="text.disabled">
+                                —
+                              </Typography>
+                            )}
                           </Box>
                         </TableCell>
                         <TableCell align="center">
@@ -355,17 +440,21 @@ const LabelPrintPage: React.FC = () => {
                             {Number(item.price).toFixed(2)}
                           </Typography>
                         </TableCell>
-                        <TableCell align="center" onClick={e => e.stopPropagation()}>
+                        <TableCell align="center" onClick={(e) => e.stopPropagation()}>
                           <TextField
                             type="number"
                             value={item.quantity}
-                            onChange={e => handleQtyChange(item.productId, parseInt(e.target.value) || 1)}
-                            inputProps={{ min: 1, max: 500, style: { textAlign: 'center', fontWeight: 700, width: 60 } }}
+                            onChange={(e) => handleQtyChange(item.productId, parseInt(e.target.value) || 1)}
+                            inputProps={{
+                              min: 1,
+                              max: 500,
+                              style: { textAlign: 'center', fontWeight: 700, width: 60 },
+                            }}
                             size="small"
                             variant="outlined"
                           />
                         </TableCell>
-                        <TableCell align="center" onClick={e => e.stopPropagation()}>
+                        <TableCell align="center" onClick={(e) => e.stopPropagation()}>
                           <Tooltip title="Eliminar de cola">
                             <IconButton size="small" color="error" onClick={() => handleRemove(item.productId)}>
                               <DeleteIcon fontSize="small" />
@@ -424,7 +513,6 @@ const LabelPrintPage: React.FC = () => {
                 <Typography variant="caption" color="text.secondary" display="block" mb={0.5}>
                   Esta es una simulación visual. El resultado final puede variar ligeramente según la impresora.
                 </Typography>
-
               </Box>
             )}
 
@@ -437,12 +525,14 @@ const LabelPrintPage: React.FC = () => {
               <Card variant="outlined" sx={{ bgcolor: '#f8fafc' }}>
                 <CardContent sx={{ py: '8px !important', px: 1.5 }}>
                   <Typography variant="caption" display="block" lineHeight={1.8}>
-                    ✅ Conecta la impresora por <strong>USB</strong><br />
-                    ✅ El print server detecta automáticamente<br />
+                    ✅ Conecta la impresora por <strong>USB</strong>
+                    <br />
+                    ✅ El print server detecta automáticamente
+                    <br />
                     &nbsp;&nbsp;&nbsp;&nbsp;el puerto <code>/dev/usb/lp0</code> (Linux) o<br />
-                    &nbsp;&nbsp;&nbsp;&nbsp;<code>USB001</code> (Windows)<br />
-                    ✅ Etiqueta: <strong>2" × 1.5"</strong> — Lenguaje ZPL<br />
-                    ✅ Velocidad: hasta 500 etiquetas por lote
+                    &nbsp;&nbsp;&nbsp;&nbsp;<code>USB001</code> (Windows)
+                    <br />✅ Etiqueta: <strong>2" × 1.5"</strong> — Lenguaje ZPL
+                    <br />✅ Velocidad: hasta 500 etiquetas por lote
                   </Typography>
                 </CardContent>
               </Card>
@@ -455,13 +545,13 @@ const LabelPrintPage: React.FC = () => {
       <Snackbar
         open={snack.open}
         autoHideDuration={5000}
-        onClose={() => setSnack(s => ({ ...s, open: false }))}
+        onClose={() => setSnack((s) => ({ ...s, open: false }))}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert
           severity={snack.severity}
           icon={snack.severity === 'success' ? <CheckCircleIcon /> : undefined}
-          onClose={() => setSnack(s => ({ ...s, open: false }))}
+          onClose={() => setSnack((s) => ({ ...s, open: false }))}
           sx={{ fontWeight: 600 }}
         >
           {snack.msg}

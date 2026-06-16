@@ -119,7 +119,8 @@ const MaintenancePage = () => {
       </Typography>
 
       <Typography variant="body1" sx={{ color: '#64748b', mb: 4, maxWidth: '800px' }}>
-        Gestiona la seguridad y el respaldo de la información vital de tu negocio. Crea copias de seguridad o restaura el sistema desde un punto anterior.
+        Gestiona la seguridad y el respaldo de la información vital de tu negocio. Crea copias de seguridad o restaura
+        el sistema desde un punto anterior.
       </Typography>
 
       <Container maxWidth="lg" disableGutters sx={{ m: 0 }}>
@@ -144,22 +145,25 @@ const MaintenancePage = () => {
             >
               <CardContent sx={{ p: 5, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-                  <Box 
-                    sx={{ 
-                      p: 2, 
-                      backgroundColor: 'rgba(2, 85, 165, 0.08)', 
-                      borderRadius: '20px', 
+                  <Box
+                    sx={{
+                      p: 2,
+                      backgroundColor: 'rgba(2, 85, 165, 0.08)',
+                      borderRadius: '20px',
                       mr: 2.5,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      border: '1px solid rgba(2, 85, 165, 0.1)'
+                      border: '1px solid rgba(2, 85, 165, 0.1)',
                     }}
                   >
                     <CloudDownloadIcon sx={{ fontSize: 36, color: '#0255A5' }} />
                   </Box>
                   <Box>
-                    <Typography variant="h5" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif' }}>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif' }}
+                    >
                       Copia de Seguridad
                     </Typography>
                     <Typography variant="body2" sx={{ color: '#0255A5', fontWeight: 600 }}>
@@ -169,7 +173,9 @@ const MaintenancePage = () => {
                 </Box>
 
                 <Typography variant="body1" paragraph sx={{ color: '#64748b', mb: 3, lineHeight: 1.6, flexGrow: 1 }}>
-                  Genera un respaldo completo de toda la información del sistema, incluyendo productos, inventarios, historial de ventas y clientes. Se recomienda realizar esta acción <strong>al menos una vez por semana</strong>.
+                  Genera un respaldo completo de toda la información del sistema, incluyendo productos, inventarios,
+                  historial de ventas y clientes. Se recomienda realizar esta acción{' '}
+                  <strong>al menos una vez por semana</strong>.
                 </Typography>
 
                 <Alert
@@ -182,10 +188,11 @@ const MaintenancePage = () => {
                     color: '#0255A5',
                     '& .MuiAlert-icon': {
                       color: '#0255A5',
-                    }
+                    },
                   }}
                 >
-                  El archivo se descargará en formato <strong>.SQL</strong> y puede ser guardado de forma segura en una memoria USB o la nube.
+                  El archivo se descargará en formato <strong>.SQL</strong> y puede ser guardado de forma segura en una
+                  memoria USB o la nube.
                 </Alert>
 
                 <Button
@@ -237,22 +244,25 @@ const MaintenancePage = () => {
             >
               <CardContent sx={{ p: 5, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-                  <Box 
-                    sx={{ 
-                      p: 2, 
-                      backgroundColor: 'rgba(220, 38, 38, 0.08)', 
-                      borderRadius: '20px', 
+                  <Box
+                    sx={{
+                      p: 2,
+                      backgroundColor: 'rgba(220, 38, 38, 0.08)',
+                      borderRadius: '20px',
                       mr: 2.5,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      border: '1px solid rgba(220, 38, 38, 0.1)'
+                      border: '1px solid rgba(220, 38, 38, 0.1)',
                     }}
                   >
                     <CloudUploadIcon sx={{ fontSize: 36, color: '#dc2626' }} />
                   </Box>
                   <Box>
-                    <Typography variant="h5" sx={{ fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif' }}>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: 800, color: '#0f172a', fontFamily: '"Outfit", sans-serif' }}
+                    >
                       Restaurar Sistema
                     </Typography>
                     <Typography variant="body2" sx={{ color: '#dc2626', fontWeight: 600 }}>
@@ -262,25 +272,27 @@ const MaintenancePage = () => {
                 </Box>
 
                 <Typography variant="body1" paragraph sx={{ color: '#64748b', mb: 3, lineHeight: 1.6, flexGrow: 1 }}>
-                  Carga un archivo de respaldo previo (.SQL) para restaurar el sistema completo a un punto anterior. Útil en casos de reinstalación del sistema o recuperación por fallas.
+                  Carga un archivo de respaldo previo (.SQL) para restaurar el sistema completo a un punto anterior.
+                  Útil en casos de reinstalación del sistema o recuperación por fallas.
                 </Typography>
 
                 <Alert
                   severity="error"
                   variant="outlined"
-                  sx={{ 
-                    mb: 4, 
-                    borderRadius: '16px', 
+                  sx={{
+                    mb: 4,
+                    borderRadius: '16px',
                     backgroundColor: '#fef2f2',
                     borderColor: 'rgba(220, 38, 38, 0.2)',
                     color: '#991b1b',
                     '& .MuiAlert-icon': {
                       color: '#dc2626',
-                    }
+                    },
                   }}
                 >
                   <AlertTitle sx={{ fontWeight: 800 }}>¡ADVERTENCIA CRÍTICA!</AlertTitle>
-                  Esta acción sobrescribirá <strong>TODOS</strong> los datos actuales del sistema por los del archivo de respaldo.
+                  Esta acción sobrescribirá <strong>TODOS</strong> los datos actuales del sistema por los del archivo de
+                  respaldo.
                 </Alert>
 
                 <Button

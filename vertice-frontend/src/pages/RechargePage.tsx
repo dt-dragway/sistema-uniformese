@@ -19,17 +19,14 @@ import {
   TablePagination,
   IconButton,
   Tooltip,
-  ButtonGroup,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
-import PhoneIcon from '@mui/icons-material/Phone';
-import WifiIcon from '@mui/icons-material/Wifi';
-import TvIcon from '@mui/icons-material/Tv';
 import PrintIcon from '@mui/icons-material/Print';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import CheckroomIcon from '@mui/icons-material/Checkroom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { RootState, AppDispatch } from '../store';
@@ -40,13 +37,13 @@ import { addRechargeToCart } from '../store/cartSlice';
 
 // Configuración de servicios: iconos y tipo de entrada
 const serviceConfig: Record<string, { icon: React.ReactNode; isContract: boolean; color: string }> = {
-  'Movistar Celular': { icon: <PhoneAndroidIcon sx={{ fontSize: 28 }} />, isContract: false, color: '#00A0E1' },
-  'Movistar Fijo': { icon: <PhoneIcon sx={{ fontSize: 28 }} />, isContract: false, color: '#00A0E1' },
-  Digitel: { icon: <PhoneAndroidIcon sx={{ fontSize: 28 }} />, isContract: false, color: '#E31E24' },
-  Movilnet: { icon: <PhoneAndroidIcon sx={{ fontSize: 28 }} />, isContract: false, color: '#FF6B00' },
-  CANTV: { icon: <PhoneIcon sx={{ fontSize: 28 }} />, isContract: false, color: '#0066B3' },
-  Inter: { icon: <WifiIcon sx={{ fontSize: 28 }} />, isContract: true, color: '#E91E63' },
-  SimpleTV: { icon: <TvIcon sx={{ fontSize: 28 }} />, isContract: true, color: '#9C27B0' },
+  'Movistar Celular': { icon: <CheckroomIcon sx={{ fontSize: 28 }} />, isContract: false, color: '#00A0E1' },
+  'Movistar Fijo': { icon: <CheckroomIcon sx={{ fontSize: 28 }} />, isContract: false, color: '#00A0E1' },
+  Digitel: { icon: <CheckroomIcon sx={{ fontSize: 28 }} />, isContract: false, color: '#E31E24' },
+  Movilnet: { icon: <CheckroomIcon sx={{ fontSize: 28 }} />, isContract: false, color: '#FF6B00' },
+  CANTV: { icon: <CheckroomIcon sx={{ fontSize: 28 }} />, isContract: false, color: '#0066B3' },
+  Inter: { icon: <CheckroomIcon sx={{ fontSize: 28 }} />, isContract: true, color: '#E91E63' },
+  SimpleTV: { icon: <CheckroomIcon sx={{ fontSize: 28 }} />, isContract: true, color: '#9C27B0' },
 };
 
 const RechargePage = () => {
