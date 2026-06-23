@@ -1,12 +1,12 @@
 ; ============================================================
 ;   VERTICE POS - INNO SETUP INSTALLER SCRIPT (UNIFORMESE SERVIDOR)
-;   Version 1.13.0
+;   Version 1.14.0
 ; ============================================================
 
 [Setup]
 AppId={{D1A39B1E-FCE5-4D54-B52F-9827ACF599B2}
 AppName=Uniformese Servidor
-AppVersion=1.13.0
+AppVersion=1.14.0
 AppPublisher=DT Dragway
 AppPublisherURL=https://dt-dragway.com
 DefaultDirName={commonpf}\Uniformese

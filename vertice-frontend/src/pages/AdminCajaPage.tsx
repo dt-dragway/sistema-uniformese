@@ -708,7 +708,7 @@ const AdminCajaPage = () => {
                       Ventas por Método de Pago
                     </Typography>
                     <TableContainer>
-                      <Table size="small">
+                      <Table size="small" sx={{ minWidth: 1000 }}>
                         <TableHead>
                           <TableRow>
                             <TableCell sx={{ fontWeight: 'bold' }}>Método</TableCell>

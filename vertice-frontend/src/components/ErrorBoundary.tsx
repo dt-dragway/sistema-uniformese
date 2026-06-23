@@ -82,7 +82,7 @@ class ErrorBoundary extends Component<Props, State> {
               persiste.
             </Typography>
 
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <Paper
                 sx={{
                   p: 2,

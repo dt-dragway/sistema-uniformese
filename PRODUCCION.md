@@ -46,7 +46,7 @@ Durante la instalación en el cliente, el ejecutable usará los scripts de servi
 
 ## 🚀 Instalación en el Servidor del Cliente
 
-Lleva el instalador generado (`release/Vertice POS Setup 1.12.0.exe`) al equipo del cliente y ejecútalo. El instalador realizará todo lo siguiente de forma nativa y automática:
+Lleva el instalador generado (`release/Vertice POS Setup 1.14.0.exe`) al equipo del cliente y ejecútalo. El instalador realizará todo lo siguiente de forma nativa y automática:
 
 1. **Instalación de archivos**: Copiará los archivos a la carpeta del programa.
 2. **Estructuración de Base de Datos**: Creará las tablas e inicializará el esquema automáticamente usando Prisma Client y creará el usuario administrador `admin` con contraseña `admin2425*`.

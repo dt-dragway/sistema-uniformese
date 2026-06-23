@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { fetchAllInventoryMovements } from '../store/inventorySlice';
+import { fetchProducts } from '../store/productsSlice';
 import {
   Box,
   Typography,
@@ -25,13 +26,15 @@ import MerchandiseEntryModal from '../components/inventory/MerchandiseEntryModal
 import axiosInstance from '../api/axiosInstance';
 
 import { ProfessionalPagination } from '../components/common/ProfessionalPagination';
+import { exportStockToExcel, exportStockToPDF } from '../utils/exportInventoryReport';
 
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
 const InventoryMovementsPage: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { movements, loading, error } = useSelector((state: RootState) => state.inventory);
+  const { movements, loading: inventoryLoading, error: inventoryError } = useSelector((state: RootState) => state.inventory);
+  const { products, loading: productsLoading } = useSelector((state: RootState) => state.products);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
@@ -39,6 +42,7 @@ const InventoryMovementsPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchAllInventoryMovements());
+    dispatch(fetchProducts());
   }, [dispatch]);
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -181,7 +185,7 @@ const InventoryMovementsPage: React.FC = () => {
     }
   };
 
-  if (loading) {
+  if (inventoryLoading && movements.length === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100%">
         <CircularProgress />
@@ -189,10 +193,10 @@ const InventoryMovementsPage: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (inventoryError) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-        <Typography color="error">Error: {error}</Typography>
+        <Typography color="error">Error: {inventoryError}</Typography>
       </Box>
     );
   }
@@ -239,18 +243,56 @@ const InventoryMovementsPage: React.FC = () => {
           startIcon={<DownloadIcon />}
           onClick={handleExportExcel}
           sx={{
+            bgcolor: '#475569',
+            color: 'white',
+            fontWeight: 700,
+            borderRadius: '12px',
+            textTransform: 'none',
+            px: 2,
+            '&:hover': {
+              bgcolor: '#334155',
+            },
+          }}
+        >
+          Exportar Mov.
+        </Button>
+        <Button
+          variant="contained"
+          startIcon={<DownloadIcon />}
+          onClick={() => exportStockToExcel(products)}
+          disabled={productsLoading}
+          sx={{
             bgcolor: '#10b981',
             color: 'white',
             fontWeight: 700,
             borderRadius: '12px',
             textTransform: 'none',
-            px: 3,
+            px: 2,
             '&:hover': {
               bgcolor: '#059669',
             },
           }}
         >
-          Exportar Excel
+          Existencias (Excel)
+        </Button>
+        <Button
+          variant="contained"
+          startIcon={<DownloadIcon />}
+          onClick={() => exportStockToPDF(products)}
+          disabled={productsLoading}
+          sx={{
+            bgcolor: '#ef4444',
+            color: 'white',
+            fontWeight: 700,
+            borderRadius: '12px',
+            textTransform: 'none',
+            px: 2,
+            '&:hover': {
+              bgcolor: '#dc2626',
+            },
+          }}
+        >
+          Existencias (PDF)
         </Button>
         <Button
           variant="contained"
@@ -265,13 +307,13 @@ const InventoryMovementsPage: React.FC = () => {
       <Paper
         sx={{
           borderRadius: '24px',
-          overflow: 'hidden',
+          overflowX: 'auto',
           border: '1px solid rgba(0,0,0,0.05)',
           boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
         }}
       >
         <TableContainer>
-          <Table stickyHeader aria-label="movimientos de inventario">
+          <Table stickyHeader aria-label="movimientos de inventario" sx={{ minWidth: 1000 }}>
             <TableHead>
               <TableRow sx={{ backgroundColor: '#f8fafc' }}>
                 <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Fecha y Hora</TableCell>

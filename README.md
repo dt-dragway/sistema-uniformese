@@ -4,7 +4,7 @@
 
 **Sistema de Punto de Venta Profesional para Comercializadoras**
 
-![Version](https://img.shields.io/badge/version-1.12.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.14.0-blue.svg)
 ![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL_14%2B-blue.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0-red.svg)
@@ -556,7 +556,7 @@ cd ../vertice-nodejs-api && npm run build
 EMPAQUETAR.bat
 ```
 
-Esto genera una carpeta `vertice-pos-v1.12.0` con:
+Esto genera una carpeta `vertice-pos-v1.14.0` con:
 - API compilada + `.env` + Prisma
 - Frontend compilado (dist)
 - Print Server + Prisma
@@ -780,7 +780,7 @@ Para actualizar a una nueva versión:
 
 ## 📝 Changelog
 
-### v1.12.0 (Actual)
+### v1.14.0 (Actual)
 - ✨ Cliente se limpia automáticamente después de completar venta
 - 🔧 Mejoras en la gestión de memoria
 - 📦 Proceso de empaquetado optimizado
@@ -837,7 +837,7 @@ DT Dragway
 
 <div align="center">
 
-**Vertice POS v1.12.0 (Build: 2026-05-30)**
+**Vertice POS v1.14.0 (Build: 2026-05-30)**
 
 *Sistema de Punto de Venta Profesional*
 

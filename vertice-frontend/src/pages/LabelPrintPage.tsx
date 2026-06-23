@@ -384,7 +384,7 @@ const LabelPrintPage: React.FC = () => {
               </Box>
             ) : (
               <TableContainer>
-                <Table size="small">
+                <Table size="small" sx={{ minWidth: 1000 }}>
                   <TableHead>
                     <TableRow sx={{ bgcolor: '#f8fafc' }}>
                       <TableCell sx={{ fontWeight: 700 }}>Producto</TableCell>

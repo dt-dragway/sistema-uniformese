@@ -110,7 +110,7 @@ const CustomerCreditDetailsPage = () => {
         {Math.abs(totalDebtBs) < 0.005 ? '0.00' : totalDebtBs.toFixed(2)}
       </Typography>
       <TableContainer component={Paper}>
-        <Table stickyHeader aria-label="sticky table">
+        <Table stickyHeader aria-label="sticky table" sx={{ minWidth: 1000 }}>
           <TableHead>
             <TableRow>
               <TableCell>Fecha</TableCell>

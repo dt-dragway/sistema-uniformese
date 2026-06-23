@@ -446,7 +446,7 @@ const RechargePage = () => {
         </Box>
 
         <TableContainer>
-          <Table size="small">
+          <Table size="small" sx={{ minWidth: 1000 }}>
             <TableHead>
               <TableRow>
                 <TableCell>Hora</TableCell>

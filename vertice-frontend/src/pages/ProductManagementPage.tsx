@@ -350,13 +350,14 @@ const ProductManagementPage = () => {
       <TableContainer
         component={Paper}
         sx={{
+          width: '100%',
           borderRadius: '24px',
-          overflow: 'hidden',
+          overflowX: 'auto',
           border: '1px solid rgba(0,0,0,0.05)',
           boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
         }}
       >
-        <Table stickyHeader aria-label="sticky table">
+        <Table stickyHeader aria-label="sticky table" sx={{ minWidth: 1000 }}>
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Nombre</TableCell>

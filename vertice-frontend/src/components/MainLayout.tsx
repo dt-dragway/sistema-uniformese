@@ -548,6 +548,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
           flexDirection: 'column',
           overflow: 'auto',
           outline: 'none',
+          minWidth: 0,
         }}
       >
         <DrawerHeader />

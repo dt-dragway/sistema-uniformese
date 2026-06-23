@@ -226,7 +226,7 @@ const CustomerManagementPage = () => {
                     boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     position: 'relative',
-                    overflow: 'hidden',
+                    overflowX: 'auto',
                     '&:hover': {
                       transform: 'translateY(-6px)',
                       boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
@@ -327,12 +327,12 @@ const CustomerManagementPage = () => {
           component={Paper}
           sx={{
             borderRadius: '24px',
-            overflow: 'hidden',
+            overflowX: 'auto',
             border: '1px solid rgba(0,0,0,0.05)',
             boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
           }}
         >
-          <Table stickyHeader>
+          <Table stickyHeader sx={{ minWidth: 1000 }}>
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Nombre / Razón Social</TableCell>

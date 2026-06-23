@@ -314,19 +314,46 @@ function sendZplToZebra(zplData, printerName) {
     } else if (platform === 'win32') {
       const tmpFile = path.join(os.tmpdir(), `zebra_${Date.now()}.zpl`);
       fs.writeFileSync(tmpFile, zplData, 'binary');
-      const printer = printerName || 'Zebra Technologies ZPL';
+      const printer = printerName || 'Zebra';
+      
       // Intentar enviar vía share local primero
       const cmd = `copy /b "${tmpFile}" "\\\\localhost\\${printer}"`;
       exec(cmd, { shell: 'cmd.exe' }, (err) => {
         fs.unlink(tmpFile, () => {});
         if (err) {
-          // Fallback: puerto USB directo
+          // Fallback: buscar dinámicamente el puerto USB de la Zebra
           const tmpFile2 = path.join(os.tmpdir(), `zebra2_${Date.now()}.zpl`);
           fs.writeFileSync(tmpFile2, zplData, 'binary');
-          exec(`copy /b "${tmpFile2}" "USB001"`, { shell: 'cmd.exe' }, (err2) => {
-            fs.unlink(tmpFile2, () => {});
-            if (err2) return reject(new Error(`Windows print failed: ${err2.message}`));
-            resolve({ method: 'win-usb', printer: 'USB001' });
+          
+          exec(`powershell -Command "Get-Printer | Where-Object { $_.Name -match 'Zebra|ZDesigner|LP ?2824' } | Select-Object -ExpandProperty PortName -First 1"`, (pErr, stdout) => {
+            let port = stdout.trim();
+            
+            const tryUsbPort = (portNum) => {
+              if (portNum > 10) {
+                fs.unlink(tmpFile2, () => {});
+                return reject(new Error(`Windows print failed: No se encontro impresora en puertos USB001-USB010`));
+              }
+              const usbPort = `USB${String(portNum).padStart(3, '0')}`;
+              exec(`copy /b "${tmpFile2}" "${usbPort}"`, { shell: 'cmd.exe' }, (err2) => {
+                if (!err2) {
+                  fs.unlink(tmpFile2, () => {});
+                  return resolve({ method: 'win-usb-fallback', printer: usbPort });
+                }
+                tryUsbPort(portNum + 1);
+              });
+            };
+
+            if (port && port.toUpperCase().startsWith('USB')) {
+              exec(`copy /b "${tmpFile2}" "${port}"`, { shell: 'cmd.exe' }, (err2) => {
+                if (!err2) {
+                  fs.unlink(tmpFile2, () => {});
+                  return resolve({ method: 'win-usb-dynamic', printer: port });
+                }
+                tryUsbPort(1);
+              });
+            } else {
+              tryUsbPort(1);
+            }
           });
         } else {
           resolve({ method: 'win-share', printer });

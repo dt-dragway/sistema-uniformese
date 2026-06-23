@@ -104,22 +104,31 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
     lastY = (doc as any).lastAutoTable.finalY;
   }
 
-  // --- 3. Final Cash Summary ---
-  const totalCashIncomeUsd = session.calculatedCashSalesUsd + session.calculatedDebtPaymentsUsd;
-  const totalCashIncomeBs =
-    session.calculatedCashSalesBs + session.calculatedElectronicSalesBs + session.calculatedDebtPaymentsBs;
-  const expectedUsd = session.openingAmountUsd + totalCashIncomeUsd;
-  const expectedBs = session.openingAmountBs + totalCashIncomeBs;
+  // --- 3. Final Cash Summary (Physical Cash) ---
+  const physicalCashIncomeUsd = session.calculatedCashSalesUsd + session.calculatedDebtPaymentsUsd;
+  const physicalCashIncomeBs = session.calculatedCashSalesBs + session.calculatedDebtPaymentsBs;
+  const expensesUsd = session.calculatedExpensesUsd || 0;
+  const expensesBs = session.calculatedExpensesBs || 0;
+  
+  const expectedUsd = session.openingAmountUsd + physicalCashIncomeUsd - expensesUsd;
+  const expectedBs = session.openingAmountBs + physicalCashIncomeBs - expensesBs;
 
   lastY += 8;
   doc.setFontSize(12).setFont('helvetica', 'bold');
-  doc.text('Resumen Final de Caja', 14, lastY);
+  doc.text('Arqueo Físico de Caja (Efectivo)', 14, lastY);
   lastY += 6;
 
   const summaryBody: any = [
     ['Monto de Apertura', `REF ${session.openingAmountUsd.toFixed(2)}`, `Bs. ${session.openingAmountBs.toFixed(2)}`],
-    ['(+) Total de Ingresos', `REF ${totalCashIncomeUsd.toFixed(2)}`, `Bs. ${totalCashIncomeBs.toFixed(2)}`],
-    ['(=) Total Esperado en Caja', `REF ${expectedUsd.toFixed(2)}`, `Bs. ${expectedBs.toFixed(2)}`],
+    ['(+) Ingresos en Efectivo (Ventas + Cobranzas)', `REF ${physicalCashIncomeUsd.toFixed(2)}`, `Bs. ${physicalCashIncomeBs.toFixed(2)}`],
+  ];
+
+  if (expensesUsd > 0 || expensesBs > 0) {
+    summaryBody.push(['(-) Gastos / Retiros en Efectivo', `REF ${expensesUsd.toFixed(2)}`, `Bs. ${expensesBs.toFixed(2)}`]);
+  }
+
+  summaryBody.push(
+    ['(=) Total Físico Esperado en Caja', `REF ${expectedUsd.toFixed(2)}`, `Bs. ${expectedBs.toFixed(2)}`],
     [
       'Monto Contado al Cierre',
       `REF ${(session.closingAmountUsd || 0).toFixed(2)}`,
@@ -139,17 +148,38 @@ export const generateSessionReport = (session: CashRegisterSession, exchangeRate
           textColor: session.discrepancyBs === 0 ? [0, 0, 0] : session.discrepancyBs > 0 ? [0, 128, 0] : [255, 0, 0],
         },
       },
-    ],
-  ];
+    ]
+  );
 
   autoTable(doc, {
     startY: lastY,
-    head: [['Concepto', 'Monto (REF)', 'Monto (Bs.)']],
+    head: [['Concepto', 'Efectivo (USD)', 'Efectivo (Bs.)']],
     body: summaryBody,
     theme: 'striped',
     headStyles: { fillColor: [44, 62, 80], fontStyle: 'bold' },
   });
   lastY = (doc as any).lastAutoTable.finalY;
+
+  // --- 3.1 Electronic Income Summary ---
+  if (session.calculatedElectronicSalesBs > 0) {
+    lastY += 8;
+    doc.setFontSize(12).setFont('helvetica', 'bold');
+    doc.text('Resumen de Ingresos Electrónicos (Bancos)', 14, lastY);
+    lastY += 6;
+
+    const electronicBody = [
+      ['Ventas Electrónicas (Pago Móvil, Transferencia)', 'N/A', `Bs. ${session.calculatedElectronicSalesBs.toFixed(2)}`]
+    ];
+
+    autoTable(doc, {
+      startY: lastY,
+      head: [['Concepto', 'Monto (REF)', 'Monto (Bs.)']],
+      body: electronicBody,
+      theme: 'grid',
+      headStyles: { fillColor: [39, 174, 96], textColor: 255, fontStyle: 'bold' },
+    });
+    lastY = (doc as any).lastAutoTable.finalY;
+  }
 
   // --- 4. Non-Cash Operations ---
   const creditSalesBs =

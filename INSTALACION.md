@@ -1,4 +1,4 @@
-# Guía de Instalación - Vertice POS v1.12.0
+# Guía de Instalación - Vertice POS v1.14.0
 
 ## 📋 Requisitos Previos
 

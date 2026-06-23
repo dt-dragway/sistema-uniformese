@@ -325,13 +325,13 @@ const HistorialCajaPage = () => {
         <Paper
           sx={{
             borderRadius: '24px',
-            overflow: 'hidden',
+            overflowX: 'auto',
             border: '1px solid rgba(0,0,0,0.05)',
             boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
           }}
         >
           <TableContainer>
-            <Table stickyHeader>
+            <Table stickyHeader sx={{ minWidth: 1000 }}>
               <TableHead>
                 <TableRow sx={{ backgroundColor: '#f8fafc' }}>
                   <TableCell sx={{ fontWeight: 800, color: '#475569' }}>Apertura</TableCell>

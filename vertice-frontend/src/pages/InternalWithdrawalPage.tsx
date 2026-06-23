@@ -209,7 +209,7 @@ const InternalWithdrawalPage: React.FC = () => {
         Gestione ingresos por servicios, préstamos de prendas y devoluciones fuera de venta.
       </Typography>
 
-      <Paper sx={{ mb: 4, borderRadius: '20px', overflow: 'hidden' }}>
+      <Paper sx={{ mb: 4, borderRadius: '20px', overflowX: 'auto' }}>
         <Tabs
           value={activeTab}
           onChange={handleTabChange}

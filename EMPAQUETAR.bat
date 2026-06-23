@@ -3,13 +3,13 @@ setlocal enabledelayedexpansion
 
 :: ============================================
 ::   VERTICE POS - EMPAQUETADOR PROFESIONAL
-::   Version 1.12.0
+::   Version 1.14.0
 :: ============================================
 
 color 0B
 echo.
 echo ============================================================
-echo    VERTICE POS - EMPAQUETADO PARA PRODUCCION v1.12.0
+echo    VERTICE POS - EMPAQUETADO PARA PRODUCCION v1.14.0
 echo ============================================================
 echo.
 
@@ -18,7 +18,7 @@ set "SCRIPT_DIR=%~dp0"
 cd /d "%SCRIPT_DIR%"
 
 :: Leer version del package.json
-set "VERSION=1.12.0"
+set "VERSION=1.14.0"
 
 :: Nombre del paquete
 set "PACKAGE_NAME=vertice-pos-v%VERSION%"
